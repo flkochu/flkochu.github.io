@@ -2,7 +2,7 @@
 
 Registro de lo que he diseñado, construido y escrito como estudiante de Ingeniería Mecatrónica y Sistemas Ciberfísicos en la Universidad Iberoamericana. Cada página dice **qué hice yo** dentro de cada proyecto, con qué herramientas y en qué estado está.
 
-Portafolio: https://flkochu.github.io/ · PROTÓN en 3D: https://flkochu.github.io/proton/
+Portafolio: https://flkochu.github.io/ · PROTÓN en 3D: https://flkochu.github.io/proton/ · Mini sumo en 3D: https://flkochu.github.io/sumo/
 
 ## Robótica e investigación
 
@@ -25,7 +25,7 @@ Portafolio: https://flkochu.github.io/ · PROTÓN en 3D: https://flkochu.github.
 
 | Proyecto | Mi parte | Estado |
 |---|---|---|
-| [Mini Sumo Autónomo Pro · RobotChallenge 2026](mini-sumo.md) | Diseño mecánico y CAD | Compitió |
+| [Mini Sumo Autónomo Pro · RobotChallenge 2026](mini-sumo.md) | Diseño mecánico, CAD y sensores LiDAR ToF con la Teensy 4.1 | Compitió · [modelo 3D](https://flkochu.github.io/sumo/) |
 
 ## Guías y comunidad
 

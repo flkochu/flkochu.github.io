@@ -67,8 +67,8 @@ const T = {
 };
 
 const CSS = `
-.psim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);border:1px solid var(--ink,#172024);background:var(--sheet,#F4F7F4);color:var(--ink,#172024);font-family:inherit}
-.psim-view{position:relative;min-width:0;height:clamp(380px,52vw,620px);border-right:1px solid var(--ink,#172024);overflow:hidden;touch-action:none}
+.psim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,320px);border:1px solid var(--rule,#3A2E66);background:var(--sheet,#F4F7F4);color:var(--ink,#172024);font-family:inherit}
+.psim-view{position:relative;min-width:0;height:clamp(380px,52vw,620px);border-right:1px solid var(--rule,#3A2E66);overflow:hidden;touch-action:none}
 .psim-view canvas{display:block;width:100%!important;height:100%!important}
 .psim-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:opacity .4s}
 .psim-hud{position:absolute;left:12px;top:10px;right:12px;display:flex;justify-content:space-between;gap:10px;font-size:.75rem;color:var(--ink-2,#4C585E);pointer-events:none}
@@ -79,7 +79,7 @@ const CSS = `
 .psim-panel{display:flex;flex-direction:column;min-width:0;font-size:.8125rem;max-height:clamp(380px,52vw,620px);overflow:auto}
 .psim-sec{padding:12px 14px;border-bottom:1px solid var(--rule,#A7B3AE);display:grid;gap:8px}
 .psim-sec:last-child{border-bottom:0}
-.psim-sec h4{margin:0;font-size:.875rem;font-weight:700}
+.psim-sec h4{margin:0;font-family:var(--f-d,inherit);font-size:.875rem;font-weight:650}
 .psim-j{display:grid;grid-template-columns:2.2em minmax(0,1fr) 3.4em;align-items:center;gap:2px 8px}
 .psim-j label{grid-column:1 / 3;color:var(--ink-2,#4C585E);font-size:.75rem}
 .psim-j .id{font-weight:650;font-variant-numeric:tabular-nums}
@@ -87,8 +87,8 @@ const CSS = `
 .psim-j input{grid-column:1 / -1;width:100%;accent-color:var(--blue,#2240C2);margin:0}
 .psim-btns{display:flex;flex-wrap:wrap;gap:5px}
 .psim button{font:inherit;font-size:.75rem;border:1px solid var(--rule,#A7B3AE);background:transparent;color:inherit;padding:4px 9px;cursor:pointer}
-.psim button:hover{border-color:var(--ink,#172024)}
-.psim button[aria-pressed="true"]{background:var(--ink,#172024);color:var(--sheet,#F4F7F4);border-color:var(--ink,#172024)}
+.psim button:hover{border-color:var(--cyan,#2DE2F0)}
+.psim button[aria-pressed="true"]{background:var(--cyan,#2DE2F0);color:var(--sheet,#100B20);border-color:var(--cyan,#2DE2F0)}
 .psim :focus-visible{outline:2px solid var(--blue,#2240C2);outline-offset:2px}
 .psim-pad{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,36px);gap:5px}
 .psim-pad button{padding:0;font-size:1rem;touch-action:none;user-select:none}
@@ -100,7 +100,7 @@ const CSS = `
 .psim-tg input{accent-color:var(--blue,#2240C2);margin:0}
 .psim-stats{display:grid;grid-template-columns:auto auto;gap:2px 10px;font-variant-numeric:tabular-nums}
 .psim-stats b{font-weight:620}
-@media (max-width:820px){.psim-read{font-size:.65rem;gap:1px 8px}.psim-read span:nth-of-type(n+2),.psim-read b:nth-of-type(n+2){display:none}.psim{grid-template-columns:minmax(0,1fr)}.psim-view{border-right:0;border-bottom:1px solid var(--ink,#172024);height:min(110vw,520px)}.psim-panel{max-height:none}}
+@media (max-width:820px){.psim-read{font-size:.65rem;gap:1px 8px}.psim-read span:nth-of-type(n+2),.psim-read b:nth-of-type(n+2){display:none}.psim{grid-template-columns:minmax(0,1fr)}.psim-view{border-right:0;border-bottom:1px solid var(--rule,#3A2E66);height:min(110vw,520px)}.psim-panel{max-height:none}}
 `;
 
 // Carga el .glb; si el servidor no lo entrega, intenta la copia en base64 (<archivo>.glb.json)

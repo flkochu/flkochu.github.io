@@ -6,200 +6,230 @@
 <title>Adán López Lozano</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Portafolio de Adán López Lozano, estudiante de Ingeniería Mecatrónica en la Ibero: robots, ROS 2, visión, diseño mecánico y papers.">
+<meta name="theme-color" content="#07050F">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Tektur:wdth,wght@75..100,400..900&display=swap">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
-/* Layout: the whole page is one engineering drawing sheet. Zone marks along the frame,
-   projects as views in a ruled grid, filters as CAD layers with their linetypes,
-   and a title block in the bottom-right corner. One typeface, Archivo, used across its width axis. */
+/* Layout: the page is still one engineering drawing sheet, now plotted in neon on night film.
+   Zone marks on the frame, projects as views in a ruled grid, every CAD layer with its own pen
+   color, and the title block in the bottom-right corner. Tektur for display and labels,
+   Archivo for reading. One dark look on purpose, so it has no light variant. */
 :root{
-  --film:#E3E9E5;      /* drafting film around the sheet */
-  --sheet:#F4F7F4;     /* the sheet */
-  --ink:#172024;       /* graphite ink */
-  --ink-2:#4C585E;     /* secondary ink */
-  --rule:#A7B3AE;      /* hairlines */
-  --rule-2:#D3DBD7;    /* faint grid */
-  --blue:#2240C2;      /* dimension and center lines */
-  --wash:rgba(34,64,194,.07);
-  --ok:#2B7A4B; --wip:#A56300;
+  color-scheme:dark;
+  --film:#07050F;      /* film around the sheet */
+  --sheet:#100B20;     /* the sheet */
+  --sheet-2:#171030;   /* raised cells */
+  --ink:#EFE9FF;       /* text */
+  --ink-2:#A99FCC;     /* secondary text */
+  --rule:#3A2E66;      /* hairlines */
+  --rule-2:#1F1840;    /* faint rules */
+  --line:#5B4AA6;      /* structural lines: frame and section breaks */
+  --grid:rgba(91,74,166,.12);
+  /* pens, one per CAD layer */
+  --cyan:#2DE2F0; --magenta:#FF3B8D; --yellow:#F5E642; --violet:#A47BFF; --orange:#FF8C42; --mint:#3CF5B1; --sky:#5B8CFF;
+  --blue:var(--cyan);  /* name the 3D viewers read */
+  --lc:var(--cyan);    /* pen of the current view */
+  --wash:rgba(45,226,240,.06);
+  --ok:var(--mint); --wip:var(--yellow);
   --f:"Archivo","Arial Narrow","Helvetica Neue",Arial,sans-serif;
-  --s-1:.8125rem; --s0:1rem; --s1:1.25rem; --s2:1.6rem; --s3:clamp(2.1rem,5.2vw,4.25rem);
+  --f-d:"Tektur","Archivo","Arial Narrow",Arial,sans-serif;
+  --s-1:.8125rem; --s0:1rem; --s1:1.25rem; --s2:1.6rem; --s3:clamp(2rem,4.5vw,3.6rem);
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --film:#0E1215; --sheet:#151B1F; --ink:#DCE4E0; --ink-2:#98A5AB; --rule:#3B474D; --rule-2:#232C31;
-  --blue:#8EA5FF; --wash:rgba(142,165,255,.09); --ok:#6CC18F; --wip:#E3A94B; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --film:#0E1215; --sheet:#151B1F; --ink:#DCE4E0; --ink-2:#98A5AB; --rule:#3B474D; --rule-2:#232C31;
-  --blue:#8EA5FF; --wash:rgba(142,165,255,.09); --ok:#6CC18F; --wip:#E3A94B; color-scheme:dark}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--film);color:var(--ink);font-family:var(--f);font-size:var(--s0);line-height:1.55;
+body{margin:0;background-color:var(--film);background-image:radial-gradient(900px 520px at 0% 0%,rgba(255,59,141,.10),transparent 70%),radial-gradient(900px 620px at 100% 100%,rgba(45,226,240,.08),transparent 70%);
+  color:var(--ink);font-family:var(--f);font-size:var(--s0);line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
-a{color:inherit;text-decoration-color:var(--blue);text-decoration-thickness:1px;text-underline-offset:3px}
-a:hover{color:var(--blue)}
-:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+::selection{background:var(--magenta);color:var(--sheet)}
+a{color:inherit;text-decoration-color:var(--cyan);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--cyan)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 h1,h2,h3{margin:0;text-wrap:balance}
 p{margin:0}
 button{font:inherit;color:inherit}
 
 /* ---------- sheet and frame ---------- */
-.sheet{max-width:1240px;margin:0 auto;background:var(--sheet);border:1px solid var(--rule);padding:18px;position:relative}
-.zones{position:absolute;left:18px;right:18px;top:0;height:18px;display:flex;font-size:.7rem;color:var(--ink-2);font-stretch:80%}
+.sheet{max-width:1240px;margin:0 auto;background-color:var(--sheet);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;
+  border:1px solid var(--rule);padding:18px;position:relative;box-shadow:0 40px 90px -50px rgba(255,59,141,.45)}
+.zones{position:absolute;left:18px;right:18px;top:0;height:18px;display:flex;font-family:var(--f-d);font-size:.66rem;color:var(--ink-2)}
 .zones span{flex:1;text-align:center;line-height:18px;border-left:1px solid var(--rule)}
 .zones span:first-child{border-left:0}
-.zones-side{position:absolute;top:18px;bottom:18px;left:0;width:18px;display:flex;flex-direction:column;font-size:.7rem;color:var(--ink-2)}
+.zones-side{position:absolute;top:18px;bottom:18px;left:0;width:18px;display:flex;flex-direction:column;font-family:var(--f-d);font-size:.66rem;color:var(--ink-2)}
 .zones-side span{flex:1;display:grid;place-items:center;border-top:1px solid var(--rule)}
 .zones-side span:first-child{border-top:0}
-.frame{border:2px solid var(--ink);min-width:0}
+.frame{border:1px solid var(--line);min-width:0}
 .pad{padding-inline:clamp(16px,3.4vw,44px)}
 
 /* ---------- header ---------- */
-.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px;border-bottom:1px solid var(--ink)}
-.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-stretch:88%;font-weight:650;letter-spacing:.005em}
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-d);font-weight:600;letter-spacing:.01em}
 .brand svg{width:34px;height:34px;flex:none}
 .nav{display:flex;align-items:center;gap:clamp(12px,2.4vw,28px);flex-wrap:wrap}
-.nav a{text-decoration:none;font-stretch:90%}
-.nav a:hover{text-decoration:underline}
-.lang{display:inline-flex;border:1px solid var(--ink)}
-.lang button{border:0;background:transparent;padding:3px 10px;font-stretch:85%;font-weight:600;cursor:pointer;font-size:var(--s-1)}
-.lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+.nav a{text-decoration:none;font-family:var(--f-d);font-weight:500;font-size:.9375rem}
+.nav a:hover{color:var(--cyan)}
+.lang{display:inline-flex;border:1px solid var(--rule)}
+.lang button{border:0;background:transparent;padding:3px 10px;font-family:var(--f-d);font-weight:600;cursor:pointer;font-size:var(--s-1)}
+.lang button[aria-pressed="true"]{background:var(--cyan);color:var(--sheet)}
 
 /* ---------- hero ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;padding-block:clamp(28px,5vw,64px) clamp(24px,4vw,48px);border-bottom:1px solid var(--ink)}
-.hero h1{font-size:var(--s3);font-stretch:116%;font-weight:780;line-height:1.02;letter-spacing:-.012em;max-width:13ch}
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;padding-block:clamp(28px,5vw,64px) clamp(24px,4vw,48px);border-bottom:1px solid var(--line)}
+.hero h1{font-family:var(--f-d);font-size:var(--s3);font-weight:760;line-height:1.05;letter-spacing:-.005em;max-width:15ch;
+  text-shadow:-.035em 0 rgba(255,59,141,.6),.035em 0 rgba(45,226,240,.6)}
 .hero .lead{margin-top:20px;max-width:52ch;color:var(--ink-2);font-size:1.0625rem}
 .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1.5px solid var(--ink);text-decoration:none;font-weight:600;font-stretch:92%}
-.btn.primary{background:var(--ink);color:var(--sheet)}
-.btn.primary:hover{background:var(--blue);border-color:var(--blue);color:var(--sheet)}
-.btn:hover{color:var(--blue);border-color:var(--blue)}
+.btn{--bc:var(--cyan);position:relative;isolation:isolate;display:inline-flex;align-items:center;gap:8px;padding:9px 18px 9px 16px;text-decoration:none;
+  font-family:var(--f-d);font-weight:600;letter-spacing:.01em;color:var(--ink);background:var(--bc);
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))}
+.btn::before{content:"";position:absolute;inset:1px;z-index:-1;background:var(--sheet);clip-path:polygon(0 0,calc(100% - 9.6px) 0,100% 9.6px,100% 100%,9.6px 100%,0 calc(100% - 9.6px))}
+.btn:hover{--bc:var(--magenta);color:var(--magenta)}
+.btn.primary{--bc:var(--magenta);color:var(--sheet)}
+.btn.primary::before{display:none}
+.btn.primary:hover{--bc:var(--cyan);color:var(--sheet)}
+.btn:focus-visible{outline:0;--bc:var(--yellow);text-decoration:underline;text-underline-offset:4px}
 .hero-fig{min-width:0}
-.hero-fig svg{width:100%;height:auto;display:block}
+.hero-fig svg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 6px rgba(45,226,240,.25))}
 
 /* ---------- section heads ---------- */
 .sec{padding-block:clamp(28px,4.5vw,56px)}
-.sec + .sec{border-top:1px solid var(--ink)}
+.sec + .sec{border-top:1px solid var(--line)}
 .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:22px}
-.sec-head h2{font-size:var(--s2);font-stretch:110%;font-weight:740;letter-spacing:-.005em}
+.sec-head h2{font-family:var(--f-d);font-size:var(--s2);font-weight:700;letter-spacing:.005em}
 .sec-head p{color:var(--ink-2);max-width:58ch;margin-top:6px}
 
 /* ---------- layers (filters) ---------- */
 .layers{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.layer{display:inline-flex;align-items:center;gap:8px;padding:6px 11px 6px 9px;border:1px solid var(--rule);background:transparent;cursor:pointer;font-size:var(--s-1);font-stretch:88%;font-weight:550}
-.layer svg{width:26px;height:8px;flex:none;overflow:visible}
-.layer .n{color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:450}
-.layer[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
-.layer[aria-pressed="true"] .n{color:var(--rule-2)}
-.layer:hover{border-color:var(--ink)}
-.lt{stroke:currentColor;fill:none;stroke-width:1.6}
+.layer{--c:var(--ink);display:inline-flex;align-items:center;gap:8px;padding:6px 11px 6px 9px;border:1px solid var(--rule);background:transparent;cursor:pointer;font-family:var(--f-d);font-size:var(--s-1);font-weight:500}
+.layer svg{width:26px;height:8px;flex:none;overflow:visible;color:var(--c)}
+.layer .n{color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:400}
+.layer[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.layer:hover{border-color:var(--c)}
+.lt{stroke:currentColor;fill:none;stroke-width:1.8}
 
 /* ---------- PROTÓN featured ---------- */
-.stamp{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:7px 14px 8px;border:2px solid var(--blue);outline:1px solid var(--blue);outline-offset:3px;color:var(--blue);transform:rotate(-2.5deg);text-align:center;line-height:1.15;margin:6px 6px 0 0}
-.stamp b{font-size:1.05rem;font-stretch:118%;font-weight:780;letter-spacing:.04em}
-.stamp span{font-size:.75rem;font-stretch:90%;font-weight:600}
+.stamp{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:7px 14px 8px;border:2px solid var(--magenta);outline:1px solid var(--magenta);outline-offset:3px;color:var(--magenta);transform:rotate(-2.5deg);text-align:center;line-height:1.15;margin:6px 6px 0 0;
+  text-shadow:0 0 10px rgba(255,59,141,.6);box-shadow:0 0 22px -6px rgba(255,59,141,.6),inset 0 0 14px -6px rgba(255,59,141,.5)}
+.stamp b{font-family:var(--f-d);font-size:1.05rem;font-weight:800;letter-spacing:.06em}
+.stamp span{font-family:var(--f-d);font-size:.72rem;font-weight:500}
 .sim-mount{min-height:380px}
-.sim-poster{position:relative;border:1px solid var(--ink);height:clamp(380px,52vw,620px);overflow:hidden;background:var(--sheet)}
+.sim-poster{position:relative;border:1px solid var(--rule);height:clamp(380px,52vw,620px);overflow:hidden;background:var(--sheet)}
 .sim-poster img{width:100%;height:100%;object-fit:cover;display:block}
 .sim-poster p{position:absolute;left:12px;bottom:10px;margin:0;font-size:var(--s-1);color:var(--ink-2)}
 .proton-row{display:grid;grid-template-columns:minmax(0,220px) minmax(0,220px) minmax(0,1fr);gap:clamp(14px,2.4vw,28px);margin-top:clamp(18px,3vw,28px);align-items:start}
-.proton-row figure{margin:0;border:1px solid var(--ink);padding:6px;background:var(--sheet)}
+.proton-row figure{margin:0;border:1px solid var(--rule);padding:6px;background:var(--sheet-2)}
 .proton-row video,.proton-row img{display:block;width:100%;height:auto;aspect-ratio:432/668;object-fit:cover;background:var(--rule-2)}
-.proton-row figcaption{font-size:.75rem;font-stretch:88%;color:var(--ink-2);padding-top:6px}
+.proton-row figcaption{font-size:.75rem;color:var(--ink-2);padding-top:6px}
 .proton-txt{display:grid;gap:12px;max-width:62ch;min-width:0}
-.proton-txt h3{font-size:var(--s1);font-stretch:104%;font-weight:700}
+.proton-txt h3{font-family:var(--f-d);font-size:var(--s1);font-weight:700}
 .proton-txt ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
-.proton-txt li::marker{color:var(--blue)}
+.proton-txt li::marker{color:var(--magenta)}
 
 /* ---------- project grid ---------- */
 .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:dense;gap:1px;background:var(--rule);border:1px solid var(--rule)}
 .cell{background:var(--sheet);min-width:0;display:flex}
 .cell.feat{grid-column:span 2}
 .grid.filtered .cell.feat{grid-column:auto}
-.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;width:100%;padding:16px 18px 18px;cursor:pointer}
-.card:focus-visible{outline:2px solid var(--blue);outline-offset:-4px}
-.card:hover{background:var(--wash)}
+.card{all:unset;box-sizing:border-box;position:relative;display:flex;flex-direction:column;gap:10px;width:100%;padding:18px 20px 20px;cursor:pointer}
+.card::before,.card::after{content:"";position:absolute;width:12px;height:12px;opacity:.55;pointer-events:none}
+.card::before{left:7px;top:7px;border-left:2px solid var(--lc);border-top:2px solid var(--lc)}
+.card::after{right:7px;bottom:7px;border-right:2px solid var(--lc);border-bottom:2px solid var(--lc)}
+.card:hover{background:color-mix(in srgb,var(--lc) 6%,var(--sheet));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc) 65%,transparent)}
+.card:hover::before,.card:hover::after{opacity:1}
+.card:focus-visible{outline:2px solid var(--lc);outline-offset:-4px}
 .card .fig{border-bottom:1px solid var(--rule-2);padding-bottom:8px;margin-bottom:2px}
-.card .fig svg{width:100%;height:auto;display:block;aspect-ratio:400/260;max-height:230px}
+.card .fig svg{width:100%;height:auto;display:block;aspect-ratio:400/260;max-height:230px;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--lc) 45%,transparent))}
 .cell.feat .card .fig svg{max-height:300px}
-.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:var(--s-1);font-stretch:85%;color:var(--ink-2)}
-.pid{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--f-d);font-size:.75rem;color:var(--ink-2)}
+.pid{font-variant-numeric:tabular-nums;font-weight:600;color:var(--lc);letter-spacing:.04em}
 .status{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .status svg{width:11px;height:11px;flex:none}
-.card h3{font-size:var(--s1);font-stretch:104%;font-weight:700;line-height:1.2}
+.card h3{font-family:var(--f-d);font-size:var(--s1);font-weight:650;line-height:1.2}
 .cell.feat .card h3{font-size:1.45rem}
 .card .sum{color:var(--ink-2);max-width:62ch}
-.card .mine{font-size:var(--s-1);font-stretch:90%}
+.card .mine{font-size:var(--s-1)}
 .card .mine b{font-weight:650}
-.tags{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.75rem;font-stretch:82%;color:var(--ink-2);margin-top:auto;padding-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:4px 10px;font-family:var(--f-d);font-size:.72rem;margin-top:auto;padding-top:4px}
+.tags i{font-style:normal;color:var(--rule)}
 
 /* ---------- about ---------- */
 .about{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) minmax(0,300px);gap:clamp(20px,3.5vw,44px);align-items:start}
-.portrait{border:1px solid var(--ink);padding:8px;background:var(--sheet)}
+.portrait{border:1px solid var(--rule);padding:8px;background:var(--sheet-2)}
 .portrait .ph{aspect-ratio:3/4;max-width:100%;background:var(--wash);display:grid;place-items:center;overflow:hidden}
 .portrait img{width:100%;height:100%;object-fit:cover;display:block}
 .portrait svg{width:70%;height:auto}
-.portrait figcaption{font-size:.75rem;font-stretch:85%;color:var(--ink-2);padding-top:6px}
+.portrait figcaption{font-size:.75rem;color:var(--ink-2);padding-top:6px}
 .prose{display:grid;gap:14px;max-width:60ch}
-.prose p:first-child{font-size:1.125rem;font-stretch:96%}
-.tools{border-top:1.5px solid var(--ink);font-size:var(--s-1)}
-.tools h3{font-size:var(--s0);font-stretch:100%;font-weight:700;padding-block:10px 4px}
+.prose p:first-child{font-size:1.125rem}
+.tools{border-top:1px solid var(--line);font-size:var(--s-1)}
+.tools h3{font-family:var(--f-d);font-size:var(--s0);font-weight:700;padding-block:10px 4px}
 .tools dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);border-top:1px solid var(--rule)}
 .tools dt,.tools dd{margin:0;padding:7px 0;border-bottom:1px solid var(--rule)}
-.tools dt{font-weight:620;font-stretch:85%;padding-right:14px}
+.tools dt{font-family:var(--f-d);font-weight:600;padding-right:14px}
+.tools dt:nth-of-type(1){color:var(--violet)}.tools dt:nth-of-type(2){color:var(--orange)}.tools dt:nth-of-type(3){color:var(--cyan)}.tools dt:nth-of-type(4){color:var(--mint)}.tools dt:nth-of-type(5){color:var(--yellow)}
 .tools dd{color:var(--ink-2)}
 
 /* ---------- contact ---------- */
 .contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);align-items:start}
-.contact .big{font-size:clamp(1.35rem,2.6vw,1.9rem);font-stretch:108%;font-weight:700;line-height:1.2;max-width:24ch}
-.rows{border-top:1.5px solid var(--ink)}
+.contact .big{font-family:var(--f-d);font-size:clamp(1.3rem,2.5vw,1.8rem);font-weight:600;line-height:1.25;max-width:26ch}
+.rows{border-top:1px solid var(--line)}
 .row{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--rule)}
-.row .k{font-size:var(--s-1);font-stretch:85%;color:var(--ink-2)}
+.row .k{font-family:var(--f-d);font-size:var(--s-1);color:var(--ink-2)}
 .row .v{min-width:0;overflow-wrap:anywhere;font-weight:560}
 .row .v a{text-decoration:none}
 .row .v a:hover{text-decoration:underline}
-.copy{border:1px solid var(--rule);background:transparent;padding:3px 10px;font-size:var(--s-1);cursor:pointer;font-stretch:88%}
-.copy:hover{border-color:var(--ink)}
+.copy{border:1px solid var(--rule);background:transparent;padding:3px 10px;font-family:var(--f-d);font-size:var(--s-1);cursor:pointer}
+.copy:hover{border-color:var(--cyan);color:var(--cyan)}
 
 /* ---------- title block ---------- */
-.foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);border-top:2px solid var(--ink)}
-.revs{padding:12px clamp(16px,3.4vw,44px) 12px;font-size:.75rem;font-stretch:85%;color:var(--ink-2);align-self:end}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);border-top:1px solid var(--line)}
+.revs{padding:12px clamp(16px,3.4vw,44px) 12px;font-size:.75rem;color:var(--ink-2);align-self:end;overflow-x:auto}
 .revs table{border-collapse:collapse;min-width:0}
-.revs th,.revs td{text-align:left;padding:3px 14px 3px 0;border-bottom:1px solid var(--rule);font-weight:450}
-.revs th{color:var(--ink);font-weight:620}
-.tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--ink);border-left:2px solid var(--ink)}
-.tb div{padding:6px 10px 7px;background:var(--sheet);min-width:0}
+.revs th,.revs td{text-align:left;padding:3px 14px 3px 0;border-bottom:1px solid var(--rule);font-weight:400}
+.revs th{color:var(--ink);font-family:var(--f-d);font-weight:600}
+.revs td:first-child{font-family:var(--f-d);color:var(--magenta)}
+.revs td:nth-child(2){white-space:nowrap;font-variant-numeric:tabular-nums}
+.tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border-left:1px solid var(--line)}
+.tb div{padding:6px 10px 7px;background:var(--sheet-2);min-width:0}
 .tb .wide{grid-column:span 4}
 .tb .half{grid-column:span 2}
-.tb small{display:block;font-size:.6875rem;font-stretch:82%;color:var(--ink-2);line-height:1.3}
-.tb b{display:block;font-weight:620;font-stretch:92%;font-size:.875rem;line-height:1.3;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
-.tb .name b{font-size:1.15rem;font-stretch:112%;font-weight:760}
+.tb small{display:block;font-size:.6875rem;color:var(--ink-2);line-height:1.3}
+.tb b{display:block;font-family:var(--f-d);font-weight:600;font-size:.875rem;line-height:1.3;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.tb .name b{font-size:1.15rem;font-weight:800;color:var(--ink)}
+.tb .rev b{color:var(--magenta)}
 
-/* ---------- drawings ---------- */
-.dw .k{fill:none;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
-.dw .t{fill:none;stroke:var(--ink-2);stroke-width:1;vector-effect:non-scaling-stroke}
-.dw .c{fill:none;stroke:var(--blue);stroke-width:1;stroke-dasharray:12 3 2 3;vector-effect:non-scaling-stroke}
-.dw .d{fill:none;stroke:var(--blue);stroke-width:1;vector-effect:non-scaling-stroke}
+/* ---------- drawings: each view is plotted with its layer's pen (--lc) ---------- */
+.dw .k{fill:none;stroke:var(--lc);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.dw .t{fill:none;stroke:var(--ink-2);stroke-width:1;opacity:.75;vector-effect:non-scaling-stroke}
+.dw .c{fill:none;stroke:var(--ink-2);opacity:.7;stroke-width:1;stroke-dasharray:12 3 2 3;vector-effect:non-scaling-stroke}
+.dw .d{fill:none;stroke:var(--ink-2);stroke-width:1;vector-effect:non-scaling-stroke}
 .dw .dash{stroke-dasharray:5 4}
-.dw .f{fill:var(--ink);stroke:none}
-.dw .fb{fill:var(--blue);stroke:none}
+.dw .f{fill:var(--lc);stroke:none}
+.dw .fb{fill:var(--lc);stroke:none}
 .dw .pw{fill:var(--sheet);stroke:none}
-.dw .w{fill:var(--wash);stroke:var(--ink);stroke-width:1;vector-effect:non-scaling-stroke}
-.dw .hf{fill:url(#hatch);stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dw .w{fill:color-mix(in srgb,var(--lc) 14%,transparent);stroke:var(--lc);stroke-width:1;vector-effect:non-scaling-stroke}
+.dw .hf{fill:url(#hatch);stroke:var(--lc);stroke-width:1.5;vector-effect:non-scaling-stroke}
 .dw .hs{fill:url(#hatch);stroke:none}
-.dw .bar{fill:var(--rule-2);stroke:none}
-.dw .lo{stroke:var(--ink);stroke-linecap:round;vector-effect:non-scaling-stroke;fill:none}
+.dw .bar{fill:var(--rule);stroke:none}
+.dw .lo{stroke:var(--lc);stroke-linecap:round;vector-effect:non-scaling-stroke;fill:none}
 .dw .li{stroke:var(--sheet);stroke-linecap:round;vector-effect:non-scaling-stroke;fill:none}
-.dw .jt{fill:var(--sheet);stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dw .jt{fill:var(--sheet);stroke:var(--lc);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dw .bln{fill:var(--sheet);stroke:var(--yellow);stroke-width:1.2;vector-effect:non-scaling-stroke}
 .dw text{font-family:var(--f);font-size:11px;fill:var(--ink-2);font-stretch:85%}
-.dw .lbl{fill:var(--blue);font-size:12px;font-weight:600}
-.dw .cap{fill:var(--ink);font-size:13px;font-weight:680;font-stretch:100%}
+.dw .lbl{fill:var(--lc);font-size:12px;font-weight:600}
+.dw .cap{fill:var(--ink);font-family:var(--f-d);font-size:13px;font-weight:650;font-stretch:100%}
 .dw .tiny{font-size:9px}
-.dw .stamp{fill:var(--blue);font-size:13px;font-weight:760;font-stretch:118%;letter-spacing:.06em}
+.dw .stamp{fill:var(--lc);font-family:var(--f-d);font-size:13px;font-weight:800;font-stretch:100%;letter-spacing:.06em}
 .dw .bal{font-size:10.5px;font-weight:650;fill:var(--ink)}
-.hp{stroke:var(--ink-2);stroke-width:1}
+.hp{stroke:var(--rule);stroke-width:1}
+/* hero: the full spectrum, one pen per part */
+.hero-fig .dw .k{stroke:var(--violet)}
+.hero-fig .dw .lo{stroke:var(--cyan)}
+.hero-fig .dw .jt{stroke:var(--magenta)}
+.hero-fig .dw .f{fill:var(--magenta)}
+.hero-fig .dw .d{stroke:var(--yellow)}
+.hero-fig .dw .lbl,.hero-fig .dw .bal{fill:var(--yellow)}
 
 /* hero: one orchestrated build-up of the drawing */
 @media (prefers-reduced-motion:no-preference){
@@ -212,41 +242,46 @@ button{font:inherit;color:inherit}
 }
 
 /* ---------- detail dialog ---------- */
-dialog{border:2px solid var(--ink);background:var(--sheet);color:var(--ink);padding:0;width:min(1040px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
-dialog::backdrop{background:rgba(10,14,16,.55)}
+dialog{border:1px solid var(--lc);background:var(--sheet);color:var(--ink);padding:0;width:min(1040px,calc(100vw - 24px));max-height:calc(100dvh - 24px);
+  box-shadow:0 0 70px -18px color-mix(in srgb,var(--lc) 70%,transparent)}
+dialog::backdrop{background:rgba(4,2,10,.72)}
 .dlg{display:flex;flex-direction:column;max-height:calc(100dvh - 28px)}
-.dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 18px;border-bottom:1px solid var(--ink)}
-.dlg-head .pid{font-size:var(--s-1);font-stretch:85%}
-.dlg-head h2{font-size:clamp(1.3rem,2.6vw,1.75rem);font-stretch:110%;font-weight:760;line-height:1.15;margin-top:2px}
-.x{border:1px solid var(--ink);background:transparent;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:1.1rem;line-height:1}
-.x:hover{background:var(--ink);color:var(--sheet)}
+.dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 18px;border-bottom:1px solid var(--rule)}
+.dlg-head .pid{font-family:var(--f-d);font-size:var(--s-1)}
+.dlg-head h2{font-family:var(--f-d);font-size:clamp(1.3rem,2.6vw,1.75rem);font-weight:750;line-height:1.15;margin-top:2px}
+.x{border:1px solid var(--rule);background:transparent;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:1.1rem;line-height:1}
+.x:hover{border-color:var(--lc);color:var(--lc)}
 .dlg-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);overflow:auto;min-height:0}
 .dlg-fig{border-right:1px solid var(--rule);padding:18px;display:flex;flex-direction:column;gap:14px}
-#dlg-draw svg{width:100%;height:auto;display:block}
+#dlg-draw svg{width:100%;height:auto;display:block;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--lc) 45%,transparent))}
 .dlg-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .dlg-media video,.dlg-media img{display:block;width:100%;height:auto;aspect-ratio:432/668;object-fit:cover;border:1px solid var(--rule);background:var(--rule-2)}
-.dlg-fig .facts{display:grid;grid-template-columns:auto minmax(0,1fr);font-size:var(--s-1);border-top:1px solid var(--ink)}
+.dlg-media.land video,.dlg-media.land img{aspect-ratio:4/3}
+.dlg-media a{display:block;position:relative;text-decoration:none}
+.dlg-media a span{position:absolute;left:6px;bottom:6px;padding:2px 7px;background:var(--magenta);color:var(--sheet);font-family:var(--f-d);font-size:.72rem;font-weight:600}
+.dlg-media a:hover img{border-color:var(--lc)}
+.dlg-fig .facts{display:grid;grid-template-columns:auto minmax(0,1fr);font-size:var(--s-1);border-top:1px solid var(--line)}
 .dlg-fig .facts dt,.dlg-fig .facts dd{margin:0;padding:6px 0;border-bottom:1px solid var(--rule)}
-.dlg-fig .facts dt{color:var(--ink-2);font-stretch:85%;padding-right:14px}
+.dlg-fig .facts dt{color:var(--ink-2);font-family:var(--f-d);padding-right:14px}
 .dlg-txt{padding:18px 22px 24px;display:grid;gap:18px;align-content:start;min-width:0}
-.dlg-txt h3{font-size:var(--s0);font-weight:700;font-stretch:100%;margin-bottom:6px}
+.dlg-txt h3{font-family:var(--f-d);font-size:var(--s0);font-weight:650;margin-bottom:6px;color:var(--lc)}
 .dlg-txt p,.dlg-txt li{max-width:62ch}
 .dlg-txt ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
-.dlg-txt li::marker{color:var(--blue)}
+.dlg-txt li::marker{color:var(--lc)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chips span{border:1px solid var(--rule);padding:2px 8px;font-size:.75rem;font-stretch:88%}
+.chips span{border:1px solid var(--rule);padding:2px 8px;font-family:var(--f-d);font-size:.72rem}
 .dlg-links{display:flex;flex-wrap:wrap;gap:10px}
-.dlg-foot{display:flex;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid var(--ink)}
-.nb{border:1px solid var(--rule);background:transparent;padding:6px 12px;cursor:pointer;font-size:var(--s-1);font-stretch:90%;max-width:48%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlg-foot{display:flex;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid var(--rule)}
+.nb{border:1px solid var(--rule);background:transparent;padding:6px 12px;cursor:pointer;font-family:var(--f-d);font-size:var(--s-1);max-width:48%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nb:last-child{text-align:right}
-.nb:hover{border-color:var(--ink)}
+.nb:hover{border-color:var(--lc);color:var(--lc)}
 
 /* ---------- responsive ---------- */
 @media (max-width:980px){
   .about{grid-template-columns:minmax(0,200px) minmax(0,1fr)}
   .about .tools{grid-column:1 / -1}
   .foot{grid-template-columns:minmax(0,1fr)}
-  .tb{border-left:0;border-top:1px solid var(--ink)}
+  .tb{border-left:0;border-top:1px solid var(--line)}
   .revs{order:2}
 }
 @media (max-width:900px){
@@ -293,7 +328,7 @@ dialog::backdrop{background:rgba(10,14,16,.55)}
 
     <header class="top pad">
       <a class="brand" href="#inicio" aria-label="Adán López Lozano">
-        <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="17" x2="30" y2="17" stroke="currentColor" stroke-width="1"/><text x="17" y="14" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Archivo, Arial, sans-serif">ALL</text><text x="17" y="27" text-anchor="middle" font-size="7.5" fill="currentColor" font-family="Archivo, Arial, sans-serif">00</text></svg>
+        <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="var(--cyan)" stroke-width="1.5"/><line x1="4" y1="17" x2="30" y2="17" stroke="var(--magenta)" stroke-width="1"/><text x="17" y="14" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Tektur, Archivo, Arial, sans-serif">ALL</text><text x="17" y="27" text-anchor="middle" font-size="7.5" fill="currentColor" font-family="Tektur, Archivo, Arial, sans-serif">00</text></svg>
         <span>Adán López Lozano</span>
       </a>
       <nav class="nav" aria-label="Principal">
@@ -386,7 +421,7 @@ dialog::backdrop{background:rgba(10,14,16,.55)}
       <div class="revs">
         <table>
           <thead><tr><th>Rev.</th><th data-i="revDate">Fecha</th><th data-i="revDesc">Descripción</th></tr></thead>
-          <tbody><tr><td>A</td><td>2026-10-14</td><td data-i="rev1">Primera publicación</td></tr><tr><td>B</td><td>2026-10-15</td><td data-i="rev2">Huawei ICT, PROTÓN en 3D y tres proyectos</td></tr><tr><td>C</td><td>2026-10-15</td><td data-i="rev3">Atlas con gemelo 3D; fuera cuatro proyectos</td></tr></tbody>
+          <tbody><tr><td>A</td><td>2026-10-14</td><td data-i="rev1">Primera publicación</td></tr><tr><td>B</td><td>2026-10-15</td><td data-i="rev2">Huawei ICT, PROTÓN en 3D y tres proyectos</td></tr><tr><td>C</td><td>2026-10-15</td><td data-i="rev3">Atlas con gemelo 3D; fuera cuatro proyectos</td></tr><tr><td>D</td><td>2026-10-15</td><td data-i="rev4">Paleta neón y mini sumo en 3D</td></tr></tbody>
         </table>
       </div>
       <div class="tb" id="tb"></div>
@@ -430,7 +465,7 @@ const UI = {
   protonH:"PROTÓN en 3D", protonP:"El robot con el que ganamos en la Huawei ICT Competition. El brazo usa las piezas CAD reales y el chasis está aproximado a partir de fotos: mueve las articulaciones, prueba las poses o maneja el robot.",
   vidCap:"Prueba en un invernadero de jitomate", photoCap:"PROTÓN armado", roleH:"Mi parte en el equipo", protonOpen:"Ver la ficha completa", protonFull:"Simulación en pantalla completa",
   protonRole:["Toda la electrónica: tres ESP32, drivers BTS7960 con encoders, IMU y PCA9685 para los servos.","El chasis y su control de movimiento, con PID por rueda, anti-windup y corte si un motor se bloquea.","El control del brazo de 6 GDL por MQTT y su integración con ROS 2 Jazzy y MoveIt2.","El paper aceptado en COMRob."],
-  simLoading:"Cargando el modelo 3D…", sim:"Ver en 3D", full:"Pantalla completa", rev2:"Huawei ICT, PROTÓN en 3D y tres proyectos", rev3:"Atlas con gemelo 3D; fuera cuatro proyectos",
+  simLoading:"Cargando el modelo 3D…", sim:"Ver en 3D", full:"Pantalla completa", rev2:"Huawei ICT, PROTÓN en 3D y tres proyectos", rev3:"Atlas con gemelo 3D; fuera cuatro proyectos", rev4:"Paleta neón y mini sumo en 3D",
   ctaProjects:"Ver proyectos", ctaDocs:"Documentación en GitHub",
   projectsH:"Proyectos",
   projectsP:"Cada plano dice qué hice yo dentro del proyecto. Filtra por capa o abre uno para ver el detalle.",
@@ -438,7 +473,7 @@ const UI = {
   mine:"Mi parte", ctx:"Contexto", did:"Qué hice", next:"Siguiente", stack:"Herramientas", links:"Enlaces",
   layersF:"Capas", statusF:"Estado", yearF:"Año",
   doc:"Documentación completa", site:"Abrir la guía", repo:"Repositorio", ref:"Diseño base",
-  refProf:"Repo de referencia del profesor", repoArm:"Brazo: URDF y simulación", atlasDoc:"Documentación con gemelo 3D",
+  refProf:"Repo de referencia del profesor", repoArm:"Brazo: URDF y simulación", atlasDoc:"Documentación con gemelo 3D", sumo3d:"Modelo 3D y sensores", open3d:"Abrir en 3D",
   close:"Cerrar", prev:"Anterior", nextP:"Siguiente",
   aboutH:"Acerca de mí", toolsH:"Herramientas", figCap:"Adán López Lozano, Ciudad de México",
   about:[
@@ -461,7 +496,7 @@ const UI = {
   protonH:"PROTÓN in 3D", protonP:"The robot that won at the Huawei ICT Competition. The arm uses the real CAD parts and the chassis is approximated from photos: move the joints, try the poses or drive the robot.",
   vidCap:"Test run in a tomato greenhouse", photoCap:"PROTÓN assembled", roleH:"My part on the team", protonOpen:"See the full sheet", protonFull:"Full-screen simulation",
   protonRole:["All the electronics: three ESP32 boards, BTS7960 drivers with encoders, an IMU and a PCA9685 for the servos.","The chassis and its motion control, with per-wheel PID, anti-windup and a cutoff if a motor stalls.","Control of the 6-DOF arm over MQTT and its integration with ROS 2 Jazzy and MoveIt2.","The paper accepted at COMRob."],
-  simLoading:"Loading the 3D model…", sim:"See in 3D", full:"Full screen", rev2:"Huawei ICT, PROTÓN in 3D and three projects", rev3:"Atlas with 3D twin; four projects removed",
+  simLoading:"Loading the 3D model…", sim:"See in 3D", full:"Full screen", rev2:"Huawei ICT, PROTÓN in 3D and three projects", rev3:"Atlas with 3D twin; four projects removed", rev4:"Neon palette and mini sumo in 3D",
   ctaProjects:"See projects", ctaDocs:"Documentation on GitHub",
   projectsH:"Projects",
   projectsP:"Each drawing says what I did within the project. Filter by layer or open one for the details.",
@@ -469,7 +504,7 @@ const UI = {
   mine:"My part", ctx:"Context", did:"What I did", next:"Next", stack:"Tools", links:"Links",
   layersF:"Layers", statusF:"Status", yearF:"Year",
   doc:"Full documentation", site:"Open the guide", repo:"Repository", ref:"Base design",
-  refProf:"Professor’s reference repo", repoArm:"Arm: URDF and simulation", atlasDoc:"Documentation with 3D twin",
+  refProf:"Professor’s reference repo", repoArm:"Arm: URDF and simulation", atlasDoc:"Documentation with 3D twin", sumo3d:"3D model and sensors", open3d:"Open in 3D",
   close:"Close", prev:"Previous", nextP:"Next",
   aboutH:"About me", toolsH:"Tools", figCap:"Adán López Lozano, Mexico City",
   about:[
@@ -487,19 +522,19 @@ const UI = {
  }
 };
 
-/* Capas: cada una con su tipo de línea, como en CAD */
+/* Capas: cada una con su tipo de línea y su pluma de color, como en CAD. El color de cada proyecto es el de su primera capa. */
 const LAYERS = [
- {id:"hw",   es:"Hardware",     en:"Hardware",          dash:""},
- {id:"sw",   es:"Software",     en:"Software",          dash:"6 3"},
- {id:"ros",  es:"ROS 2",        en:"ROS 2",             dash:"9 2 2 2"},
- {id:"paper",es:"Papers",       en:"Papers",            dash:"1.5 3"},
- {id:"comp", es:"Competencias", en:"Competitions",      dash:"double"},
- {id:"lab",  es:"Becario",      en:"Research assistant",dash:"13 3"},
- {id:"com",  es:"Comunidad",    en:"Community",         dash:"8 2 2 2 2 2"}
+ {id:"hw",   es:"Hardware",     en:"Hardware",          dash:"",            col:"var(--orange)"},
+ {id:"sw",   es:"Software",     en:"Software",          dash:"6 3",         col:"var(--cyan)"},
+ {id:"ros",  es:"ROS 2",        en:"ROS 2",             dash:"9 2 2 2",     col:"var(--violet)"},
+ {id:"paper",es:"Papers",       en:"Papers",            dash:"1.5 3",       col:"var(--yellow)"},
+ {id:"comp", es:"Competencias", en:"Competitions",      dash:"double",      col:"var(--magenta)"},
+ {id:"lab",  es:"Becario",      en:"Research assistant",dash:"13 3",        col:"var(--mint)"},
+ {id:"com",  es:"Comunidad",    en:"Community",         dash:"8 2 2 2 2 2", col:"var(--sky)"}
 ];
 
 const P = [
-{id:"proton",feat:true,layers:["hw","sw","ros","comp"],st:"ok",year:"2026",draw:"proton",doc:"proton-brazo-ros2.md",
+{id:"proton",feat:true,layers:["comp","hw","sw","ros"],st:"ok",year:"2026",draw:"proton",doc:"proton-brazo-ros2.md",
  links:[{k:"sim",u:"#proton"},{k:"full",u:"proton/index.html"},{k:"repoArm",u:"https://github.com/flkochu/proton-brazo-6gdl"}],
  media:[{type:"video",src:"media/proton-invernadero.mp4",poster:"media/proton-invernadero.jpg"},{type:"img",src:"media/proton-foto.jpg"}],
  es:{t:"PROTÓN · Plague Bot VR",s:"Robot para monitorear invernaderos con visión por IA y un brazo de 6 GDL. Con mi equipo ganamos el First Prize de la Huawei ICT Competition 2025–2026.",mine:"Electrónica, chasis y control del robot",status:"First Prize, Huawei ICT",
@@ -523,7 +558,7 @@ const P = [
   next:["Presentation at COMRob."]},
  stack:["LaTeX","IEEE"]},
 
-{id:"saludo",layers:["lab","sw"],st:"wip",year:"2026",draw:"saludo",doc:"brazo-saludo.md",links:[],
+{id:"saludo",layers:["sw","lab"],st:"wip",year:"2026",draw:"saludo",doc:"brazo-saludo.md",links:[],
  es:{t:"Brazo de 3 GDL que saluda",s:"La cámara detecta a una persona y su mano, y el brazo del laboratorio la saluda.",mine:"Detección de persona y mano, y comunicación con el brazo",status:"Prototipo",
   ctx:"Me pidieron revivir el brazo de 3 GDL del laboratorio (base, codo y muñeca): motores NEMA 17 con drivers CL57T y una ESP32-C3 con firmware en MicroPython que recibe comandos de texto por serial e I²C.",
   did:["Detección de personas con YOLO de Ultralytics (clase person).","Detección de la mano con MediaPipe Hands.","Envío del comando de saludo por USB serial a la ESP32 cuando aparece una persona."]},
@@ -553,14 +588,15 @@ const P = [
   next:["Simulation in Gazebo, then Isaac Sim.","A paper about the robot."]},
  stack:["ESP32","PCA9685","IMU","ROS 2 Jazzy","Gazebo","Python"]},
 
-{id:"sumo",layers:["comp","hw"],st:"ok",year:"2026",draw:"sumo",doc:"mini-sumo.md",links:[],
- es:{t:"Mini Sumo Autónomo Pro",s:"Diseño mecánico de nuestro mini sumo para RobotChallenge CGC World Cup México 2026.",mine:"Diseño mecánico y CAD, en un equipo de cuatro",status:"Compitió en 2026",
-  ctx:"Competencia en la Ciudad de México el 13 y 14 de septiembre de 2026, categoría Mini Sumo Autónomo Pro.",
-  did:["Base de placa de acero A36/1018 que funciona como estructura y como lastre.","Selección de Teensy 4.1, sensores ToF VL53L5CX y driver TB6612FNG.","Llantas de silicón coladas sobre rines impresos con insertos metálicos.","Solución de errores de referencias en cascada de Fusion 360 exportando a STEP."]},
- en:{t:"Mini Sumo Autonomous Pro",s:"Mechanical design of our mini sumo for RobotChallenge CGC World Cup México 2026.",mine:"Mechanical design and CAD, on a team of four",status:"Competed in 2026",
-  ctx:"Competition in Mexico City on September 13–14, 2026, Mini Sumo Autonomous Pro category.",
-  did:["A36/1018 steel base plate that is both the structure and the ballast.","Picked the Teensy 4.1, VL53L5CX ToF sensors and TB6612FNG driver.","Silicone tires cast onto printed rims with metal inserts.","Fixed cascading reference errors in Fusion 360 by exporting to STEP."]},
- stack:["Fusion 360","3D printing","Teensy 4.1","VL53L5CX"]},
+{id:"sumo",feat:true,layers:["comp","hw"],st:"ok",year:"2026",draw:"sumo",doc:"mini-sumo.md",links:[{k:"sumo3d",u:"sumo/index.html"}],
+ land:true,media:[{type:"img",src:"sumo/poster.jpg",href:"sumo/index.html",tag:"open3d"},{type:"img",src:"media/sumo-frente.jpg"},{type:"img",src:"media/sumo-arriba.jpg"},{type:"img",src:"media/sumo-lado.jpg"}],
+ es:{t:"Mini Sumo Autónomo Pro",s:"Nuestro mini sumo para RobotChallenge CGC World Cup México 2026: base de acero y tres sensores ToF que entregan matrices de distancia.",mine:"Diseño mecánico, CAD y sensores LiDAR ToF con la Teensy 4.1",status:"Compitió en 2026",
+  ctx:"Competencia en la Ciudad de México el 13 y 14 de septiembre de 2026, categoría Mini Sumo Autónomo Pro, en un equipo de cuatro. El robot busca al oponente con tres sensores VL53L5CX, uno al frente y dos en diagonal; cada uno entrega una matriz de distancias de 4×4 u 8×8 zonas. Lo dejamos funcionando a menos de tres horas del torneo.",
+  did:["Diseño mecánico y CAD en Fusion 360 dentro del límite de 10 × 10 cm.","Base de placa de acero A36/1018 que funciona como estructura y como lastre.","Soporte impreso para los tres sensores, uno al frente y dos en diagonal, y cuchilla metálica al frente.","Implementación de los tres sensores LiDAR ToF VL53L5CX con la Teensy 4.1: el robot decide con las matrices de distancia que entregan los tres.","Selección de la Teensy 4.1, los VL53L5CX y el driver TB6612FNG.","Llantas de silicón coladas sobre rines impresos con insertos metálicos.","Solución de errores de referencias en cascada de Fusion 360 exportando a STEP."]},
+ en:{t:"Mini Sumo Autonomous Pro",s:"Our mini sumo for RobotChallenge CGC World Cup México 2026: a steel base and three ToF sensors that return distance matrices.",mine:"Mechanical design, CAD and ToF LiDAR sensors on the Teensy 4.1",status:"Competed in 2026",
+  ctx:"Competition in Mexico City on September 13–14, 2026, Mini Sumo Autonomous Pro category, on a team of four. The robot looks for its opponent with three VL53L5CX sensors, one facing forward and two on the diagonals; each returns a distance matrix of 4×4 or 8×8 zones. We got it working less than three hours before the tournament.",
+  did:["Mechanical design and CAD in Fusion 360 within the 10 × 10 cm limit.","A36/1018 steel base plate that is both the structure and the ballast.","Printed mount for the three sensors, one forward and two on the diagonals, and a metal blade up front.","Brought up the three VL53L5CX ToF LiDAR sensors on the Teensy 4.1: the robot decides from the distance matrices all three return.","Picked the Teensy 4.1, the VL53L5CX sensors and the TB6612FNG driver.","Silicone tires cast onto printed rims with metal inserts.","Fixed cascading reference errors in Fusion 360 by exporting to STEP."]},
+ stack:["Fusion 360","3D printing","Teensy 4.1","VL53L5CX","I²C","TB6612FNG"],stackEs:["Fusion 360","Impresión 3D","Teensy 4.1","VL53L5CX","I²C","TB6612FNG"]},
 
 {id:"mec",layers:["com"],st:"ok",year:"2026",draw:"mec",doc:"guias-de-estudio.md",links:[{k:"site",u:"https://flkochu.github.io/Guia-Mecanismos-y-Actuadores/"},{k:"repo",u:"https://github.com/flkochu/Guia-Mecanismos-y-Actuadores"}],
  es:{t:"Guía de Mecanismos y Actuadores",s:"Síntesis de mecanismos de cuatro barras resuelta paso a paso en MATLAB, con calculadora interactiva.",mine:"Autor",status:"Publicada",
@@ -623,7 +659,7 @@ const P = [
  stack:["Python","OpenCV","scikit-learn","MQTT"]}
 ];
 P.forEach((p,i)=>{p.no="ALL-"+String(i+1).padStart(2,"0")});
-const ORDER=["proton","paper","atlas","motores","slam","saludo","perro","sumo","rf","mec","sen","mat"];
+const ORDER=["proton","paper","atlas","motores","slam","perro","saludo","sumo","rf","mec","sen","mat"];
 P.sort((a,b)=>ORDER.indexOf(a.id)-ORDER.indexOf(b.id));
 
 /* ===== Dibujos (SVG generado) ===== */
@@ -670,9 +706,18 @@ const DRAW={
  perro(d){let s=ground(40,360,222)+R(108,92,184,44,"k",8)+PA("M290 98 l36 -18 l16 10 l-6 16 l-44 10 Z")+T(200,129,"ESP32 + PCA9685","tiny","middle");
   [[132,-14],[168,-14],[232,14],[268,14]].forEach(([h,k])=>{s+=link(h,136,h+k,178,9)+link(h+k,178,h,218,7)+joint(h,136,5)+joint(h+k,178,4.5)});
   s+=L(100,114,350,114,"c");return s},
- sumo(d){let s=R(130,56,140,140,"k",3)+R(130,56,140,18,"hf")+R(140,104,14,58,"k",3)+R(246,104,14,58,"k",3)+R(180,140,40,24,"t",2)+T(200,156,"T4.1","tiny","middle");
-  [150,195,240].forEach(x=>{s+=R(x,76,10,8,"k",1)+L(x+5,76,x-10,20,"d dash")+L(x+5,76,x+20,20,"d dash")});
-  s+=L(200,40,200,214,"c")+L(116,126,284,126,"c")+dim(130,196,270,196,"100 mm",22)+dim(270,196,270,56,"100 mm",22)+T(200,14,d.front,"tiny","middle");return s},
+ sumo(d){const k=1.3,P=(x,z)=>[r1(200+z*k),r1(150-x*k)];
+  let s=R(135,85,130,22,"w")+L(160,96,240,96,"t")+R(159.7,111,80.6,96.2,"k",3);
+  s+=PA("M"+[[24,-31],[37,-13],[37,13],[24,31]].map(p=>P(...p).join(" ")).join(" L"));
+  [135,241.6].forEach(x=>{s+=R(x,161.7,23.4,44.2,"k",3);for(let i=0;i<4;i++)s+=L(x+3,168+i*10,x+20.4,168+i*10,"t")});
+  s+=R(186,128,28,50,"t",2)+R(176,182,48,14,"t",2);
+  const yw=35.8;[[38,0,0],[30.5,-22,yw],[30.5,22,-yw]].forEach(([x,z,y],n)=>{const[cx,cy]=P(x,z);
+   [y-22.5,y+22.5].forEach(a=>{const r=rad(a);s+=L(cx,cy,cx-Math.sin(r)*64,cy-Math.cos(r)*64,"d dash")});
+   if(n===0){s+=arc(cx,cy,46,-112.5,-67.5,"d")+T(cx,cy-50,"45°","lbl","middle")}
+   s+=`<g transform="rotate(${-y} ${cx} ${cy})">${R(cx-8,cy-2.5,16,5,"fb",1)}</g>`});
+  const gx=318,gy=24,c=6;s+=R(gx,gy,48,48,"t");for(let i=0;i<8;i++)for(let j=0;j<8;j++)if(i>1&&i<6&&j>2&&j<7&&!(i===2&&j===6))s+=R(gx+j*c+.5,gy+i*c+.5,c-1,c-1,"fb");
+  for(let i=1;i<8;i++)s+=L(gx+i*c,gy,gx+i*c,gy+48,"t")+L(gx,gy+i*c,gx+48,gy+i*c,"t");
+  s+=T(342,86,"8×8","tiny","middle")+L(200,24,200,232,"c")+dim(135,215,265,215,"100 mm",20)+dim(265,215,265,85,"100 mm",20)+T(200,14,d.front,"tiny","middle");return s},
  mec(d){const O2=[90,200],A=[126,118],B=[262,92],O4=[300,200];const piv=([x,y])=>PA(`M${x} ${y} l-12 18 h24 Z`)+R(x-16,y+18,32,6,"hs")+L(x-16,y+18,x+16,y+18);
   let s=L(90,200,300,200,"c")+piv(O2)+piv(O4)+link(...O2,...A,9)+link(...A,...B,9)+link(...B,...O4,9)+joint(...O2,6)+joint(...A,5.5)+joint(...B,5.5)+joint(...O4,6);
   s+=arc(90,200,32,-66,0,"d")+T(128,190,"θ","lbl")+arc(300,200,28,-109,0,"d")+T(330,186,"ψ","lbl");
@@ -713,7 +758,7 @@ function heroDrawing(lang){const d=UI[lang].d;
  const g2=R(206,272,68,28,"k",3)+L(240,226,240,424,"c")+link(240,268,240,236,14)+link(240,236,336,122,14)+link(336,122,448,150,12)+link(448,150,476,170,10)+link(476,170,494,186,8);
  const g3=joint(240,268,8)+joint(240,236,8)+joint(336,122,8)+joint(448,150,7)+joint(476,170,6)+joint(494,186,5)+PA("M498 190 l20 4 M496 194 l10 18 M516 194 l6 -4 M506 212 l-2 7");
  const bal=[[240,268,168,286],[240,236,170,212],[336,122,312,62],[448,150,446,92],[476,170,532,132],[494,186,536,246]];
- let g4="";bal.forEach((b,i)=>{g4+=L(b[0],b[1],b[2],b[3],"t")+C(b[2],b[3],13,"jt")+T(b[2],b[3]+3.8,"J"+(i+1),"bal","middle")});
+ let g4="";bal.forEach((b,i)=>{g4+=L(b[0],b[1],b[2],b[3],"t")+C(b[2],b[3],13,"bln")+T(b[2],b[3]+3.8,"J"+(i+1),"bal","middle")});
  const g5=arc(336,122,46,-76,104,"d dash")+T(384,104,"±90°","lbl")+T(40,34,d.proton,"cap")+T(40,52,d.side,"")+T(40,68,d.range,"");
  return `<svg class="dw build" viewBox="0 0 560 430" role="img" aria-label="${d.proton}. ${d.side}"><g>${g1}</g><g>${g2}</g><g>${g3}</g><g>${g4}</g><g>${g5}</g></svg>`}
 
@@ -733,6 +778,8 @@ let current=-1;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 const layerName=id=>{const l=LAYERS.find(x=>x.id===id);return l?l[lang]:id};
+const pen=p=>{const l=LAYERS.find(x=>x.id===p.layers[0]);return l?l.col:"var(--cyan)"};
+const layerTags=p=>p.layers.map(id=>{const l=LAYERS.find(x=>x.id===id);return `<span style="color:${l?l.col:"inherit"}">${esc(layerName(id))}</span>`}).join("<i aria-hidden=\"true\">/</i>");
 
 function renderStatic(){const u=UI[lang];
  document.documentElement.lang=lang;
@@ -754,24 +801,24 @@ function renderStatic(){const u=UI[lang];
  const t=u.tb;
  $("#tb").innerHTML=`<div class="wide name"><small>${t.drawn}</small><b>Adán López Lozano</b></div>
   <div class="wide"><small>${t.inst}</small><b>${t.instV}</b></div>
-  <div><small>${t.dwg}</small><b>ALL-00</b></div><div><small>${t.scale}</small><b>1:1</b></div><div><small>${t.sheet}</small><b>1/1</b></div><div><small>${t.rev}</small><b>C</b></div>
+  <div><small>${t.dwg}</small><b>ALL-00</b></div><div><small>${t.scale}</small><b>1:1</b></div><div><small>${t.sheet}</small><b>1/1</b></div><div class="rev"><small>${t.rev}</small><b>D</b></div>
   <div class="half"><small>${t.date}</small><b>${UPDATED}</b></div><div><small>${t.count}</small><b>${P.length}</b></div><div><small>${t.status}</small><b>${t.statusV}</b></div>`;
 }
 function renderLayers(){const u=UI[lang];
  const count=id=>id==="all"?P.length:P.filter(p=>p.layers.includes(id)).length;
  let h=`<button type="button" class="layer" id="layer-all" data-layer="all" aria-pressed="${layer==="all"}"><svg viewBox="0 0 26 8" aria-hidden="true"><rect x="0.5" y="0.5" width="25" height="7" fill="none" stroke="currentColor"/></svg>${u.all} <span class="n">${count("all")}</span></button>`;
- LAYERS.forEach(l=>{h+=`<button type="button" class="layer" id="layer-${l.id}" data-layer="${l.id}" aria-pressed="${layer===l.id}">${ltGlyph(l.dash)}${l[lang]} <span class="n">${count(l.id)}</span></button>`});
+ LAYERS.forEach(l=>{h+=`<button type="button" class="layer" id="layer-${l.id}" data-layer="${l.id}" style="--c:${l.col}" aria-pressed="${layer===l.id}">${ltGlyph(l.dash)}${l[lang]} <span class="n">${count(l.id)}</span></button>`});
  $("#layers").innerHTML=h;
  $("#layers").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{layer=b.dataset.layer;renderLayers();renderGrid()}));
 }
 function renderGrid(){const u=UI[lang];
  visible=layer==="all"?P.slice():P.filter(p=>p.layers.includes(layer));
  const g=$("#grid");g.classList.toggle("filtered",layer!=="all");
- g.innerHTML=visible.map((p,i)=>{const c=p[lang];return `<div class="cell${p.feat?" feat":""}"><button type="button" class="card" data-idx="${i}" aria-haspopup="dialog">
+ g.innerHTML=visible.map((p,i)=>{const c=p[lang];return `<div class="cell${p.feat?" feat":""}" style="--lc:${pen(p)}"><button type="button" class="card" data-idx="${i}" aria-haspopup="dialog">
   <div class="fig">${drawing(p,lang)}</div>
   <div class="meta"><span class="pid">${p.no}</span><span class="status">${stGlyph(p.st)}${esc(c.status)}</span></div>
   <h3>${esc(c.t)}</h3><p class="sum">${esc(c.s)}</p><p class="mine"><b>${u.mine}:</b> ${esc(c.mine)}</p>
-  <div class="tags">${p.layers.map(layerName).map(esc).join("<span aria-hidden=\"true\">/</span>")}</div></button></div>`}).join("");
+  <div class="tags">${layerTags(p)}</div></button></div>`}).join("");
  g.querySelectorAll(".card").forEach(b=>b.addEventListener("click",()=>openDlg(+b.dataset.idx)));
  fillGrid();
 }
@@ -783,12 +830,13 @@ function fillGrid(){const g=$("#grid");if(!g)return;const cells=[...g.children];
 if("ResizeObserver" in window){let fw=0;new ResizeObserver(es=>{const w=Math.round(es[0].contentRect.width);if(w!==fw){fw=w;fillGrid()}}).observe(document.getElementById("grid"))}
 function linkLabel(k){const u=UI[lang];return u[k]||k}
 function fillDlg(){const p=visible[current],c=p[lang],u=UI[lang];
- $("#dlg-id").textContent=p.no;$("#dlg-title").textContent=c.t;
- $("#dlg-draw").innerHTML=p.media?`<div class="dlg-media">${p.media.map(m=>m.type==="video"?`<video src="${m.src}" poster="${m.poster||""}" muted loop playsinline autoplay preload="metadata" aria-label="${esc(c.t)}"></video>`:`<img src="${m.src}" alt="${esc(c.t)}" loading="lazy">`).join("")}</div>`:drawing(p,lang);
- $("#dlg-facts").innerHTML=`<dt>${u.mine}</dt><dd>${esc(c.mine)}</dd><dt>${u.statusF}</dt><dd><span class="status">${stGlyph(p.st)}${esc(c.status)}</span></dd><dt>${u.layersF}</dt><dd>${p.layers.map(layerName).map(esc).join(", ")}</dd><dt>${u.yearF}</dt><dd>${p.year}</dd>`;
+ $("#dlg").style.setProperty("--lc",pen(p));$("#dlg-id").textContent=p.no;$("#dlg-title").textContent=c.t;
+ $("#dlg-draw").innerHTML=p.media?`<div class="dlg-media${p.land?" land":""}">${p.media.map(m=>{if(m.type==="video")return `<video src="${m.src}" poster="${m.poster||""}" muted loop playsinline autoplay preload="metadata" aria-label="${esc(c.t)}"></video>`;
+  const im=`<img src="${m.src}" alt="${esc(c.t)}" loading="lazy">`;return m.href?`<a href="${m.href}" target="_blank" rel="noopener">${im}<span>${esc(u[m.tag]||"")}</span></a>`:im}).join("")}</div>`:drawing(p,lang);
+ $("#dlg-facts").innerHTML=`<dt>${u.mine}</dt><dd>${esc(c.mine)}</dd><dt>${u.statusF}</dt><dd><span class="status">${stGlyph(p.st)}${esc(c.status)}</span></dd><dt>${u.layersF}</dt><dd class="tags" style="margin:0;padding-top:6px;font-size:var(--s-1)">${layerTags(p)}</dd><dt>${u.yearF}</dt><dd>${p.year}</dd>`;
  let h=`<div><h3>${u.ctx}</h3><p>${esc(c.ctx)}</p></div><div><h3>${u.did}</h3><ul>${c.did.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
  if(c.next)h+=`<div><h3>${u.next}</h3><ul>${c.next.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
- h+=`<div><h3>${u.stack}</h3><div class="chips">${p.stack.map(s=>`<span>${esc(s)}</span>`).join("")}</div></div>`;
+ h+=`<div><h3>${u.stack}</h3><div class="chips">${((lang==="es"&&p.stackEs)||p.stack).map(s=>`<span>${esc(s)}</span>`).join("")}</div></div>`;
  h+=`<div><h3>${u.links}</h3><div class="dlg-links"><a class="btn primary" href="${DOCS+p.doc}" target="_blank" rel="noopener">${u.doc}</a>${p.links.map(l=>l.u.startsWith("#")?`<a class="btn" href="${l.u}" data-close="1">${linkLabel(l.k)}</a>`:`<a class="btn" href="${l.u}" target="_blank" rel="noopener">${linkLabel(l.k)}</a>`).join("")}</div></div>`;
  $("#dlg-txt").innerHTML=h;$("#dlg-txt").scrollTop=0;$(".dlg-body").scrollTop=0;
  $("#dlg-txt").querySelectorAll("[data-close]").forEach(a=>a.addEventListener("click",()=>closeDlg()));
@@ -805,7 +853,7 @@ function copyMail(){const btn=$("#copy-mail"),u=UI[lang];
 function renderAll(){renderStatic();renderLayers();renderGrid();if($("#dlg").open)fillDlg()}
 
 /* Foto: se muestra si existe assets/img/perfil.jpg; si no, un monograma */
-function photo(){const ph=$("#ph");const mono=`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="none" stroke="var(--ink)" stroke-width="2"/><line x1="10" y1="60" x2="110" y2="60" stroke="var(--blue)" stroke-width="1" stroke-dasharray="12 3 2 3"/><text x="60" y="50" text-anchor="middle" font-size="28" font-weight="760" fill="var(--ink)" font-family="Archivo, Arial, sans-serif" style="font-stretch:115%">ALL</text><text x="60" y="88" text-anchor="middle" font-size="16" fill="var(--ink-2)" font-family="Archivo, Arial, sans-serif">00</text></svg>`;
+function photo(){const ph=$("#ph");const mono=`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="none" stroke="var(--cyan)" stroke-width="2"/><line x1="10" y1="60" x2="110" y2="60" stroke="var(--magenta)" stroke-width="1" stroke-dasharray="12 3 2 3"/><text x="60" y="50" text-anchor="middle" font-size="28" font-weight="800" fill="var(--ink)" font-family="Tektur, Archivo, Arial, sans-serif">ALL</text><text x="60" y="88" text-anchor="middle" font-size="16" fill="var(--yellow)" font-family="Tektur, Archivo, Arial, sans-serif">00</text></svg>`;
  ph.innerHTML=mono;const img=new Image();img.alt="Adán López Lozano";img.onload=()=>{ph.innerHTML="";ph.appendChild(img)};img.src="assets/img/perfil.jpg"}
 
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;store.set("all-lang",lang);renderAll()}));
@@ -817,16 +865,16 @@ $("#dlg").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")$("#dlg-prev").c
 
 /* PROTÓN en 3D: se carga cuando la sección se acerca a la vista */
 let simHandle=null;
-function isDark(){const t=document.documentElement.getAttribute("data-theme");return t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches}
-function simPoster(){const el=$("#sim-mount");if(!el||simHandle)return;el.innerHTML=`<div class="sim-poster"><img src="proton/poster-${isDark()?"dark":"light"}.jpg" alt="PROTÓN en 3D"><p id="sim-poster-txt">${UI[lang].simLoading}</p></div>`}
+function simPoster(){const el=$("#sim-mount");if(!el||simHandle)return;el.innerHTML=`<div class="sim-poster"><img src="proton/poster-dark.jpg" alt="PROTÓN en 3D"><p id="sim-poster-txt">${UI[lang].simLoading}</p></div>`}
 function loadSim(){const el=$("#sim-mount");if(!el||simHandle||el.dataset.loading)return;el.dataset.loading="1";
- import("./proton/sim.js").then(m=>m.mountProton(el,{glb:"proton/proton_arm.glb",poster:`proton/poster-${isDark()?"dark":"light"}.jpg`,lang})).then(h=>{simHandle=h;window.__sim=h}).catch(e=>{console.error(e);const pt=$("#sim-poster-txt");if(pt)pt.textContent=lang==="es"?"No se pudo cargar el modelo 3D.":"The 3D model could not load."})}
+ import("./proton/sim.js").then(m=>m.mountProton(el,{glb:"proton/proton_arm.glb",poster:"proton/poster-dark.jpg",lang})).then(h=>{simHandle=h;window.__sim=h}).catch(e=>{console.error(e);const pt=$("#sim-poster-txt");if(pt)pt.textContent=lang==="es"?"No se pudo cargar el modelo 3D.":"The 3D model could not load."})}
 $("#proton-open").addEventListener("click",e=>{e.preventDefault();if(layer!=="all"){layer="all";renderLayers();renderGrid()}const i=visible.findIndex(p=>p.id==="proton");if(i>=0)openDlg(i)});
 
 renderAll();photo();simPoster();
 if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){io.disconnect();loadSim()}},{rootMargin:"300px"});io.observe($("#sim-mount"))}else loadSim();
-const h=(location.hash||"").slice(1).toUpperCase();
-if(/^ALL-\d\d$/.test(h)){const i=visible.findIndex(p=>p.no===h);if(i>=0)openDlg(i)}
+function openFromHash(){const h=(location.hash||"").slice(1).toUpperCase();
+ if(/^ALL-\d\d$/.test(h)){if(layer!=="all"){layer="all";renderLayers();renderGrid()}const i=visible.findIndex(p=>p.no===h);if(i>=0)openDlg(i)}}
+openFromHash();window.addEventListener("hashchange",openFromHash);
 })();
 </script>
 </body>
