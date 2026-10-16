@@ -1,0 +1,1853 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Documentación de Atlas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: ficha técnica de laboratorio. Banda de cinta de seguridad arriba, gemelo 3D como portada,
+   después un riel de índice fijo a la izquierda y la documentación en una columna de lectura. */
+:root {
+  --bg: #EDF0F2;          /* piso epóxico del laboratorio */
+  --surface: #F9FAFB;
+  --surface-2: #E2E7EB;
+  --ink: #142029;
+  --muted: #53616C;
+  --line: #C8D1D8;
+  --tape: #F2B705;        /* cinta de piso para AGV */
+  --tape-ink: #1C1A0E;
+  --hazard-dark: #1D2023;
+  --cobalt: #1C59BE;      /* interacción y ruta activa */
+  --pos: #0D8271;
+  --neg: #C24E1C;
+  --scene-bg: #DCE3E8;
+  --scene-floor: #CDD5DB;
+  --scene-grid: #B1BCC5;
+  --scene-ink: #2A3640;
+  --metal: #3A444C;
+  --metal-2: #A9B4BC;
+  --rubber: #24292D;
+  --deck: #313A41;
+
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --t-xs: 0.78rem; --t-sm: 0.875rem; --t-md: 1rem; --t-lg: 1.2rem; --t-xl: 1.6rem; --t-2xl: 2.2rem; --t-hero: clamp(4rem, 13vw, 8.5rem);
+  --radius: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171B; --surface: #182026; --surface-2: #222C33; --ink: #E2E8EC; --muted: #9AA8B2; --line: #2D3940;
+    --tape: #F4C02E; --tape-ink: #1C1A0E; --hazard-dark: #0B0D0F; --cobalt: #7EAAF3; --pos: #3DC0AB; --neg: #F08C5E;
+    --scene-bg: #0E1317; --scene-floor: #182026; --scene-grid: #27323A; --scene-ink: #C7D1D8;
+    --metal: #56626B; --metal-2: #8D99A2; --rubber: #14181B; --deck: #3A454D;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171B; --surface: #182026; --surface-2: #222C33; --ink: #E2E8EC; --muted: #9AA8B2; --line: #2D3940;
+  --tape: #F4C02E; --tape-ink: #1C1A0E; --hazard-dark: #0B0D0F; --cobalt: #7EAAF3; --pos: #3DC0AB; --neg: #F08C5E;
+  --scene-bg: #0E1317; --scene-floor: #182026; --scene-grid: #27323A; --scene-ink: #C7D1D8;
+  --metal: #56626B; --metal-2: #8D99A2; --rubber: #14181B; --deck: #3A454D;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: var(--t-md); line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--cobalt); text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--cobalt); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--f-mono); font-size: 0.9em; }
+code { background: var(--surface-2); padding: 0.08em 0.35em; border-radius: 3px; overflow-wrap: anywhere; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.05; margin: 0; }
+p { margin: 0; }
+
+.hazard { height: 10px; background: repeating-linear-gradient(135deg, var(--tape) 0 14px, var(--hazard-dark) 14px 28px); }
+.wrap {
+  max-width: 1280px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Portada ---------- */
+.masthead { padding-block: 28px 18px; display: grid; gap: 18px; }
+.eyebrow {
+  font-family: var(--f-mono); font-size: var(--t-xs); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted);
+  display: flex; flex-wrap: wrap; gap: 6px 18px;
+}
+.title-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px 40px; }
+.title-row h1 { font-size: var(--t-hero); font-weight: 700; letter-spacing: 0.01em; line-height: 0.82; text-transform: uppercase; }
+.lede { max-width: 46ch; font-size: var(--t-lg); line-height: 1.45; padding-bottom: 6px; }
+.lede strong { font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 8px; }
+.fact {
+  display: inline-flex; align-items: baseline; gap: 8px; padding: 5px 10px; border: 1px solid var(--line); border-radius: 999px;
+  font-size: var(--t-sm); background: var(--surface);
+}
+.fact b { font-family: var(--f-mono); font-weight: 500; font-size: var(--t-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ---------- Gemelo 3D ---------- */
+.twin {
+  display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 0;
+  border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface);
+  margin-bottom: 40px;
+}
+.twin-view { position: relative; min-height: 560px; background: var(--scene-bg); outline: none; touch-action: none; }
+.twin-view:focus-visible { box-shadow: inset 0 0 0 2px var(--cobalt); }
+.twin-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.twin-view canvas.aim { cursor: crosshair; }
+.hud { position: absolute; z-index: 2; font-size: var(--t-xs); pointer-events: none; }
+.hud > * { pointer-events: auto; }
+.hud-tl { top: 12px; left: 12px; }
+.hud-tr { top: 12px; right: 12px; display: flex; gap: 4px; }
+.hud-bl { bottom: 12px; left: 12px; right: 12px; color: var(--scene-ink); font-family: var(--f-mono); opacity: 0.85; }
+.pose-card {
+  background: color-mix(in srgb, var(--surface) 88%, transparent); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 8px 10px; font-family: var(--f-mono); display: grid; grid-template-columns: auto auto; gap: 1px 12px;
+  font-variant-numeric: tabular-nums; backdrop-filter: blur(4px);
+}
+.pose-card .ttl { grid-column: 1 / -1; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 2px; }
+.pose-card .pu { color: var(--muted); }
+.pose-card .pv { text-align: right; }
+.btn-chip {
+  font: 500 var(--t-xs) var(--f-body); color: var(--ink); background: color-mix(in srgb, var(--surface) 90%, transparent);
+  border: 1px solid var(--line); border-radius: 4px; padding: 5px 9px; cursor: pointer;
+}
+.btn-chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tip {
+  position: absolute; z-index: 3; pointer-events: none; max-width: 240px; padding: 6px 9px; border-radius: 4px;
+  background: var(--ink); color: var(--bg); font-size: var(--t-xs); line-height: 1.35; transform: translate(12px, 12px);
+}
+.fallback { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--muted); z-index: 4; background: var(--scene-bg); }
+
+.twin-panel { border-left: 1px solid var(--line); padding: 14px 16px 16px; display: grid; gap: 14px; align-content: start; max-height: 560px; overflow-y: auto; min-width: 0; }
+.panel-h { font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; font-weight: 500; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.seg button { font: 500 var(--t-sm) var(--f-body); padding: 7px 6px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.slider { display: grid; grid-template-columns: 34px minmax(0, 1fr) 76px; align-items: center; gap: 8px; font-size: var(--t-sm); }
+.slider label { font-family: var(--f-mono); }
+.slider output { font-family: var(--f-mono); font-size: var(--t-xs); text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.slider.wide { grid-template-columns: 96px minmax(0, 1fr) 62px; }
+input[type="range"] { width: 100%; accent-color: var(--cobalt); }
+.stack { display: grid; gap: 6px; }
+.hint { font-size: var(--t-xs); color: var(--muted); line-height: 1.45; }
+.status-line { font-size: var(--t-sm); padding: 7px 9px; border-radius: 4px; background: var(--surface-2); line-height: 1.4; }
+.status-line.ok { color: var(--pos); }
+.status-line.warn { color: var(--neg); }
+.row-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn {
+  font: 500 var(--t-sm) var(--f-body); padding: 7px 12px; border-radius: 5px; border: 1px solid var(--line);
+  background: var(--surface); color: var(--ink); cursor: pointer;
+}
+.btn:hover, .btn-chip:hover, .seg button:hover { border-color: var(--cobalt); }
+.wheels { display: grid; gap: 5px; font-variant-numeric: tabular-nums; }
+.wrow { display: grid; grid-template-columns: 28px minmax(0, 1fr) 46px 46px; align-items: center; gap: 8px; font-family: var(--f-mono); font-size: var(--t-xs); }
+.wrow .nm { font-weight: 500; }
+.wrow .v, .wrow .p { text-align: right; }
+.wrow .p { color: var(--muted); }
+.wrow.head { color: var(--muted); font-size: 0.66rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.bar { position: relative; height: 10px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+.bar::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: var(--muted); opacity: 0.6; }
+.bar i { position: absolute; top: 0; bottom: 0; left: 50%; width: 0; background: var(--pos); }
+.bar i.neg { background: var(--neg); }
+.bar .dz { position: absolute; top: 0; bottom: 0; background: repeating-linear-gradient(135deg, transparent 0 3px, color-mix(in srgb, var(--muted) 35%, transparent) 3px 5px); }
+.kv { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; font-size: var(--t-sm); }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; font-family: var(--f-mono); font-size: var(--t-xs); text-align: right; font-variant-numeric: tabular-nums; align-self: center; }
+.checks { display: grid; gap: 4px; font-size: var(--t-sm); }
+.checks label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.checks input { accent-color: var(--cobalt); }
+details.geo summary { cursor: pointer; font-size: var(--t-sm); font-weight: 500; }
+details.geo[open] summary { margin-bottom: 8px; }
+
+/* ---------- Documento ---------- */
+.doc { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 48px; padding-block: 8px 72px; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); align-self: start; font-size: var(--t-sm); max-height: calc(100vh - 32px); overflow-y: auto; }
+.toc .panel-h { margin-bottom: 10px; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.toc a { display: grid; grid-template-columns: 26px 1fr; gap: 4px; padding: 4px 8px; border-radius: 4px; color: var(--muted); text-decoration: none; }
+.toc a span:first-child { font-family: var(--f-mono); font-size: var(--t-xs); padding-top: 2px; }
+.toc a:hover { color: var(--ink); background: var(--surface-2); }
+.toc a.on { color: var(--ink); background: var(--surface); box-shadow: inset 3px 0 0 var(--tape); }
+.toc-mobile { display: none; }
+
+.content { min-width: 0; display: grid; gap: 64px; }
+section.sec { display: grid; gap: 18px; scroll-margin-top: 20px; }
+.sec-head { display: grid; gap: 4px; padding-top: 14px; border-top: 2px solid var(--ink); }
+.sec-head .num { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); letter-spacing: 0.06em; }
+.sec-head h2 { font-size: var(--t-2xl); font-weight: 700; text-transform: uppercase; letter-spacing: 0.01em; }
+h3 { font-size: var(--t-xl); font-weight: 600; margin-top: 10px; }
+.prose { max-width: 72ch; display: grid; gap: 12px; }
+.prose ul, .prose ol { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+
+.status-list { display: grid; gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.status-list > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; padding: 11px 14px; align-items: center; }
+.status-list > div + div { border-top: 1px solid var(--line); }
+.status-list .what { font-weight: 500; }
+.status-list .why { grid-column: 1 / -1; font-size: var(--t-sm); color: var(--muted); }
+.pill {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-family: var(--f-mono); font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; border: 1px solid currentColor;
+}
+.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.pill.op { color: var(--pos); }
+.pill.impl { color: var(--cobalt); }
+.pill.pause { color: var(--muted); }
+.pill.plan { color: var(--ink); border-style: dashed; }
+.pill.plan::before { background: transparent; border: 1px solid currentColor; }
+.pill.chk { color: var(--neg); }
+
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: var(--t-sm); }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--line); }
+tr:last-child td { border-bottom: 0; }
+th { font-family: var(--f-mono); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); white-space: nowrap; }
+td.k { white-space: nowrap; font-weight: 500; }
+td.num, .tab { font-variant-numeric: tabular-nums; }
+tr.me td { background: color-mix(in srgb, var(--tape) 14%, transparent); }
+
+figure { margin: 0; display: grid; gap: 10px; }
+.fig-box { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 14px; }
+.fig-box svg { display: block; width: 100%; height: auto; min-width: 640px; color: var(--ink); }
+figcaption { font-size: var(--t-sm); color: var(--muted); max-width: 80ch; }
+.sw { display: inline-block; width: 22px; height: 0; border-top: 2px solid var(--cobalt); vertical-align: middle; margin: 0 4px 0 2px; }
+.sw.dash { border-top: 2px dashed var(--muted); }
+
+/* SVG */
+.d-box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.2; }
+.d-box.alt { fill: var(--surface-2); }
+.d-box.paused { stroke: var(--muted); stroke-dasharray: 5 4; }
+.d-bound { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 6 5; }
+.d-t { fill: var(--ink); font-family: var(--f-body); font-size: 13px; font-weight: 600; }
+.d-s { fill: var(--muted); font-family: var(--f-mono); font-size: 10.5px; }
+.d-l { fill: var(--ink); font-family: var(--f-mono); font-size: 10.5px; }
+.d-l.m { fill: var(--muted); }
+.d-l.c { fill: var(--cobalt); }
+.d-line { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.d-line.paused { stroke: var(--muted); stroke-dasharray: 5 4; }
+.d-line.act { stroke: var(--cobalt); stroke-width: 2; }
+.d-ah { fill: var(--ink); }
+.d-ah.m { fill: var(--muted); }
+.d-ah.c { fill: var(--cobalt); }
+.d-chassis { fill: var(--surface-2); stroke: var(--ink); stroke-width: 1.2; }
+.d-wheel { fill: var(--surface); stroke: var(--ink); stroke-width: 1.4; }
+.d-roller { stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+.d-force { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+.d-force.hi { stroke: var(--neg); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.d-arm { stroke: var(--neg); stroke-width: 2.4; }
+.d-dot { fill: var(--neg); }
+.d-tape { fill: var(--tape); stroke: var(--tape-ink); stroke-width: 0.8; }
+
+/* Ecuaciones */
+.eq { overflow-x: auto; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.eq math { font-size: 1.12rem; }
+.eq-note { font-size: var(--t-sm); color: var(--muted); margin-top: 8px; }
+
+.pipeline { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow: hidden; }
+.pipeline > div { padding: 12px 12px 14px; display: grid; gap: 4px; align-content: start; position: relative; min-width: 0; }
+.pipeline > div + div { border-left: 1px solid var(--line); }
+.pipeline .st { font-family: var(--f-mono); font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; }
+.pipeline .nm { font-weight: 600; font-size: var(--t-sm); line-height: 1.3; }
+.pipeline .ds { font-size: var(--t-xs); color: var(--muted); line-height: 1.4; }
+.pipeline > div.off .nm { color: var(--muted); }
+
+.lessons { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.lesson { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 4px 14px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.lesson .id { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); padding-top: 3px; }
+.lesson h4 { margin: 0 0 4px; font-size: var(--t-md); font-weight: 600; }
+.lesson p { font-size: var(--t-sm); color: var(--muted); max-width: 72ch; }
+.lesson p code { color: var(--ink); }
+
+.road { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.road-col { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 14px 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.road-col h4 { margin: 0; font-family: var(--f-display); font-size: var(--t-lg); font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; }
+.road-col ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.road-col li { display: grid; gap: 2px; font-size: var(--t-sm); }
+.road-col li b { font-weight: 600; }
+.road-col li span { color: var(--muted); }
+.voice { font-family: var(--f-mono); font-size: var(--t-sm); background: var(--tape); color: var(--tape-ink); padding: 1px 6px; border-radius: 3px; white-space: nowrap; }
+
+.tree { font-family: var(--f-mono); font-size: var(--t-sm); line-height: 1.75; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); overflow-x: auto; white-space: pre; }
+.tree .c { color: var(--muted); }
+
+.team { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.team > div { padding: 14px 16px; display: grid; gap: 4px; min-width: 0; align-content: start; }
+.team > div:nth-child(odd) { border-right: 1px solid var(--line); }
+.team > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+.team .who { font-weight: 600; }
+.team .role { font-family: var(--f-mono); font-size: var(--t-xs); color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.team .does { font-size: var(--t-sm); }
+
+footer.foot { border-top: 1px solid var(--line); padding-block: 18px 32px; font-size: var(--t-sm); color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 24px; justify-content: space-between; }
+
+@media (max-width: 1080px) {
+  .doc { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .toc { display: none; }
+  .toc-mobile { display: block; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 10px 14px; }
+  .toc-mobile summary { cursor: pointer; font-weight: 500; }
+  .toc-mobile ol { margin: 8px 0 0; padding-left: 1.4em; display: grid; gap: 4px; font-size: var(--t-sm); }
+}
+@media (max-width: 900px) {
+  .twin { grid-template-columns: minmax(0, 1fr); }
+  .twin-view { min-height: 420px; }
+  .twin-panel { border-left: 0; border-top: 1px solid var(--line); max-height: none; }
+  .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pipeline > div + div { border-left: 0; }
+  .pipeline > div:nth-child(even) { border-left: 1px solid var(--line); }
+  .pipeline > div:nth-child(n+3) { border-top: 1px solid var(--line); }
+}
+@media (max-width: 640px) {
+  .road, .team { grid-template-columns: minmax(0, 1fr); }
+  .team > div:nth-child(odd) { border-right: 0; }
+  .team > div + div { border-top: 1px solid var(--line); }
+  .twin-view { min-height: 360px; }
+  .hud-bl { display: none; }
+  .lesson { grid-template-columns: 40px minmax(0, 1fr); }
+  .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .pipeline > div:nth-child(even) { border-left: 0; }
+  .pipeline > div + div { border-top: 1px solid var(--line); }
+}
+</style>
+
+<div class="hazard" aria-hidden="true"></div>
+
+<header class="wrap masthead">
+  <div class="eyebrow">
+    <a href="../" style="color:inherit">Portafolio de Adán López Lozano</a>
+    <span>Sistema AGV multi-robot</span>
+    <span>Mecatrónica · Universidad Iberoamericana</span>
+    <span>Becarios del Prof. Huber Girón</span>
+    <span>Documentación v0.1 · 15 oct 2026</span>
+  </div>
+  <div class="title-row">
+    <h1>Atlas</h1>
+    <p class="lede">Plataforma <strong>omnidireccional con cuatro ruedas mecanum</strong>. Avanza, se desliza de lado y gira al mismo tiempo, guiada por visión ArUco, control en lazo cerrado y realidad mixta.</p>
+  </div>
+  <div class="facts">
+    <span class="fact"><b>Broker</b>robot3</span>
+    <span class="fact"><b>Ruedas</b>Mecanum ×4, configuración O</span>
+    <span class="fact"><b>Marcador</b>ArUco ID 1 · DICT_6X6_50</span>
+    <span class="fact"><b>Hoy</b>Control desde visor Quest (MR-ATLAS)</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="twin" id="gemelo">
+    <div class="twin-view" id="view" tabindex="0" aria-label="Modelo 3D interactivo de Atlas. Usa W, A, S, D para trasladar y Q, E para girar cuando el modelo tiene el foco.">
+      <canvas id="c"></canvas>
+      <div class="hud hud-tl">
+        <div class="pose-card" aria-live="off">
+          <span class="ttl">Pose · 15 Hz</span>
+          <span class="pv" id="pX">0.000</span><span class="pu">x m</span>
+          <span class="pv" id="pY">0.000</span><span class="pu">y m</span>
+          <span class="pv" id="pT">0.0</span><span class="pu">θ °</span>
+        </div>
+      </div>
+      <div class="hud hud-tr" role="group" aria-label="Cámara">
+        <button class="btn-chip" id="camIso" aria-pressed="true">Vista 3D</button>
+        <button class="btn-chip" id="camTop" aria-pressed="false">Planta</button>
+        <button class="btn-chip" id="camFollow" aria-pressed="false">Seguir</button>
+      </div>
+      <div class="hud hud-bl">Arrastra para orbitar · rueda para acercar · clic en el piso para fijar objetivo · W A S D trasladar · Q E girar</div>
+      <div class="tip" id="tip" hidden></div>
+      <div class="fallback" id="fallback" hidden>
+        <p>El modelo 3D necesita WebGL y no pudo iniciarse en este navegador. El resto de la documentación funciona igual.</p>
+      </div>
+    </div>
+
+    <aside class="twin-panel" aria-label="Controles del modelo">
+      <div>
+        <p class="panel-h">Modo de mando</p>
+        <div class="seg" role="group" aria-label="Modo de mando">
+          <button id="mManual" aria-pressed="false">Manual</button>
+          <button id="mGoto" aria-pressed="true">Ir a punto</button>
+        </div>
+      </div>
+
+      <div id="paneManual" class="stack" hidden>
+        <div class="slider"><label for="sVx">vx</label><input type="range" id="sVx" min="-0.4" max="0.4" step="0.01" value="0"><output id="oVx">0.00 m/s</output></div>
+        <div class="slider"><label for="sVy">vy</label><input type="range" id="sVy" min="-0.4" max="0.4" step="0.01" value="0"><output id="oVy">0.00 m/s</output></div>
+        <div class="slider"><label for="sW">ω</label><input type="range" id="sW" min="-1.2" max="1.2" step="0.02" value="0"><output id="oW">0.00 rad/s</output></div>
+        <div class="row-btns"><button class="btn" id="bStop">Detener</button></div>
+        <p class="hint">vx hacia el frente, vy hacia la izquierda, ω antihorario. Con el modelo enfocado, las teclas mandan sobre los deslizadores mientras las mantienes.</p>
+      </div>
+
+      <div id="paneGoto" class="stack">
+        <div class="slider wide"><label for="sTh">θ final</label><input type="range" id="sTh" min="-180" max="180" step="5" value="90"><output id="oTh">90°</output></div>
+        <div class="status-line" id="gStatus">Rumbo al objetivo</div>
+        <p class="hint">Haz clic en el piso para mover el objetivo. Control proporcional holonómico, igual en estructura al bloque de navegación.</p>
+      </div>
+
+      <div>
+        <p class="panel-h">Ruedas · orden FRAME_LAYOUT</p>
+        <div class="wheels" id="wheels">
+          <div class="wrow head"><span></span><span>ciclo útil (−1 a 1)</span><span class="v">calc.</span><span class="p">PWM</span></div>
+        </div>
+        <p class="hint" style="margin-top:6px">PWM = ciclo útil × polaridad −1. La franja rayada es la zona muerta del motor.</p>
+      </div>
+
+      <dl class="kv">
+        <dt>Escala aplicada al vector</dt><dd id="oScale">1.00</dd>
+        <dt>Brazo de la fuerza de giro</dt><dd id="oArm">117 mm</dd>
+        <dt>Par de giro frente a X</dt><dd id="oAuth">24 %</dd>
+      </dl>
+
+      <div class="stack">
+        <p class="panel-h">Configuración</p>
+        <div class="seg" role="group" aria-label="Rodillos">
+          <button id="cfgO" aria-pressed="true">Rodillos O (Atlas)</button>
+          <button id="cfgX" aria-pressed="false">X (referencia)</button>
+        </div>
+        <div class="seg" role="group" aria-label="Manejo de zona muerta">
+          <button id="dzU" aria-pressed="true">Escalado uniforme</button>
+          <button id="dzC" aria-pressed="false">Recorte por rueda</button>
+        </div>
+        <div class="checks">
+          <label><input type="checkbox" id="chkTrail" checked> Trayectoria</label>
+          <label><input type="checkbox" id="chkVec" checked> Vector de velocidad</label>
+          <label><input type="checkbox" id="chkMarker" checked> Placa del marcador ArUco</label>
+          <label><input type="checkbox" id="chkSens"> Sensores planeados (4 LiDAR + cámara)</label>
+        </div>
+      </div>
+
+      <details class="geo">
+        <summary>Geometría y parámetros</summary>
+        <div class="stack">
+          <div class="slider wide"><label for="gT">Vía 2b</label><input type="range" id="gT" min="0.60" max="1.00" step="0.01" value="0.84"><output id="ogT">840 mm</output></div>
+          <div class="slider wide"><label for="gB">Batalla 2a</label><input type="range" id="gB" min="0.44" max="0.80" step="0.01" value="0.51"><output id="ogB">510 mm</output></div>
+          <div class="slider wide"><label for="gD">Ø rueda</label><input type="range" id="gD" min="0.15" max="0.25" step="0.005" value="0.21"><output id="ogD">210 mm</output></div>
+          <div class="slider wide"><label for="gV">v máx. rueda</label><input type="range" id="gV" min="0.2" max="1.2" step="0.05" value="0.5"><output id="ogV">0.50 m/s</output></div>
+          <div class="slider wide"><label for="gZ">Zona muerta</label><input type="range" id="gZ" min="0" max="0.3" step="0.01" value="0.12"><output id="ogZ">0.12</output></div>
+          <p class="hint">Vía, batalla y rueda vienen de las medidas registradas del proyecto. La forma del robot sigue las fotos del 15 de octubre; el tamaño de los componentes es aproximado. La velocidad máxima y la zona muerta son parámetros de simulación.</p>
+        </div>
+      </details>
+
+      <div class="row-btns"><button class="btn" id="bReset">Reiniciar simulación</button></div>
+    </aside>
+  </div>
+</div>
+
+<div class="wrap doc">
+  <nav class="toc" aria-label="Contenido">
+    <p class="panel-h">Contenido</p>
+    <ol id="tocList">
+      <li><a href="#resumen"><span>01</span><span>Resumen</span></a></li>
+      <li><a href="#sistema"><span>02</span><span>Atlas en el sistema</span></a></li>
+      <li><a href="#arquitectura"><span>03</span><span>Arquitectura</span></a></li>
+      <li><a href="#plataforma"><span>04</span><span>Plataforma y hardware</span></a></li>
+      <li><a href="#cinematica"><span>05</span><span>Cinemática</span></a></li>
+      <li><a href="#vision"><span>06</span><span>Visión y localización</span></a></li>
+      <li><a href="#control"><span>07</span><span>Control de navegación</span></a></li>
+      <li><a href="#comunicacion"><span>08</span><span>Comunicación MQTT</span></a></li>
+      <li><a href="#software"><span>09</span><span>Software</span></a></li>
+      <li><a href="#estado"><span>10</span><span>Estado actual</span></a></li>
+      <li><a href="#lecciones"><span>11</span><span>Lecciones aprendidas</span></a></li>
+      <li><a href="#ruta"><span>12</span><span>Hoja de ruta</span></a></li>
+      <li><a href="#equipo"><span>13</span><span>Equipo</span></a></li>
+    </ol>
+  </nav>
+
+  <main class="content">
+    <details class="toc-mobile">
+      <summary>Contenido</summary>
+      <ol>
+        <li><a href="#resumen">Resumen</a></li>
+        <li><a href="#sistema">Atlas en el sistema</a></li>
+        <li><a href="#arquitectura">Arquitectura</a></li>
+        <li><a href="#plataforma">Plataforma y hardware</a></li>
+        <li><a href="#cinematica">Cinemática</a></li>
+        <li><a href="#vision">Visión y localización</a></li>
+        <li><a href="#control">Control de navegación</a></li>
+        <li><a href="#comunicacion">Comunicación MQTT</a></li>
+        <li><a href="#software">Software</a></li>
+        <li><a href="#estado">Estado actual</a></li>
+        <li><a href="#lecciones">Lecciones aprendidas</a></li>
+        <li><a href="#ruta">Hoja de ruta</a></li>
+        <li><a href="#equipo">Equipo</a></li>
+      </ol>
+    </details>
+
+    <!-- 01 -->
+    <section class="sec" id="resumen">
+      <div class="sec-head"><span class="num">01</span><h2>Resumen</h2></div>
+      <div class="prose">
+        <p>Atlas es la plataforma omnidireccional del sistema AGV multi-robot del laboratorio de Mecatrónica de la Ibero. Sus cuatro ruedas mecanum le permiten moverse en cualquier dirección del plano y girar a la vez, sin tener que orientarse primero hacia su destino. En el broker MQTT del proyecto se identifica como <code>robot3</code>.</p>
+        <p>El sistema completo guía de forma autónoma a tres robots (Apolo, Odiseo y Atlas) dentro del laboratorio con visión por marcadores ArUco, control en lazo cerrado y una capa de realidad mixta para planear rutas. Esta página documenta el estado de Atlas al 15 de octubre de 2026: geometría y cinemática, la cadena de visión y control, la comunicación, el software, lo aprendido en el camino y lo que sigue.</p>
+        <p>El modelo de arriba es un gemelo cinemático: usa la misma cinemática inversa y directa que se describe en la sección 05, con el orden de ruedas y la polaridad medidos en el robot real. Su forma sigue la estructura de Atlas en fotos y video del 15 de octubre de 2026. Vía, batalla y diámetro de rueda son las medidas registradas; el tamaño de los demás componentes es aproximado. Pasa el cursor sobre cualquier pieza para ver qué es.</p>
+      </div>
+      <div class="status-list">
+        <div><span class="what">Control desde realidad mixta (visor Quest)</span><span class="pill op">Operativo</span><span class="why">El equipo ya mueve a Atlas desde la aplicación MR-ATLAS.</span></div>
+        <div><span class="what">Cinemática inversa y directa mecanum</span><span class="pill op">Calibrada</span><span class="why">Orden de ruedas y polaridad de los cuatro motores medidos en el robot.</span></div>
+        <div><span class="what">Lazo cerrado con cámara cenital</span><span class="pill pause">En pausa</span><span class="why">Implementado en <code>piloto_atlas.py</code>; la zona que cubre la cámara es pequeña para el recorrido de Atlas.</span></div>
+        <div><span class="what">Pose en metros mediante homografía</span><span class="pill impl">Sin integrar</span><span class="why">Calibración y homografía escritas; la pose publicada sigue en píxeles y radianes.</span></div>
+        <div><span class="what">Encoders, IMU, 4 LiDAR, cámara a bordo y voz</span><span class="pill plan">Planeado</span><span class="why">Ver la hoja de ruta, sección 12.</span></div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="sec" id="sistema">
+      <div class="sec-head"><span class="num">02</span><h2>Atlas en el sistema</h2></div>
+      <div class="prose">
+        <p>Los tres robots comparten la misma infraestructura: visión ArUco, un broker MQTT y agentes configurables en <code>robots-mvp/</code>. Lo que cambia es la locomoción, y con ella la cinemática y la ley de control. Apolo y Odiseo son diferenciales (modelo uniciclo); Atlas es el único holonómico.</p>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Robot</th><th>ID en broker</th><th>Locomoción</th><th>Ley de control</th><th>Notas</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Apolo</td><td><code>robot1</code></td><td>Diferencial</td><td>Linealización por retroalimentación (uniciclo)</td><td>Comparte la cadena uniciclo con Odiseo</td></tr>
+            <tr><td class="k">Odiseo</td><td><code>robot2</code></td><td>Diferencial con motores a pasos NEMA</td><td>Linealización por retroalimentación (uniciclo)</td><td>Verificado de extremo a extremo en hardware; 14 663 pasos por revolución</td></tr>
+            <tr class="me"><td class="k">Atlas</td><td><code>robot3</code></td><td>Omnidireccional, 4 ruedas mecanum</td><td>Proporcional holonómica (traslación y giro desacoplados)</td><td>Este documento</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="sec" id="arquitectura">
+      <div class="sec-head"><span class="num">03</span><h2>Arquitectura</h2></div>
+      <div class="prose">
+        <p>Todo mando hacia Atlas pasa por el broker MQTT del laboratorio. Hay tres maneras de generar ese mando, y hoy solo una está en uso diario.</p>
+        <ul>
+          <li><b>Visor Quest con MR-ATLAS (ruta activa).</b> La aplicación de realidad mixta ubica al robot por su marcador ArUco desde el visor y envía los comandos. El equipo decidió usar los IDs de marcador de MR-ATLAS en todo el sistema.</li>
+          <li><b>Cámara cenital con <code>piloto_atlas.py</code> (en pausa).</b> Lazo cerrado completo desde una cámara en el techo. Está implementado, pero la zona que cubre la cámara deja poco espacio para que Atlas se desplace.</li>
+          <li><b>Navegador.</b> El sandbox y el dashboard hablan HTTP con <code>servidor_sandbox.py</code>, que reenvía a MQTT. El puente existe porque el broker solo expone WSS por el puerto 443 y eso bloquea la conexión directa desde el navegador.</li>
+        </ul>
+      </div>
+      <figure>
+        <div class="fig-box">
+          <svg viewBox="0 0 1000 400" role="img" aria-label="Diagrama de arquitectura: tres fuentes de mando (visor Quest, cámara cenital con piloto_atlas, navegador con puente HTTP a MQTT) publican en el broker MQTT; el broker entrega cmd al agente a bordo de Atlas, que pasa por un microcontrolador a los cuatro motores, y el agente responde con ack, estado y online.">
+            <defs>
+              <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker>
+              <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah m"/></marker>
+              <marker id="ahc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah c"/></marker>
+            </defs>
+            <!-- Columna 1: fuentes -->
+            <rect class="d-box" x="16" y="36" width="160" height="56" rx="4" style="stroke:var(--cobalt);stroke-width:2"/>
+            <text class="d-t" x="96" y="60" text-anchor="middle">Visor Quest</text>
+            <text class="d-s" x="96" y="78" text-anchor="middle">app MR-ATLAS</text>
+
+            <text class="d-l m" x="16" y="124">en pausa</text>
+            <rect class="d-box paused" x="16" y="130" width="160" height="56" rx="4"/>
+            <text class="d-t" x="96" y="154" text-anchor="middle">Cámara cenital</text>
+            <text class="d-s" x="96" y="172" text-anchor="middle">webcam externa</text>
+
+            <rect class="d-box" x="16" y="300" width="160" height="56" rx="4"/>
+            <text class="d-t" x="96" y="324" text-anchor="middle">Navegador</text>
+            <text class="d-s" x="96" y="342" text-anchor="middle">sandbox · dashboard</text>
+
+            <!-- Columna 2: procesamiento -->
+            <rect class="d-box paused" x="236" y="130" width="180" height="56" rx="4"/>
+            <text class="d-t" x="326" y="154" text-anchor="middle">vision.py → calcular()</text>
+            <text class="d-s" x="326" y="172" text-anchor="middle">piloto_atlas.py</text>
+
+            <rect class="d-box paused" x="236" y="206" width="180" height="44" rx="4"/>
+            <text class="d-t" x="326" y="226" text-anchor="middle">publicar_pose.py</text>
+            <text class="d-s" x="326" y="242" text-anchor="middle">pose ArUco · 15 Hz</text>
+
+            <rect class="d-box" x="236" y="300" width="180" height="56" rx="4"/>
+            <text class="d-t" x="326" y="324" text-anchor="middle">servidor_sandbox.py</text>
+            <text class="d-s" x="326" y="342" text-anchor="middle">puente HTTP → MQTT</text>
+
+            <!-- Columna 3: broker -->
+            <rect class="d-box alt" x="480" y="24" width="190" height="352" rx="4"/>
+            <text class="d-t" x="575" y="52" text-anchor="middle">Broker MQTT</text>
+            <text class="d-s" x="575" y="72" text-anchor="middle">servidor del laboratorio</text>
+            <text class="d-s" x="575" y="88" text-anchor="middle">443 · WSS · ruta /</text>
+            <text class="d-l" x="575" y="298" text-anchor="middle">public/adrian/robot3/</text>
+            <text class="d-s" x="575" y="316" text-anchor="middle">cmd · ack · estado</text>
+            <text class="d-s" x="575" y="332" text-anchor="middle">online · pose</text>
+
+            <!-- Columna 4: robot -->
+            <rect class="d-bound" x="736" y="24" width="248" height="352" rx="6"/>
+            <text class="d-t" x="752" y="46">ATLAS · robot3</text>
+            <rect class="d-box" x="772" y="64" width="196" height="56" rx="4"/>
+            <text class="d-t" x="870" y="88" text-anchor="middle">Agente a bordo</text>
+            <text class="d-s" x="870" y="106" text-anchor="middle">agent.py</text>
+            <rect class="d-box" x="772" y="168" width="196" height="56" rx="4"/>
+            <text class="d-t" x="870" y="192" text-anchor="middle">4 tarjetas IBERO</text>
+            <text class="d-s" x="870" y="210" text-anchor="middle">MCU + potencia, una por rueda</text>
+            <rect class="d-box" x="772" y="272" width="196" height="56" rx="4"/>
+            <text class="d-t" x="870" y="296" text-anchor="middle">4 motores DC</text>
+            <text class="d-s" x="870" y="314" text-anchor="middle">cadena → cardán → rueda</text>
+            <text class="d-s" x="870" y="358" text-anchor="middle">2 fuentes de 24 V · paro de emergencia</text>
+
+            <!-- Flechas -->
+            <line class="d-line act" x1="176" y1="64" x2="478" y2="64" marker-end="url(#ahc)"/>
+            <text class="d-l c" x="327" y="56" text-anchor="middle">comandos de la app MR</text>
+
+            <line class="d-line paused" x1="176" y1="158" x2="234" y2="158" marker-end="url(#ahm)"/>
+            <text class="d-l m" x="206" y="150" text-anchor="middle">frames</text>
+            <path class="d-line paused" d="M176,176 H206 V228 H234" marker-end="url(#ahm)"/>
+            <line class="d-line paused" x1="416" y1="158" x2="478" y2="158" marker-end="url(#ahm)"/>
+            <text class="d-l m" x="447" y="150" text-anchor="middle">cmd</text>
+            <line class="d-line paused" x1="416" y1="228" x2="478" y2="228" marker-end="url(#ahm)"/>
+            <text class="d-l m" x="447" y="220" text-anchor="middle">pose</text>
+
+            <line class="d-line" x1="176" y1="328" x2="234" y2="328" marker-end="url(#ah)"/>
+            <text class="d-l" x="206" y="320" text-anchor="middle">HTTP</text>
+            <line class="d-line" x1="416" y1="328" x2="478" y2="328" marker-end="url(#ah)"/>
+            <text class="d-l" x="447" y="320" text-anchor="middle">cmd</text>
+
+            <line class="d-line" x1="670" y1="82" x2="770" y2="82" marker-end="url(#ah)"/>
+            <text class="d-l" x="720" y="75" text-anchor="middle">cmd</text>
+            <line class="d-line" x1="772" y1="104" x2="672" y2="104" marker-end="url(#ah)"/>
+            <text class="d-l" x="721" y="120" text-anchor="middle">ack · estado</text>
+            <text class="d-l" x="721" y="133" text-anchor="middle">online</text>
+
+            <line class="d-line paused" x1="870" y1="120" x2="870" y2="166" marker-end="url(#ahm)"/>
+            <text class="d-l m" x="880" y="147">por confirmar</text>
+            <line class="d-line" x1="870" y1="224" x2="870" y2="270" marker-end="url(#ah)"/>
+            <text class="d-l" x="880" y="251">PWM</text>
+          </svg>
+        </div>
+        <figcaption>Flujo de mando de Atlas. <span class="sw"></span>ruta en uso hoy, <span class="sw dash"></span>ruta en pausa o enlace por confirmar. Dentro del robot, las fotos del 15 de octubre muestran cuatro tarjetas de potencia IBERO, una por rueda, cada una con su propio microcontrolador. En Odiseo la cadena verificada es agente en Raspberry Pi → serial → ESP32 → drivers; en Atlas falta confirmar dónde corre el agente y cómo llega el comando a las tarjetas.</figcaption>
+      </figure>
+    </section>
+
+    <!-- 04 -->
+    <section class="sec" id="plataforma">
+      <div class="sec-head"><span class="num">04</span><h2>Plataforma y hardware</h2></div>
+      <div class="prose">
+        <p>Atlas está formado por dos módulos de tracción iguales, uno al frente y otro atrás, unidos por una cubierta central de MDF y tirantes diagonales. Cada módulo mueve dos ruedas. Sus dos motores van en línea, a lo ancho del robot, y entregan la potencia a una caja central de cadenas; de ahí salen dos flechas con juntas cardán hacia las ruedas. Las juntas cardán dejan que cada rueda suba y baje con su suspensión sin perder la transmisión.</p>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Subsistema</th><th>Lo que lleva Atlas</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Estructura</td><td>Dos módulos con bastidor de solera naranja ranurada sobre tinas de lámina negra, placas de MDF y tirantes diagonales naranjas entre módulos</td></tr>
+            <tr><td class="k">Tracción</td><td>4 motores DC, uno por rueda, montados a lo ancho del robot</td></tr>
+            <tr><td class="k">Transmisión</td><td>Una caja de cadenas por módulo, con catarinas de latón; cada rueda recibe una flecha con dos juntas cardán</td></tr>
+            <tr><td class="k">Suspensión</td><td>Independiente en las cuatro ruedas: amortiguador coil-over con resorte naranja, balancín triangular y varillas guía cromadas</td></tr>
+            <tr><td class="k">Electrónica de potencia</td><td>4 tarjetas rojas IBERO, una en cada esquina, con microcontrolador propio (módulo con USB-C), transistores con disipador, interruptor DIP y borneras</td></tr>
+            <tr><td class="k">Alimentación</td><td>2 fuentes conmutadas S-360-24. Según su etiqueta: entrada 110–220 V CA, salida 24 V CD a 15 A cada una</td></tr>
+            <tr><td class="k">Seguridad</td><td>Paro de emergencia tipo hongo al centro de la cara trasera</td></tr>
+            <tr><td class="k">Marcador</td><td>ArUco ID 1 de DICT_6X6_50, detectado con OpenCV en las fotos. Va en una placa blanca impresa en 3D sobre dos soportes rojos. Su borde superior apunta al extremo opuesto al paro de emergencia, y ese extremo se toma como el frente</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Identificado en fotos y video del robot del 15 de octubre de 2026. Faltan los modelos exactos de motor y de microcontrolador.</p>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Parámetro</th><th>Valor</th><th>Nota</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Locomoción</td><td>4 ruedas mecanum, rodillos a 45°</td><td>Holonómica: tres grados de libertad en el plano (x, y, θ)</td></tr>
+            <tr><td class="k">Configuración de rodillos</td><td>O</td><td>Vistos desde arriba, los rodillos forman un rombo hacia afuera</td></tr>
+            <tr><td class="k">Vía, 2b (izquierda–derecha)</td><td class="num">840 mm</td><td><span class="pill chk">Por medir</span> Las fotos son consistentes con este valor</td></tr>
+            <tr><td class="k">Batalla, 2a (frente–atrás)</td><td class="num">510 mm</td><td><span class="pill chk">Por medir</span> Las fotos son consistentes con este valor</td></tr>
+            <tr><td class="k">Diámetro de rueda</td><td class="num">210 mm</td><td>Radio r = 105 mm</td></tr>
+            <tr><td class="k">Par de giro disponible</td><td class="num">≈ 24 % del de una configuración X</td><td>Consecuencia de la configuración O; se explica abajo</td></tr>
+            <tr><td class="k">Orden de ruedas</td><td><code>FL, FR, RR, RL</code></td><td><code>FRAME_LAYOUT</code> en <code>cinematica.py</code>, medido en el robot</td></tr>
+            <tr><td class="k">Polaridad de motores</td><td class="num"><code>−1, −1, −1, −1</code></td><td>Confirmada con <code>calibrar.py</code></td></tr>
+            <tr><td class="k">Localización</td><td>Marcador ArUco ID 1, DICT_6X6_50</td><td>Sin encoders ni IMU por ahora</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <figure>
+        <div class="fig-box">
+          <svg viewBox="0 0 760 412" role="img" aria-label="Vista superior de Atlas en configuración O comparada con la configuración X. En O, la línea de fuerza de cada rueda pasa a 117 milímetros del centro; en X pasa a 477 milímetros. Por eso O conserva cerca del 24 por ciento del par de giro.">
+            <defs>
+              <clipPath id="clipL"><rect x="8" y="56" width="364" height="320"/></clipPath>
+              <clipPath id="clipR"><rect x="388" y="56" width="364" height="320"/></clipPath>
+            </defs>
+            <text class="d-t" x="190" y="30" text-anchor="middle">O · Atlas hoy</text>
+            <text class="d-t" x="570" y="30" text-anchor="middle">X · referencia</text>
+            <line x1="380" y1="20" x2="380" y2="400" stroke="var(--line)" stroke-width="1"/>
+
+            <!-- Panel O -->
+            <rect class="d-chassis" x="88.75" y="104" width="202.5" height="222" rx="3"/>
+            <polygon class="d-tape" points="190,112 182,124 198,124"/>
+            <text class="d-s" x="190" y="138" text-anchor="middle">FRENTE</text>
+            <g clip-path="url(#clipL)">
+              <line class="d-force" x1="337.2" y1="117.3" x2="174.6" y2="279.9"/>
+              <line class="d-force" x1="42.8" y1="312.7" x2="205.4" y2="150.1"/>
+              <line class="d-force" x1="337.2" y1="312.7" x2="174.6" y2="150.1"/>
+              <line class="d-force hi" x1="42.8" y1="117.3" x2="205.4" y2="279.9"/>
+            </g>
+            <!-- ruedas -->
+            <rect class="d-wheel" x="52.75" y="107" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="304.75" y="107" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="52.75" y="260" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="304.75" y="260" width="22.5" height="63" rx="3"/>
+            <!-- rodillos superiores O: FL /, FR \, RL \, RR / -->
+            <g class="d-roller">
+              <line x1="57" y1="124.5" x2="71" y2="110.5"/><line x1="57" y1="138.5" x2="71" y2="124.5"/><line x1="57" y1="152.5" x2="71" y2="138.5"/><line x1="57" y1="166.5" x2="71" y2="152.5"/>
+              <line x1="309" y1="110.5" x2="323" y2="124.5"/><line x1="309" y1="124.5" x2="323" y2="138.5"/><line x1="309" y1="138.5" x2="323" y2="152.5"/><line x1="309" y1="152.5" x2="323" y2="166.5"/>
+              <line x1="57" y1="263.5" x2="71" y2="277.5"/><line x1="57" y1="277.5" x2="71" y2="291.5"/><line x1="57" y1="291.5" x2="71" y2="305.5"/><line x1="57" y1="305.5" x2="71" y2="319.5"/>
+              <line x1="309" y1="277.5" x2="323" y2="263.5"/><line x1="309" y1="291.5" x2="323" y2="277.5"/><line x1="309" y1="305.5" x2="323" y2="291.5"/><line x1="309" y1="319.5" x2="323" y2="305.5"/>
+            </g>
+            <!-- brazo -->
+            <circle cx="190" cy="215" r="3.5" class="d-dot"/>
+            <line class="d-arm" x1="190" y1="215" x2="165.25" y2="239.75"/>
+            <text class="d-l" x="196" y="236" style="fill:var(--neg)">117 mm</text>
+            <text class="d-s" x="64" y="98" text-anchor="middle">FL</text>
+            <text class="d-s" x="316" y="98" text-anchor="middle">FR</text>
+            <text class="d-s" x="64" y="340" text-anchor="middle">RL</text>
+            <text class="d-s" x="316" y="340" text-anchor="middle">RR</text>
+            <!-- cotas -->
+            <line x1="64" y1="72" x2="316" y2="72" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <line x1="64" y1="66" x2="64" y2="78" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <line x1="316" y1="66" x2="316" y2="78" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <text class="d-l m" x="190" y="66" text-anchor="middle">2b = 840 mm</text>
+            <line x1="26" y1="138.5" x2="26" y2="291.5" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <line x1="20" y1="138.5" x2="32" y2="138.5" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <line x1="20" y1="291.5" x2="32" y2="291.5" class="d-line" style="stroke:var(--muted);stroke-width:1"/>
+            <text class="d-l m" x="20" y="215" text-anchor="middle" transform="rotate(-90 20 215)">2a = 510 mm</text>
+
+            <!-- Panel X -->
+            <rect class="d-chassis" x="468.75" y="104" width="202.5" height="222" rx="3"/>
+            <polygon class="d-tape" points="570,112 562,124 578,124"/>
+            <text class="d-s" x="570" y="138" text-anchor="middle">FRENTE</text>
+            <g clip-path="url(#clipR)">
+              <line class="d-force" x1="611.1" y1="53.6" x2="780.9" y2="223.4"/>
+              <line class="d-force" x1="359.1" y1="206.6" x2="528.9" y2="376.4"/>
+              <line class="d-force" x1="611.1" y1="376.4" x2="780.9" y2="206.6"/>
+              <line class="d-force hi" x1="359.1" y1="223.4" x2="528.9" y2="53.6"/>
+            </g>
+            <rect class="d-wheel" x="432.75" y="107" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="684.75" y="107" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="432.75" y="260" width="22.5" height="63" rx="3"/>
+            <rect class="d-wheel" x="684.75" y="260" width="22.5" height="63" rx="3"/>
+            <!-- rodillos superiores X: FL \, FR /, RL /, RR \ -->
+            <g class="d-roller">
+              <line x1="437" y1="110.5" x2="451" y2="124.5"/><line x1="437" y1="124.5" x2="451" y2="138.5"/><line x1="437" y1="138.5" x2="451" y2="152.5"/><line x1="437" y1="152.5" x2="451" y2="166.5"/>
+              <line x1="689" y1="124.5" x2="703" y2="110.5"/><line x1="689" y1="138.5" x2="703" y2="124.5"/><line x1="689" y1="152.5" x2="703" y2="138.5"/><line x1="689" y1="166.5" x2="703" y2="152.5"/>
+              <line x1="437" y1="277.5" x2="451" y2="263.5"/><line x1="437" y1="291.5" x2="451" y2="277.5"/><line x1="437" y1="305.5" x2="451" y2="291.5"/><line x1="437" y1="319.5" x2="451" y2="305.5"/>
+              <line x1="689" y1="263.5" x2="703" y2="277.5"/><line x1="689" y1="277.5" x2="703" y2="291.5"/><line x1="689" y1="291.5" x2="703" y2="305.5"/><line x1="689" y1="305.5" x2="703" y2="319.5"/>
+            </g>
+            <circle cx="570" cy="215" r="3.5" class="d-dot"/>
+            <line class="d-arm" x1="570" y1="215" x2="468.75" y2="113.75"/>
+            <text class="d-l" x="538" y="170" style="fill:var(--neg)">477 mm</text>
+            <text class="d-s" x="444" y="98" text-anchor="middle">FL</text>
+            <text class="d-s" x="696" y="98" text-anchor="middle">FR</text>
+            <text class="d-s" x="444" y="340" text-anchor="middle">RL</text>
+            <text class="d-s" x="696" y="340" text-anchor="middle">RR</text>
+
+            <text class="d-l" x="190" y="398" text-anchor="middle">brazo |b − a| / √2 = 117 mm</text>
+            <text class="d-l" x="570" y="398" text-anchor="middle">brazo (a + b) / √2 = 477 mm</text>
+          </svg>
+        </div>
+        <figcaption>Vista superior a escala con las medidas registradas. Las rayas sobre cada rueda son los rodillos que se ven desde arriba; la línea punteada es la dirección de la fuerza que la rueda puede ejercer contra el piso (el eje del rodillo que toca el suelo). En rojo, la distancia de esa línea al centro: es el brazo de palanca con el que la rueda hace girar al robot.</figcaption>
+      </figure>
+
+      <div class="prose">
+        <h3>Por qué la configuración O deja 24 % del par de giro</h3>
+        <p>Una rueda mecanum solo puede empujar al chasis a lo largo del eje del rodillo que está tocando el piso; en la dirección perpendicular el rodillo gira libre. Con el centro del robot como origen, el par que aporta cada rueda es proporcional a la distancia entre esa línea de fuerza y el centro.</p>
+        <p>En configuración X las cuatro líneas de fuerza pasan lejos del centro, a (a + b)/√2. En configuración O pasan cerca, a |b − a|/√2. Con a = 255 mm y b = 420 mm la razón es 165 / 675 ≈ 0.244. Las dimensiones se cancelan en la razón, así que este 24 % se sostiene aunque falte confirmar las unidades de vía y batalla.</p>
+        <p>En la práctica, Atlas gira con una cuarta parte del par que tendría en X. Es más sensible a la fricción y al deslizamiento al girar, y su orientación queda poco amarrada. Por eso conviene cerrar el lazo de orientación con una medición externa (ArUco hoy, la IMU planeada después). Si a y b fueran iguales, la configuración O no podría girar en absoluto. Cambiar las ruedas de lado, izquierda por derecha en cada eje, convierte la plataforma en X. El botón <em>X (referencia)</em> del modelo permite comparar ambas.</p>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="sec" id="cinematica">
+      <div class="sec-head"><span class="num">05</span><h2>Cinemática</h2></div>
+      <div class="prose">
+        <h3>Marco de referencia</h3>
+        <p>Esta documentación usa el marco estándar de robótica móvil: x hacia el frente, y hacia la izquierda, ω positivo en sentido antihorario visto desde arriba. Cada rueda i está en (x<sub>i</sub>, y<sub>i</sub>) = (±a, ±b) y tiene un signo de rodillo σ<sub>i</sub> = ±1. En el código la componente lateral se toma positiva hacia la derecha, así que pasar entre ambos marcos es un cambio de signo (ver L-04).</p>
+        <h3>Cinemática inversa</h3>
+        <p>La velocidad del centro de cada rueda es la del chasis más la que aporta el giro. La rueda solo controla la componente que no absorbe su rodillo:</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mi>i</mi></msub><mo>=</mo><mfrac><mn>1</mn><mi>r</mi></mfrac><mrow><mo>[</mo><msub><mi>v</mi><mi>x</mi></msub><mo>−</mo><mi>ω</mi><msub><mi>y</mi><mi>i</mi></msub><mo>+</mo><msub><mi>σ</mi><mi>i</mi></msub><mrow><mo>(</mo><msub><mi>v</mi><mi>y</mi></msub><mo>+</mo><mi>ω</mi><msub><mi>x</mi><mi>i</mi></msub><mo>)</mo></mrow><mo>]</mo></mrow></mrow></math>
+        <p class="eq-note">Para Atlas (configuración O, orden FRAME_LAYOUT), σ = (+1, −1, +1, −1) y queda:</p>
+        <math display="block"><mrow>
+          <mrow><mo>[</mo><mtable><mtr><mtd><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FL</mtext></msub></mtd></mtr><mtr><mtd><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FR</mtext></msub></mtd></mtr><mtr><mtd><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RR</mtext></msub></mtd></mtr><mtr><mtd><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RL</mtext></msub></mtd></mtr></mtable><mo>]</mo></mrow>
+          <mo>=</mo><mfrac><mn>1</mn><mi>r</mi></mfrac>
+          <mrow><mo>[</mo><mtable>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd><mtd><mrow><mi>a</mi><mo>−</mo><mi>b</mi></mrow></mtd></mtr>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mrow><mo>−</mo><mn>1</mn></mrow></mtd><mtd><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mtd></mtr>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd><mtd><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mtd></mtr>
+            <mtr><mtd><mn>1</mn></mtd><mtd><mrow><mo>−</mo><mn>1</mn></mrow></mtd><mtd><mrow><mi>a</mi><mo>−</mo><mi>b</mi></mrow></mtd></mtr>
+          </mtable><mo>]</mo></mrow>
+          <mrow><mo>[</mo><mtable><mtr><mtd><msub><mi>v</mi><mi>x</mi></msub></mtd></mtr><mtr><mtd><msub><mi>v</mi><mi>y</mi></msub></mtd></mtr><mtr><mtd><mi>ω</mi></mtd></mtr></mtable><mo>]</mo></mrow>
+        </mrow></math>
+        <p class="eq-note">En configuración X la tercera columna sería ±(a + b). El término de giro es el que distingue ambas configuraciones; la traslación es idéntica.</p>
+      </div>
+
+      <div class="prose">
+        <h3>Cinemática directa</h3>
+        <p>Con cuatro ruedas y tres grados de libertad el sistema está sobredeterminado. La directa se obtiene por mínimos cuadrados (pseudoinversa). Como las columnas de la matriz son ortogonales, el resultado se separa por componente:</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><msub><mi>v</mi><mi>x</mi></msub><mo>=</mo><mfrac><mi>r</mi><mn>4</mn></mfrac><mo>(</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FL</mtext></msub><mo>+</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FR</mtext></msub><mo>+</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RR</mtext></msub><mo>+</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RL</mtext></msub><mo>)</mo></mrow></math>
+        <math display="block"><mrow><msub><mi>v</mi><mi>y</mi></msub><mo>=</mo><mfrac><mi>r</mi><mn>4</mn></mfrac><mo>(</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FL</mtext></msub><mo>−</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FR</mtext></msub><mo>+</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RR</mtext></msub><mo>−</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RL</mtext></msub><mo>)</mo></mrow></math>
+        <math display="block"><mrow><mi>ω</mi><mo>=</mo><mfrac><mi>r</mi><mrow><mn>4</mn><mo>(</mo><mi>a</mi><mo>−</mo><mi>b</mi><mo>)</mo></mrow></mfrac><mo>(</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FL</mtext></msub><mo>−</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>FR</mtext></msub><mo>−</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RR</mtext></msub><mo>+</mo><msub><mover accent="true"><mi>φ</mi><mo>˙</mo></mover><mtext>RL</mtext></msub><mo>)</mo></mrow></math>
+        <p class="eq-note">El denominador de ω contiene a − b = −165 mm: un error pequeño de velocidad en las ruedas se convierte en un error grande de orientación. Es la misma debilidad de la configuración O, vista desde la directa.</p>
+      </div>
+
+      <div class="prose">
+        <h3>Escalado uniforme y zona muerta</h3>
+        <p>Los motores no se mueven por debajo de cierto ciclo útil. El primer enfoque recortaba a cero cada rueda que caía en esa zona. Cerca del destino, cuando el control pide velocidades pequeñas, las cuatro ruedas quedaban recortadas y el robot se congelaba antes de llegar.</p>
+        <p>La corrección fue escalar el vector de las cuatro ruedas de forma uniforme en lugar de recortarlas por separado, de modo que la dirección del movimiento se conserva y el robot sigue avanzando hasta el objetivo. El modelo lo implementa así: si alguna rueda supera 1 se divide todo entre el máximo, y si la más rápida queda bajo la zona muerta se multiplica todo hasta que esa rueda la alcance. En el modelo puedes alternar entre <em>Escalado uniforme</em> y <em>Recorte por rueda</em> en el modo <em>Ir a punto</em> y ver al robot detenerse a unos centímetros del objetivo con el recorte.</p>
+        <h3>Convenciones medidas en el robot</h3>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Convención</th><th>Valor</th><th>Dónde vive</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Orden de ruedas</td><td><code>FL, FR, RR, RL</code></td><td><code>FRAME_LAYOUT</code> en <code>cinematica.py</code>. Es la única fuente válida (ver L-01).</td></tr>
+            <tr><td class="k">Polaridad de motores</td><td><code>−1</code> en las cuatro</td><td>Obtenida con la calibración guiada de <code>calibrar.py</code></td></tr>
+            <tr><td class="k">Componente lateral</td><td><code>holonomico()</code> la entrega positiva a la izquierda; <code>cinematica.py</code> la espera positiva a la derecha</td><td>Se niega en el punto de conexión</td></tr>
+            <tr><td class="k"><code>Y_HACIA_ARRIBA</code></td><td><code>True</code> para Atlas, <code>False</code> para la cadena uniciclo</td><td><code>vision.py</code>; el comentario en <code>control.py</code> está desactualizado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="sec" id="vision">
+      <div class="sec-head"><span class="num">06</span><h2>Visión y localización</h2></div>
+      <div class="prose">
+        <p>Atlas no tiene encoders ni IMU todavía, así que toda su pose viene de afuera: el marcador ArUco ID 1 que lleva arriba, en una placa impresa en 3D. Hoy lo detecta el visor Quest (MR-ATLAS); la cadena de la cámara cenital, descrita aquí, está lista para cuando se vuelva a usar.</p>
+      </div>
+      <div class="pipeline" role="list">
+        <div role="listitem"><span class="st">PASO 1</span><span class="nm">Captura</span><span class="ds">Webcam externa (índice 1 en la máquina de desarrollo)</span></div>
+        <div role="listitem"><span class="st">PASO 2</span><span class="nm">Detección ArUco</span><span class="ds">DICT_6X6_50, compatible con la API nueva y la anterior de OpenCV</span></div>
+        <div role="listitem"><span class="st">PASO 3</span><span class="nm">Pose en imagen</span><span class="ds">Posición y orientación del marcador en píxeles y radianes</span></div>
+        <div role="listitem"><span class="st">PASO 4</span><span class="nm">Suavizado</span><span class="ds">Filtro exponencial con corrección de vuelta angular</span></div>
+        <div role="listitem" class="off"><span class="st">PASO 5</span><span class="nm">Homografía a metros</span><span class="ds">Implementada, todavía fuera de la cadena</span></div>
+        <div role="listitem"><span class="st">PASO 6</span><span class="nm">Publicación</span><span class="ds"><code>…/robot3/pose</code> a 15 Hz</span></div>
+      </div>
+
+      <div class="prose">
+        <h3>Detección</h3>
+        <p><code>vision.py</code> funciona con las dos APIs de ArUco que conviven en OpenCV: la clase <code>ArucoDetector</code> de las versiones 4.7 en adelante y la función <code>detectMarkers</code> de las anteriores. Así el mismo código corre en máquinas con distintas versiones de OpenCV instaladas.</p>
+        <h3>Suavizado con vuelta angular</h3>
+        <p>La pose cruda tiembla de un cuadro a otro. Se filtra con un promedio exponencial; en el ángulo, el error se envuelve a (−π, π] antes de filtrar. Sin esa corrección, al cruzar de +179° a −179° el filtro promedia hacia 0° y el robot da media vuelta sin motivo.</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><msub><mover accent="true"><mi>p</mi><mo>^</mo></mover><mi>k</mi></msub><mo>=</mo><msub><mover accent="true"><mi>p</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>α</mi><mo>(</mo><msub><mi>p</mi><mi>k</mi></msub><mo>−</mo><msub><mover accent="true"><mi>p</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo><mspace width="2em"/><msub><mover accent="true"><mi>θ</mi><mo>^</mo></mover><mi>k</mi></msub><mo>=</mo><msub><mover accent="true"><mi>θ</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>+</mo><mi>α</mi><mspace width="0.2em"/><mtext>wrap</mtext><mo>(</mo><msub><mi>θ</mi><mi>k</mi></msub><mo>−</mo><msub><mover accent="true"><mi>θ</mi><mo>^</mo></mover><mrow><mi>k</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>)</mo></mrow></math>
+      </div>
+
+      <div class="prose">
+        <h3>Homografía: de píxeles a metros</h3>
+        <p><code>calibrar_homografia.py</code> hace la calibración y <code>homografia.py</code> estima la matriz H con DLT normalizado: antes de resolver, los puntos de cada conjunto se trasladan a su centroide y se escalan a distancia media √2, lo que mejora mucho el condicionamiento numérico. El módulo también detecta configuraciones degeneradas, como puntos casi colineales, que dan una H inútil sin marcar error.</p>
+        <p>Hoy la pose se publica en píxeles y radianes. El sistema de referencia del profesor trabaja así y la escala queda absorbida en la ganancia del control. La realidad mixta sí necesita metros, y eso es lo que falta integrar.</p>
+        <h3>La trampa del paralaje</h3>
+        <p>La homografía solo es exacta para puntos en el plano donde se calibró. El marcador de Atlas va a una altura h sobre el piso, así que se ve desplazado hacia afuera del punto bajo la cámara. Con la cámara a una altura H y el marcador a una distancia horizontal d de ese punto, el error es:</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><mi>e</mi><mo>=</mo><mi>d</mi><mo>·</mo><mfrac><mi>h</mi><mrow><mi>H</mi><mo>−</mo><mi>h</mi></mrow></mfrac></mrow></math>
+        <p class="eq-note">Crece hacia las orillas de la imagen. La trampa está documentada junto al código de la homografía; se evita calibrando el plano a la altura del marcador o corrigiendo con h conocida.</p>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section class="sec" id="control">
+      <div class="sec-head"><span class="num">07</span><h2>Control de navegación</h2></div>
+      <div class="prose">
+        <p><code>piloto_atlas.py</code> cierra el lazo real: lee la cámara, obtiene la pose, calcula el comando y lo publica. No duplica matemática: llama a <code>calcular()</code> de <code>servidor_sandbox.py</code>, la misma función que ya se validó en el simulador del navegador.</p>
+      </div>
+      <figure>
+        <div class="fig-box">
+          <svg viewBox="0 0 940 236" role="img" aria-label="Lazo cerrado de piloto_atlas: cámara, vision.py, calcular(), cinematica.py, publicar_manual hacia MQTT y Atlas; el movimiento del robot regresa a la cámara. La bandera --dry corta el lazo antes de publicar.">
+            <defs>
+              <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="d-ah"/></marker>
+            </defs>
+            <rect class="d-box" x="14" y="40" width="132" height="66" rx="4"/>
+            <text class="d-t" x="80" y="68" text-anchor="middle">Cámara</text>
+            <text class="d-s" x="80" y="88" text-anchor="middle">frame</text>
+            <rect class="d-box" x="170" y="40" width="132" height="66" rx="4"/>
+            <text class="d-t" x="236" y="68" text-anchor="middle">vision.py</text>
+            <text class="d-s" x="236" y="88" text-anchor="middle">pose (x, y, θ)</text>
+            <rect class="d-box" x="326" y="40" width="132" height="66" rx="4"/>
+            <text class="d-t" x="392" y="68" text-anchor="middle">calcular()</text>
+            <text class="d-s" x="392" y="88" text-anchor="middle">error → vx, vy, ω</text>
+            <rect class="d-box" x="482" y="40" width="132" height="66" rx="4"/>
+            <text class="d-t" x="548" y="68" text-anchor="middle">cinematica.py</text>
+            <text class="d-s" x="548" y="88" text-anchor="middle">4 ruedas · escalado</text>
+            <rect class="d-box" x="638" y="40" width="132" height="66" rx="4"/>
+            <text class="d-t" x="704" y="68" text-anchor="middle">publicar_manual</text>
+            <text class="d-s" x="704" y="88" text-anchor="middle">"atlas" → MQTT</text>
+            <rect class="d-box" x="794" y="40" width="132" height="66" rx="4" style="stroke:var(--cobalt);stroke-width:2"/>
+            <text class="d-t" x="860" y="68" text-anchor="middle">Atlas</text>
+            <text class="d-s" x="860" y="88" text-anchor="middle">robot3 se mueve</text>
+            <line class="d-line" x1="146" y1="73" x2="168" y2="73" marker-end="url(#ah2)"/>
+            <line class="d-line" x1="302" y1="73" x2="324" y2="73" marker-end="url(#ah2)"/>
+            <line class="d-line" x1="458" y1="73" x2="480" y2="73" marker-end="url(#ah2)"/>
+            <line class="d-line" x1="614" y1="73" x2="636" y2="73" marker-end="url(#ah2)"/>
+            <line class="d-line" x1="770" y1="73" x2="792" y2="73" marker-end="url(#ah2)"/>
+            <line x1="626" y1="24" x2="626" y2="122" stroke="var(--neg)" stroke-width="1.6" stroke-dasharray="4 3"/>
+            <text class="d-l" x="626" y="18" text-anchor="middle" style="fill:var(--neg)">--dry</text>
+            <text class="d-l m" x="626" y="138" text-anchor="middle">imprime y no publica</text>
+            <path class="d-line" d="M860,106 V184 H80 V108" marker-end="url(#ah2)"/>
+            <text class="d-l m" x="470" y="204" text-anchor="middle">el robot cambia de pose y la cámara ve el marcador en su nueva posición</text>
+          </svg>
+        </div>
+        <figcaption>Un ciclo de <code>piloto_atlas.py</code>. Con <code>--dry</code> todo el cálculo corre igual y se imprime, pero nada llega al broker: es la primera prueba obligada antes de mover el robot.</figcaption>
+      </figure>
+
+      <div class="prose">
+        <h3>Ley de control de Atlas</h3>
+        <p>Como Atlas es holonómico, traslación y orientación se controlan por separado. El error de posición, medido en el marco del mundo, se rota al marco del robot y se multiplica por una ganancia; el error de orientación, envuelto a (−π, π], se corrige con su propia ganancia. El robot avanza en línea recta hacia el objetivo mientras gira hacia la orientación pedida.</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><mrow><mo>[</mo><mtable><mtr><mtd><msub><mi>v</mi><mi>x</mi></msub></mtd></mtr><mtr><mtd><msub><mi>v</mi><mi>y</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow><mo>=</mo><msub><mi>K</mi><mi>p</mi></msub><mspace width="0.2em"/><mi>R</mi><msup><mrow><mo>(</mo><mi>θ</mi><mo>)</mo></mrow><mi>T</mi></msup><mrow><mo>[</mo><mtable><mtr><mtd><mrow><msup><mi>x</mi><mo>*</mo></msup><mo>−</mo><mi>x</mi></mrow></mtd></mtr><mtr><mtd><mrow><msup><mi>y</mi><mo>*</mo></msup><mo>−</mo><mi>y</mi></mrow></mtd></mtr></mtable><mo>]</mo></mrow><mspace width="2em"/><mi>ω</mi><mo>=</mo><msub><mi>K</mi><mi>θ</mi></msub><mspace width="0.2em"/><mtext>wrap</mtext><mo>(</mo><msup><mi>θ</mi><mo>*</mo></msup><mo>−</mo><mi>θ</mi><mo>)</mo></mrow></math>
+        <p class="eq-note">Las ruedas reciben este comando a través de la cinemática inversa y el escalado uniforme de la sección 05.</p>
+      </div>
+      <div class="prose">
+        <h3>Comparación con los robots uniciclo</h3>
+        <p>Apolo y Odiseo no pueden moverse de lado. Su control, heredado del repositorio del profesor, usa linealización por retroalimentación: se controla un punto adelantado a una distancia h del eje de las ruedas, y la transformación de la velocidad de ese punto a (v, ω) es invertible:</p>
+      </div>
+      <div class="eq">
+        <math display="block"><mrow><mrow><mo>[</mo><mtable><mtr><mtd><mi>v</mi></mtd></mtr><mtr><mtd><mi>ω</mi></mtd></mtr></mtable><mo>]</mo></mrow><mo>=</mo><mrow><mo>[</mo><mtable><mtr><mtd><mrow><mi>cos</mi><mi>θ</mi></mrow></mtd><mtd><mrow><mi>sin</mi><mi>θ</mi></mrow></mtd></mtr><mtr><mtd><mrow><mo>−</mo><mfrac><mrow><mi>sin</mi><mi>θ</mi></mrow><mi>h</mi></mfrac></mrow></mtd><mtd><mfrac><mrow><mi>cos</mi><mi>θ</mi></mrow><mi>h</mi></mfrac></mtd></mtr></mtable><mo>]</mo></mrow><mrow><mo>[</mo><mtable><mtr><mtd><msub><mi>u</mi><mi>x</mi></msub></mtd></mtr><mtr><mtd><msub><mi>u</mi><mi>y</mi></msub></mtd></mtr></mtable><mo>]</mo></mrow></mrow></math>
+        <p class="eq-note">u es la velocidad deseada del punto adelantado. En Atlas este rodeo no hace falta: la velocidad lateral es una entrada directa.</p>
+      </div>
+      <div class="prose">
+        <h3>Operación segura</h3>
+        <ul>
+          <li>Correr primero <code>python piloto_atlas.py --dry</code> y revisar que los comandos impresos tengan el signo esperado.</li>
+          <li><code>publicar_pose.py</code> también acepta <code>--dry</code> para revisar la pose sin publicar.</li>
+          <li><code>simulacion_camara.py</code> cierra el lazo con la cámara real contra una planta simulada, sin mover el robot.</li>
+          <li><code>formacion.py</code> contiene el control de formación multi-robot de referencia; todavía no está conectado al sandbox.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section class="sec" id="comunicacion">
+      <div class="sec-head"><span class="num">08</span><h2>Comunicación MQTT</h2></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Broker</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td class="k">Host</td><td>Servidor del laboratorio (dirección privada)</td></tr>
+            <tr><td class="k">Puerto</td><td class="num">443</td></tr>
+            <tr><td class="k">Transporte</td><td>MQTT sobre WebSocket seguro (WSS), ruta <code>"/"</code></td></tr>
+            <tr><td class="k">Desde el navegador</td><td>Sin conexión directa; pasa por el puente HTTP → MQTT de <code>servidor_sandbox.py</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Tópico</th><th>Sentido</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><code>public/adrian/robot3/cmd</code></td><td>hacia Atlas</td><td>Comandos de movimiento</td></tr>
+            <tr><td><code>public/adrian/robot3/ack</code></td><td>desde Atlas</td><td>Confirmación de comandos recibidos</td></tr>
+            <tr><td><code>public/adrian/robot3/estado</code></td><td>desde el agente</td><td>Estado que publica <code>agent.py</code></td></tr>
+            <tr><td><code>public/adrian/robot3/online</code></td><td>desde el agente</td><td>Presencia del robot en el sistema</td></tr>
+            <tr><td><code>public/adrian/robot3/pose</code></td><td>desde visión</td><td>Pose detectada por ArUco a 15 Hz (<code>publicar_pose.py</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <p>La pose va en su propio tópico y no dentro de <code>estado</code> para no chocar con lo que publica <code>agent.py</code>. El esquema <code>public/adrian/…</code> es el activo; partes del sistema todavía usan el anterior, <code>public/robot-sandbox/…</code>. Hay que acordar uno solo con el equipo de realidad mixta (sección 12).</p>
+      </div>
+    </section>
+
+    <!-- 09 -->
+    <section class="sec" id="software">
+      <div class="sec-head"><span class="num">09</span><h2>Software</h2></div>
+      <div class="prose">
+        <p>Python es el lenguaje principal; el firmware de los microcontroladores está en MicroPython y el sandbox en HTML y JavaScript. El repositorio es privado: <code>Adr1anBaz/robotics_becarios</code>. La implementación de referencia es el repositorio del profesor, <code>HuberGiron/Robot-uniciclo-Ibero-2</code>.</p>
+      </div>
+      <div class="tree" aria-label="Estructura del repositorio">robotics_becarios/
+├── Atlas_Control/   <span class="c"># control, visión y herramientas de Atlas</span>
+├── robots-mvp/      <span class="c"># arquitectura en maduración: agentes por YAML, servicios systemd, dashboard multi-robot</span>
+│   └── config/robot_4Ruedas.yaml   <span class="c"># su wheel_order no coincide con FRAME_LAYOUT (ver L-01)</span>
+├── raspi/
+└── mqttSistem/</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Módulo</th><th>Qué hace</th><th>Detalle</th></tr></thead>
+          <tbody>
+            <tr><td><code>vision.py</code></td><td>Detección ArUco y pose</td><td>DICT_6X6_50, doble API de OpenCV, suavizado exponencial con vuelta angular</td></tr>
+            <tr><td><code>cinematica.py</code></td><td>Cinemática mecanum inversa y directa</td><td>Contiene <code>FRAME_LAYOUT</code> (FL, FR, RR, RL) y la polaridad −1</td></tr>
+            <tr><td><code>control.py</code></td><td>Leyes de control</td><td>Convergencia proporcional, linealización para uniciclo, giro holonómico para Atlas</td></tr>
+            <tr><td><code>calibrar.py</code></td><td>Calibración de polaridad</td><td>Guiada; de aquí sale el −1 de los cuatro motores</td></tr>
+            <tr><td><code>calibrar_homografia.py</code><br><code>homografia.py</code></td><td>Píxeles → metros</td><td>DLT normalizado, detección de casos degenerados, trampa de paralaje documentada</td></tr>
+            <tr><td><code>piloto_atlas.py</code></td><td>Lazo cerrado real</td><td>Cámara → <code>vision.py</code> → <code>calcular()</code> → <code>publicar_manual("atlas", …)</code>; bandera <code>--dry</code></td></tr>
+            <tr><td><code>publicar_pose.py</code></td><td>Pose a MQTT</td><td><code>…/&lt;robot_id&gt;/pose</code> a 15 Hz; bandera <code>--dry</code></td></tr>
+            <tr><td><code>servidor_sandbox.py</code></td><td>Servidor HTTP del sandbox</td><td>Cambio de cámara en caliente; modo Manual como puente HTTP → MQTT; define <code>calcular()</code></td></tr>
+            <tr><td><code>sandbox_atlas.html</code></td><td>Simulación en el navegador</td><td>Planta simulada sin hardware</td></tr>
+            <tr><td><code>simulacion_camara.py</code></td><td>Simulación con cámara real</td><td>Lazo cerrado alimentado por la cámara</td></tr>
+            <tr><td><code>formacion.py</code></td><td>Formación multi-robot</td><td>Referencia; falta conectarla al sandbox</td></tr>
+            <tr><td><code>agent.py</code></td><td>Agente a bordo</td><td>En <code>robots-mvp/</code>, configurado por YAML</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="sec" id="estado">
+      <div class="sec-head"><span class="num">10</span><h2>Estado actual</h2></div>
+      <div class="status-list">
+        <div><span class="what">Control por realidad mixta desde el Quest</span><span class="pill op">Operativo</span><span class="why">Ruta de mando en uso diario.</span></div>
+        <div><span class="what">Orden de ruedas y polaridad</span><span class="pill op">Medidos</span><span class="why">FRAME_LAYOUT y polaridad −1 confirmados en hardware.</span></div>
+        <div><span class="what">Escalado uniforme en la cinemática</span><span class="pill op">Corregido</span><span class="why">Reemplaza al recorte por rueda que congelaba al robot cerca del destino.</span></div>
+        <div><span class="what">Lazo cerrado cámara → MQTT (<code>piloto_atlas.py</code>)</span><span class="pill impl">Implementado</span><span class="why">Con modo <code>--dry</code> para pruebas seguras.</span></div>
+        <div><span class="what">Publicación de pose a 15 Hz</span><span class="pill impl">Implementado</span><span class="why">En píxeles y radianes, tópico propio.</span></div>
+        <div><span class="what">Sandbox en navegador con puente HTTP → MQTT</span><span class="pill impl">Implementado</span><span class="why">Incluye modo Manual y cambio de cámara en caliente.</span></div>
+        <div><span class="what">Homografía a metros</span><span class="pill impl">Sin integrar</span><span class="why">Requisito para que la realidad mixta reciba la pose en metros.</span></div>
+        <div><span class="what">Cámara cenital</span><span class="pill pause">En pausa</span><span class="why">Su cobertura es pequeña para el recorrido de Atlas; la localización se apoya en el ArUco que ve el visor.</span></div>
+        <div><span class="what">Control de formación</span><span class="pill pause">Referencia</span><span class="why"><code>formacion.py</code> existe; falta conectarlo.</span></div>
+      </div>
+      <div class="prose">
+        <p><b>Decisión vigente (octubre 2026):</b> los IDs de los marcadores ArUco son los de MR-ATLAS, no los del sandbox de la cámara cenital.</p>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="sec" id="lecciones">
+      <div class="sec-head"><span class="num">11</span><h2>Lecciones aprendidas</h2></div>
+      <div class="prose"><p>Problemas reales que costaron tiempo. Los identificadores sirven para citarlos en issues y commits.</p></div>
+      <div class="lessons">
+        <div class="lesson"><span class="id">L-01</span><div><h4>El orden de ruedas lo manda FRAME_LAYOUT, no el YAML</h4><p>En <code>robot_4Ruedas.yaml</code> las ruedas traseras izquierda y derecha están intercambiadas, y el código del agente no usa ese campo. <code>piloto_atlas.py</code> debe seguir solo <code>FRAME_LAYOUT</code> (FL, FR, RR, RL).</p></div></div>
+        <div class="lesson"><span class="id">L-02</span><div><h4>Los cuatro motores tienen polaridad −1</h4><p>Se confirmó con la calibración guiada. Un solo signo equivocado convierte un avance en un giro o un deslizamiento.</p></div></div>
+        <div class="lesson"><span class="id">L-03</span><div><h4>Escalar el vector completo, no recortar ruedas</h4><p>Recortar por separado cada rueda dentro de la zona muerta deformaba la dirección y congelaba al robot cerca del objetivo. El escalado uniforme conserva la dirección.</p></div></div>
+        <div class="lesson"><span class="id">L-04</span><div><h4>Signo lateral entre módulos</h4><p><code>holonomico()</code> devuelve la componente lateral positiva a la izquierda y <code>cinematica.py</code> la espera positiva a la derecha. Se niega justo en el punto de conexión.</p></div></div>
+        <div class="lesson"><span class="id">L-05</span><div><h4>Y_HACIA_ARRIBA depende de la cadena</h4><p><code>False</code> para la cadena uniciclo del profesor y <code>True</code> para la cadena holonómica de Atlas. El comentario en <code>control.py</code> que dice <code>False</code> es documentación vieja, no un error funcional.</p></div></div>
+        <div class="lesson"><span class="id">L-06</span><div><h4>OpenCV entrega float32 y json.dumps falla en silencio</h4><p>Las esquinas de los marcadores llegan como <code>numpy.float32</code>. La serialización fallaba sin mensaje claro y la simulación parecía congelada aunque la cámara detectaba bien. Hay que convertir a tipos nativos de Python antes de serializar.</p></div></div>
+        <div class="lesson"><span class="id">L-07</span><div><h4>El broker solo expone WSS</h4><p>Puerto 443, WebSocket, ruta <code>"/"</code>. El navegador no puede conectarse directo; por eso existe el puente HTTP → MQTT.</p></div></div>
+        <div class="lesson"><span class="id">L-08</span><div><h4>Píxeles y metros son requisitos separados</h4><p>El control funciona en píxeles porque la escala queda dentro de la ganancia. La pose en metros es un requisito adicional de la realidad mixta y depende de la homografía.</p></div></div>
+        <div class="lesson"><span class="id">L-09</span><div><h4>La pose va en su propio tópico</h4><p>Publicarla en <code>estado</code> chocaba con <code>agent.py</code>. Por eso existe <code>…/pose</code>.</p></div></div>
+        <div class="lesson"><span class="id">L-10</span><div><h4>Paralaje del marcador elevado</h4><p>Una homografía calibrada en el piso desplaza un marcador que está por encima del piso, más entre más lejos esté del centro de la imagen.</p></div></div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="sec" id="ruta">
+      <div class="sec-head"><span class="num">12</span><h2>Hoja de ruta</h2></div>
+      <div class="road">
+        <div class="road-col">
+          <h4>Coordinación con el equipo</h4>
+          <ul>
+            <li><b>Un solo esquema de tópicos</b><span>Reconciliar <code>public/adrian/…</code> con <code>public/robot-sandbox/…</code> junto con Mario.</span></li>
+            <li><b>Pose en metros para la realidad mixta</b><span>Integrar <code>calibrar_homografia.py</code> y <code>homografia.py</code> en la cadena de publicación.</span></li>
+            <li><b>IDs de MR-ATLAS en todo el código</b><span>Aplicar la decisión de octubre en visión y configuración.</span></li>
+          </ul>
+        </div>
+        <div class="road-col">
+          <h4>Sensores a bordo</h4>
+          <ul>
+            <li><b>Encoders</b><span>Odometría propia entre detecciones del marcador.</span></li>
+            <li><b>IMU</b><span>Medición directa de la orientación, útil para la débil autoridad de giro de la configuración O.</span></li>
+            <li><b>4 LiDAR y una cámara</b><span>Percepción del entorno. Se pueden ver en el modelo con la casilla de sensores planeados; su posición ahí es ilustrativa.</span></li>
+          </ul>
+        </div>
+        <div class="road-col">
+          <h4>Mando por voz</h4>
+          <ul>
+            <li><b>Órdenes dirigidas por nombre</b><span><span class="voice">«Atlas, ve al punto central»</span></span></li>
+            <li><b>Paro por voz</b><span><span class="voice">«Atlas, detente»</span> para detener al robot.</span></li>
+          </ul>
+        </div>
+        <div class="road-col">
+          <h4>Limpieza del repositorio</h4>
+          <ul>
+            <li><b><code>requirements.txt</code> en <code>Atlas_Control/</code></b><span>El README lo menciona pero no existe.</span></li>
+            <li><b>Comentario de <code>Y_HACIA_ARRIBA</code></b><span>Actualizarlo en <code>control.py</code>.</span></li>
+            <li><b><code>wheel_order</code> del YAML</b><span>Alinearlo con <code>FRAME_LAYOUT</code> o retirarlo.</span></li>
+            <li><b>Formación multi-robot</b><span>Conectar <code>formacion.py</code> al sandbox.</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="sec" id="equipo">
+      <div class="sec-head"><span class="num">13</span><h2>Equipo</h2></div>
+      <div class="team">
+        <div><span class="role">Visión, cinemática de Atlas y navegación</span><span class="who">Adán López Lozano</span><span class="does">Detección ArUco, cinemática de Atlas (junto con Sebas) y bloque de control de navegación.</span></div>
+        <div><span class="role">Cinemática, formación y tracción</span><span class="who">Sebas</span><span class="does">Cinemática de Apolo y, junto con Adán, la de Atlas; control de formación entre AGVs (<code>formacion.py</code>), colocación de encoders y desarrollo de los puentes H.</span></div>
+        <div><span class="role">Servidor MQTT</span><span class="who">Adrián Bazaldúa</span><span class="does">Servidor MQTT del sistema multi-robot.</span></div>
+        <div><span class="role">Potencia</span><span class="who">Dani Fonseca</span><span class="does">Conexión de potencia: instalación de las fuentes de 24 V.</span></div>
+        <div><span class="role">Realidad mixta</span><span class="who">Mario</span><span class="does">Componente de realidad mixta (MR-ATLAS en Quest); consume la pose por MQTT.</span></div>
+        <div><span class="role">Profesor responsable</span><span class="who">Prof. Huber Girón</span><span class="does">Dirige el proyecto; su repositorio <code>Robot-uniciclo-Ibero-2</code> es la implementación de referencia.</span></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>Atlas · documentación v0.1 · 15 de octubre de 2026</span>
+      <span>Laboratorio de Mecatrónica, Universidad Iberoamericana</span>
+    </footer>
+  </main>
+</div>
+
+<!-- Cinemática compartida por el modelo (sin dependencias) -->
+<script>
+window.AtlasKin = (function () {
+  var ORDER = ["FL", "FR", "RR", "RL"]; // FRAME_LAYOUT
+  var POS = { FL: [1, 1], FR: [1, -1], RR: [-1, -1], RL: [-1, 1] };
+  var SIGMA = { O: { FL: 1, FR: -1, RR: 1, RL: -1 }, X: { FL: -1, FR: 1, RR: -1, RL: 1 } };
+  function layout(cfg, a, b) {
+    return ORDER.map(function (n) { return { name: n, px: POS[n][0] * a, py: POS[n][1] * b, s: SIGMA[cfg][n] }; });
+  }
+  function ik(t, L, r) {
+    return L.map(function (w) { return (t.vx - t.w * w.py + w.s * (t.vy + t.w * w.px)) / r; });
+  }
+  function fk(om, L, r) {
+    var A = [[0, 0, 0], [0, 0, 0], [0, 0, 0]], b = [0, 0, 0];
+    L.forEach(function (w, i) {
+      var row = [1 / r, w.s / r, (w.s * w.px - w.py) / r];
+      for (var p = 0; p < 3; p++) { b[p] += row[p] * om[i]; for (var q = 0; q < 3; q++) A[p][q] += row[p] * row[q]; }
+    });
+    for (var d = 0; d < 3; d++) A[d][d] += 1e-9;
+    var x = solve3(A, b);
+    return { vx: x[0], vy: x[1], w: x[2] };
+  }
+  function det3(m) {
+    return m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) - m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) + m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+  }
+  function solve3(A, b) {
+    var D = det3(A), out = [];
+    for (var c = 0; c < 3; c++) {
+      var M = A.map(function (row, i) { return row.map(function (v, j) { return j === c ? b[i] : v; }); });
+      out.push(det3(M) / D);
+    }
+    return out;
+  }
+  function shape(d, mode, dz) {
+    var m = Math.max.apply(null, d.map(Math.abs)), scale = 1;
+    if (mode === "uniform") {
+      if (m > 1) scale = 1 / m;
+      else if (m > 1e-4 && m < dz) scale = dz / m;
+      return { d: d.map(function (v) { return v * scale; }), scale: scale };
+    }
+    return { d: d.map(function (v) { var c = Math.max(-1, Math.min(1, v)); return Math.abs(c) < dz ? 0 : c; }), scale: 1 };
+  }
+  function plant(d, dz) { return d.map(function (v) { return Math.abs(v) < dz - 1e-9 ? 0 : v; }); }
+  function arm(cfg, a, b) { return cfg === "O" ? Math.abs(b - a) : a + b; }
+  function authority(a, b) { return Math.abs(b - a) / (a + b); }
+  function wrap(t) { return Math.atan2(Math.sin(t), Math.cos(t)); }
+  return { ORDER: ORDER, layout: layout, ik: ik, fk: fk, shape: shape, plant: plant, arm: arm, authority: authority, wrap: wrap };
+})();
+</script>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+const Kin = window.AtlasKin;
+const $ = (id) => document.getElementById(id);
+const view = $("view"), canvas = $("c"), tip = $("tip");
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const cssv = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+} catch (e) {
+  $("fallback").hidden = false;
+  throw e;
+}
+window.__atlas3d = true;
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+try {
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(renderer), 0.04).texture;
+} catch (e) { /* sin mapa de entorno los metales se ven más oscuros */ }
+const camera = new THREE.PerspectiveCamera(36, 1, 0.05, 80);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.08;
+controls.maxPolarAngle = Math.PI * 0.495;
+controls.minDistance = 0.5;
+controls.maxDistance = 14;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x9aa6b0, 0.6));
+const sun = new THREE.DirectionalLight(0xffffff, 1.55);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, { left: -2.2, right: 2.2, top: 2.2, bottom: -2.2, near: 0.5, far: 16 });
+sun.shadow.bias = -0.0004;
+scene.add(sun, sun.target);
+
+/* ---------- Materiales del escenario (siguen el tema de la página) ---------- */
+const M = {
+  floor: new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0, envMapIntensity: 0.35 }),
+  grid: new THREE.LineBasicMaterial({ transparent: true, opacity: 0.9 }),
+  tape: new THREE.MeshStandardMaterial({ roughness: 0.6, envMapIntensity: 0.5 }),
+  ghost: new THREE.MeshStandardMaterial({ transparent: true, opacity: 0.4, roughness: 0.4, depthWrite: false }),
+  target: new THREE.MeshStandardMaterial({ roughness: 0.5 }),
+  trail: new THREE.LineBasicMaterial({ transparent: true, opacity: 0.85 }),
+};
+
+/* ---------- Materiales del robot (colores reales de Atlas) ---------- */
+const std = (color, roughness, metalness) => new THREE.MeshStandardMaterial({ color, roughness, metalness });
+const R = {
+  orange: std(0xe0571c, 0.45, 0.2),
+  spring: std(0xf2701f, 0.35, 0.3),
+  black: std(0x1d2023, 0.55, 0.35),
+  blackPlate: std(0x17191b, 0.5, 0.4),
+  wood: std(0xc9a271, 0.85, 0.0),
+  chrome: std(0xdde1e4, 0.2, 1.0),
+  steel: std(0x8d9398, 0.35, 0.85),
+  brass: std(0xc99b45, 0.3, 0.9),
+  roller: std(0xe8e2d4, 0.72, 0.0),
+  motor: std(0x17181a, 0.4, 0.45),
+  band: std(0xc9ced2, 0.25, 0.95),
+  sticker: std(0xe9e9e6, 0.6, 0.0),
+  psu: std(0xc5c9cc, 0.35, 0.6),
+  terminal: std(0x1a1a1a, 0.6, 0.1),
+  pcb: std(0xc41f27, 0.55, 0.05),
+  term: std(0x2463c4, 0.5, 0.0),
+  heat: std(0x111214, 0.5, 0.6),
+  cap: std(0x1b1c1e, 0.35, 0.4),
+  mcu: std(0x0f1011, 0.4, 0.2),
+  beige: std(0xe6dccb, 0.6, 0.0),
+  red: std(0xd2261c, 0.42, 0.05),
+  redPLA: std(0xc8282e, 0.6, 0.0),
+  whitePLA: std(0xeeeeea, 0.65, 0.0),
+  wireG: std(0x2f8f4e, 0.55, 0.0),
+  wireK: std(0x1a1a1a, 0.55, 0.0),
+};
+
+/* ---------- Texturas dibujadas en canvas ---------- */
+function canvasTex(w, h, draw, nearest) {
+  const c = document.createElement("canvas"); c.width = w; c.height = h;
+  draw(c.getContext("2d"), w, h);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  if (nearest) t.magFilter = THREE.NearestFilter;
+  return t;
+}
+function rrect(g, x, y, w, h, r) {
+  g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r);
+  g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+// Bits internos del marcador ArUco ID 1, DICT_6X6_50 (1 = blanco), generados con OpenCV
+const ARUCO_ID1 = ["000011", "101111", "101110", "100011", "100010", "010001"];
+const TEX = {
+  slot: canvasTex(256, 64, (g, w, h) => {
+    g.fillStyle = "#e0571c"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#2a1408"; rrect(g, 40, 23, 176, 18, 9); g.fill();
+  }),
+  aruco: canvasTex(256, 256, (g) => {
+    const c = 32; g.fillStyle = "#0e0e0e"; g.fillRect(0, 0, 256, 256); g.fillStyle = "#ffffff";
+    ARUCO_ID1.forEach((row, i) => [...row].forEach((v, j) => { if (v === "1") g.fillRect(c * (1 + j), c * (1 + i), c, c); }));
+  }, true),
+  board: canvasTex(256, 232, (g, w, h) => {
+    g.fillStyle = "#c41f27"; g.fillRect(0, 0, w, h);
+    g.strokeStyle = "rgba(255,170,170,0.35)"; g.lineWidth = 3;
+    for (let i = 0; i < 9; i++) { g.beginPath(); g.moveTo(20 + i * 22, 30); g.lineTo(20 + i * 22, 120 + (i % 3) * 18); g.lineTo(60 + i * 18, 200); g.stroke(); }
+    g.strokeStyle = "#f2f2f2"; g.lineWidth = 2;
+    [[18, 18, 70, 50], [150, 20, 70, 56], [30, 130, 46, 60], [100, 120, 44, 60], [170, 140, 50, 50]].forEach(([x, y, a, b]) => g.strokeRect(x, y, a, b));
+    g.save(); g.translate(w - 14, h - 14); g.rotate(-Math.PI / 2); g.fillStyle = "#f4f4f4"; g.font = "bold 26px sans-serif"; g.fillText("IBERO", 0, 0); g.restore();
+  }),
+  psuTop: canvasTex(512, 274, (g, w, h) => {
+    g.fillStyle = "#c6cacd"; g.fillRect(0, 0, w, h);
+    g.fillStyle = "#2b2f33"; for (let x = 14; x < w - 14; x += 9) g.fillRect(x, 10, 4, 20);
+    const fx = w - 84, fy = h / 2 + 14; g.strokeStyle = "#2b2f33"; g.lineWidth = 7;
+    [56, 38, 20].forEach((rr, i) => { g.setLineDash([16 - i * 3, 9]); g.beginPath(); g.arc(fx, fy, rr, 0, Math.PI * 2); g.stroke(); });
+    g.setLineDash([]);
+    g.fillStyle = "#f2f2ef"; g.fillRect(140, 86, 210, 118);
+    g.fillStyle = "#2a2a2a"; g.font = "bold 22px sans-serif"; g.fillText("MODEL: S-360-24", 152, 120);
+    g.font = "17px sans-serif"; g.fillText("AC INPUT 110-220V", 152, 150); g.fillText("DC OUTPUT 24V 15A", 152, 178);
+    g.fillStyle = "#e9c21b"; g.fillRect(22, 196, 26, 40);
+  }),
+  psuSide: canvasTex(512, 120, (g, w, h) => {
+    g.fillStyle = "#c2c6c9"; g.fillRect(0, 0, w, h); g.fillStyle = "#26292c";
+    for (let grp = 0; grp < 3; grp++) for (let i = 0; i < 7; i++) g.fillRect(70 + grp * 130 + i * 11, 32, 5, 56);
+  }),
+  chain: canvasTex(64, 16, (g) => {
+    g.fillStyle = "#24272a"; g.fillRect(0, 0, 64, 16);
+    g.fillStyle = "#6b7177"; rrect(g, 2, 3, 28, 10, 5); g.fill();
+    g.fillStyle = "#4a4f54"; rrect(g, 34, 3, 28, 10, 5); g.fill();
+    g.fillStyle = "#a4abb1"; [8, 24, 40, 56].forEach((x) => { g.beginPath(); g.arc(x, 8, 3, 0, Math.PI * 2); g.fill(); });
+  }),
+};
+TEX.slot.wrapS = THREE.RepeatWrapping;
+TEX.chain.wrapS = THREE.RepeatWrapping;
+const ARUCO_MAT = new THREE.MeshStandardMaterial({ map: TEX.aruco, roughness: 0.85 });
+const BOARD_MAT = new THREE.MeshStandardMaterial({ map: TEX.board, roughness: 0.55 });
+const PSU_TOP = new THREE.MeshStandardMaterial({ map: TEX.psuTop, roughness: 0.4, metalness: 0.35 });
+const PSU_SIDE = new THREE.MeshStandardMaterial({ map: TEX.psuSide, roughness: 0.4, metalness: 0.35 });
+
+function texText(text) {
+  return canvasTex(512, 96, (g) => {
+    g.fillStyle = cssv("--scene-ink");
+    g.font = "600 56px 'Barlow Condensed', 'Arial Narrow', sans-serif";
+    g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(text, 256, 50);
+  });
+}
+
+/* ---------- Piso del laboratorio ---------- */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), M.floor);
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+{
+  const pts = [];
+  for (let i = -7; i <= 7.001; i += 0.5) { pts.push(i, 0.001, -7, i, 0.001, 7, -7, 0.001, i, 7, 0.001, i); }
+  const g = new THREE.BufferGeometry(); g.setAttribute("position", new THREE.Float32BufferAttribute(pts, 3));
+  scene.add(new THREE.LineSegments(g, M.grid));
+}
+const lane = new THREE.Group(); scene.add(lane);
+function tapeStrip(x, z, w, d) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, 0.004, d), M.tape); m.position.set(x, 0.002, z); m.receiveShadow = true; lane.add(m); }
+tapeStrip(0, -1.8, 5.05, 0.05); tapeStrip(0, 1.8, 5.05, 0.05); tapeStrip(-2.5, 0, 0.05, 3.65); tapeStrip(2.5, 0, 0.05, 3.65);
+const centerMark = new THREE.Mesh(new THREE.RingGeometry(0.17, 0.21, 64), M.tape);
+centerMark.rotation.x = -Math.PI / 2; centerMark.position.y = 0.003; lane.add(centerMark);
+tapeStrip(0, 0, 0.3, 0.025); tapeStrip(0, 0, 0.025, 0.3);
+const centerLabelMat = new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false });
+const centerLabel = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 0.1875), centerLabelMat);
+centerLabel.rotation.x = -Math.PI / 2; centerLabel.position.set(0, 0.004, 0.36); lane.add(centerLabel);
+
+/* ---------- Estado ---------- */
+const S = {
+  geom: { track: 0.84, base: 0.51, wheelD: 0.21 },
+  vRim: 0.5, dz: 0.12, cfg: "O", dzMode: "uniform",
+  mode: "goto", manual: { vx: 0, vy: 0, w: 0 }, keys: new Set(),
+  pose: { x: -1.4, y: -0.9, th: 0 },
+  target: { x: 1.3, y: 0.7, th: Math.PI / 2, reached: false },
+  wheelAng: [0, 0, 0, 0], duty: [0, 0, 0, 0], act: [0, 0, 0, 0], twist: { vx: 0, vy: 0, w: 0 }, scale: 1,
+  status: { text: "", cls: "" }, showTrail: true, showVec: true, showSens: false, showMarker: true,
+};
+if (reduceMotion) { S.pose = { x: 0, y: 0, th: 0 }; S.target = { x: 0, y: 0, th: 0, reached: true }; $("sTh").value = "0"; }
+
+/* ---------- Ayudas de construcción (coordenadas del robot: x frente, y izquierda, z arriba; metros) ---------- */
+const V = (x, y, z) => new THREE.Vector3(x, z, -y);
+const Z_AXIS = new THREE.Vector3(0, 0, 1);
+let disposables = [];
+function mesh(geo, mat, cast = true) { const m = new THREE.Mesh(geo, mat); m.castShadow = cast; m.receiveShadow = true; return m; }
+function label(o, t) { if (t) o.userData.label = t; return o; }
+function box(p, lx, ly, lz, x, y, z, mat, lbl) {
+  const m = mesh(new THREE.BoxGeometry(lx, lz, ly), mat); m.position.copy(V(x, y, z)); p.add(label(m, lbl)); return m;
+}
+function cyl(p, axis, rad, len, x, y, z, mat, lbl, seg = 20) {
+  const g = new THREE.CylinderGeometry(rad, rad, len, seg);
+  if (axis === "x") g.rotateZ(-Math.PI / 2); else if (axis === "y") g.rotateX(-Math.PI / 2);
+  const m = mesh(g, mat); m.position.copy(V(x, y, z)); p.add(label(m, lbl)); return m;
+}
+function strut(p, a, b, w, mat, lbl) {
+  const A = V(...a), B = V(...b), d = B.clone().sub(A), L = d.length();
+  const m = mesh(new THREE.BoxGeometry(w, w, L), mat);
+  m.position.copy(A).addScaledVector(d, 0.5); m.quaternion.setFromUnitVectors(Z_AXIS, d.normalize());
+  p.add(label(m, lbl)); return m;
+}
+function tube(p, pts, rad, mat, lbl) {
+  const c = new THREE.CatmullRomCurve3(pts.map((q) => V(...q)));
+  p.add(label(mesh(new THREE.TubeGeometry(c, 40, rad, 6, false), mat), lbl));
+}
+function flat(shape, depth) { // figura en el plano (x, y) del robot, crece hacia arriba
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 8 }); g.rotateX(-Math.PI / 2); return g;
+}
+function vert(shape, depth) { // figura en el plano (x, z) del robot, centrada en y
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 8 }); g.translate(0, 0, -depth / 2); return g;
+}
+function roundedRect(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r); s.lineTo(x + w, y + h - r);
+  s.quadraticCurveTo(x + w, y + h, x + w - r, y + h); s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y); return s;
+}
+function rail(p, along, len, x, y, z0, z1, lbl, t = 0.008) { // solera naranja ranurada
+  const tex = TEX.slot.clone(); tex.needsUpdate = true; tex.repeat.set(Math.max(1, Math.round(len / 0.1)), 1);
+  const side = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.45, metalness: 0.2 });
+  disposables.push(tex, side);
+  const h = z1 - z0, o = R.orange;
+  const g = along === "x" ? new THREE.BoxGeometry(len, h, t) : new THREE.BoxGeometry(t, h, len);
+  const mats = along === "x" ? [o, o, o, o, side, side] : [side, side, o, o, o, o];
+  const m = mesh(g, mats); m.position.copy(V(x, y, (z0 + z1) / 2)); p.add(label(m, lbl)); return m;
+}
+function sticker(p, x, y, z, len, lbl) {
+  const g = new THREE.CylinderGeometry(0.0324, 0.0324, len, 10, 1, true, -0.55, 1.1); g.rotateX(-Math.PI / 2);
+  const m = mesh(g, R.sticker, false); m.position.copy(V(x, y, z)); p.add(label(m, lbl));
+}
+function sprocket(p, x, y, z, lbl) { cyl(p, "y", 0.0225, 0.005, x, y, z, R.brass, lbl, 18); cyl(p, "y", 0.01, 0.014, x, y, z, R.brass, lbl, 14); }
+function chainLoop(p, c1, c2, y, R0, lbl) {
+  const [x1, z1] = c1, [x2, z2] = c2, d = Math.hypot(x2 - x1, z2 - z1);
+  const ux = (x2 - x1) / d, uz = (z2 - z1) / d, base = Math.atan2(ux, -uz);
+  const pts = [];
+  const arc = (cx, cz, a0, a1) => { for (let i = 0; i <= 16; i++) { const t = a0 + ((a1 - a0) * i) / 16; pts.push(V(cx + R0 * Math.cos(t), y, cz + R0 * Math.sin(t))); } };
+  arc(x2, z2, base, base - Math.PI);
+  arc(x1, z1, base - Math.PI, base - 2 * Math.PI);
+  const curve = new THREE.CatmullRomCurve3(pts, true);
+  const tex = TEX.chain.clone(); tex.needsUpdate = true; tex.repeat.set(Math.round(curve.getLength() / 0.0127), 1);
+  const mat = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.45, metalness: 0.7 }); disposables.push(tex, mat);
+  p.add(label(mesh(new THREE.TubeGeometry(curve, 140, 0.0034, 6, true), mat), lbl));
+}
+function ujoint(p, x, y, z, lbl) {
+  cyl(p, "y", 0.0145, 0.012, x, y - 0.0095, z, R.chrome, lbl, 16);
+  cyl(p, "y", 0.0145, 0.012, x, y + 0.0095, z, R.chrome, lbl, 16);
+  box(p, 0.024, 0.007, 0.007, x, y, z, R.steel, lbl);
+  box(p, 0.007, 0.007, 0.024, x, y, z, R.steel, lbl);
+}
+class Helix extends THREE.Curve {
+  constructor(x0, x1, y, z, rc, turns) { super(); Object.assign(this, { x0, x1, y, z, rc, turns }); }
+  getPoint(t, target = new THREE.Vector3()) {
+    const g = 2 * Math.PI * this.turns * t;
+    return target.copy(V(this.x0 + (this.x1 - this.x0) * t, this.y + this.rc * Math.cos(g), this.z + this.rc * Math.sin(g)));
+  }
+}
+function coilover(p, x1, x2, y, z, lbl) {
+  const L = Math.abs(x2 - x1), d = Math.sign(x2 - x1);
+  cyl(p, "y", 0.011, 0.018, x1, y, z, R.chrome, lbl, 16);
+  cyl(p, "y", 0.011, 0.018, x2, y, z, R.chrome, lbl, 16);
+  const bL = L * 0.5; cyl(p, "x", 0.0155, bL, x1 + d * (0.011 + bL / 2), y, z, R.chrome, lbl, 22);
+  const shL = L - bL - 0.022; cyl(p, "x", 0.0065, shL, x2 - d * (0.011 + shL / 2), y, z, R.chrome, lbl, 12);
+  const s1 = x1 + d * (0.011 + L * 0.16), s2 = x2 - d * 0.02;
+  cyl(p, "x", 0.025, 0.006, s1, y, z, R.steel, lbl, 24);
+  cyl(p, "x", 0.025, 0.006, s2, y, z, R.steel, lbl, 24);
+  const turns = Math.max(5, Math.round(Math.abs(s2 - s1) / 0.017));
+  const helix = new Helix(s1 + d * 0.003, s2 - d * 0.003, y, z, 0.0205, turns);
+  p.add(label(mesh(new THREE.TubeGeometry(helix, turns * 20, 0.0042, 8, false), R.spring), lbl));
+}
+function bellcrank(p, x, y, z, sx, lbl) {
+  const s = new THREE.Shape(); s.moveTo(0, -0.035); s.lineTo(sx * 0.032, 0.022); s.lineTo(-sx * 0.03, 0.026); s.closePath();
+  const m = mesh(vert(s, 0.007), R.orange); m.position.copy(V(x, y, z)); p.add(label(m, lbl));
+  [[0, -0.028], [sx * 0.024, 0.017], [-sx * 0.022, 0.02]].forEach(([dx, dz]) => cyl(p, "y", 0.0055, 0.014, x + dx, y, z + dz, R.chrome, lbl, 12));
+}
+function psu(p, x, y, z) {
+  const lbl = "Fuente conmutada S-360-24 · 110–220 V CA → 24 V CD, 15 A";
+  box(p, 0.115, 0.215, 0.05, x, y, z + 0.025, R.psu, lbl);
+  const top = mesh(new THREE.PlaneGeometry(0.215, 0.115), PSU_TOP, false);
+  top.rotation.set(-Math.PI / 2, 0, -Math.PI / 2); top.position.copy(V(x, y, z + 0.0503)); p.add(label(top, lbl));
+  for (const sn of [1, -1]) {
+    const sd = mesh(new THREE.PlaneGeometry(0.215, 0.05), PSU_SIDE, false);
+    sd.rotation.y = (sn * Math.PI) / 2; sd.position.copy(V(x + sn * 0.0578, y, z + 0.025)); p.add(label(sd, lbl));
+  }
+  box(p, 0.09, 0.012, 0.03, x, y - 0.1135, z + 0.02, R.terminal, lbl);
+}
+function board(p, x, y, z, lbl) { // tarjeta roja IBERO
+  for (const [dx, dy] of [[1, 1], [1, -1], [-1, 1], [-1, -1]]) cyl(p, "z", 0.003, 0.008, x + dx * 0.044, y + dy * 0.039, z + 0.004, R.brass, lbl, 8);
+  box(p, 0.1, 0.09, 0.0016, x, y, z + 0.0088, R.pcb, lbl);
+  const top = mesh(new THREE.PlaneGeometry(0.1, 0.09), BOARD_MAT, false); top.rotation.x = -Math.PI / 2; top.position.copy(V(x, y, z + 0.0097)); p.add(label(top, lbl));
+  const zt = z + 0.0097;
+  [[-0.012, -0.02], [-0.012, 0.004], [0.014, -0.02]].forEach(([dx, dy]) => box(p, 0.016, 0.014, 0.02, x + dx, y + dy, zt + 0.01, R.heat, lbl));
+  cyl(p, "z", 0.009, 0.022, x + 0.022, y + 0.026, zt + 0.011, R.cap, lbl, 18);
+  cyl(p, "z", 0.0088, 0.001, x + 0.022, y + 0.026, zt + 0.0225, R.band, lbl, 18);
+  [[-0.04, -0.03], [-0.04, 0.0], [0.038, 0.036], [0.0, 0.038]].forEach(([dx, dy]) => box(p, 0.01, 0.016, 0.011, x + dx, y + dy, zt + 0.0055, R.term, lbl));
+  box(p, 0.024, 0.018, 0.004, x + 0.03, y - 0.022, zt + 0.002, R.mcu, lbl);
+  box(p, 0.006, 0.009, 0.003, x + 0.043, y - 0.022, zt + 0.004, R.band, lbl);
+  box(p, 0.008, 0.014, 0.005, x + 0.04, y + 0.004, zt + 0.0025, R.term, lbl);
+  [[-0.032, 0.026], [-0.032, 0.036], [-0.022, 0.026], [-0.022, 0.036]].forEach(([dx, dy]) => box(p, 0.007, 0.007, 0.003, x + dx, y + dy, zt + 0.0015, R.beige, lbl));
+}
+function lobedShape(N, rL, rB, rot, half) {
+  const P = (rad, ang) => [rad * Math.cos(ang), rad * Math.sin(ang)], pts = [];
+  for (let k = 0; k < N; k++) {
+    const c = rot + (2 * Math.PI * k) / N;
+    pts.push(P(rB, c - Math.PI / N), P(rB, c - 1.8 * half), P(rL, c - half), P(rL * 1.04, c), P(rL, c + half), P(rB, c + 1.8 * half));
+  }
+  const s = new THREE.Shape(); s.moveTo(...pts[0]); pts.slice(1).forEach((q) => s.lineTo(...q)); s.closePath(); return s;
+}
+
+/* ---------- Robot ---------- */
+let robot = null, wheelSpin = [], sensors = null, velArrow = null, markerG = null, hubMats = [];
+
+function buildWheel(sigma, name, r, ww, sy) {
+  const wheel = new THREE.Group(), spin = new THREE.Group(); wheel.add(spin);
+  const N = 9, rr = r * 0.22, h = ww * 1.2, rc = r - rr, ze = h / (2 * Math.SQRT2), s = -sigma; // σ (robot) = −s (geometría local)
+  const lbl = `Rueda mecanum ${name} · Ø ${Math.round(2 * r * 1000)} mm · σ = ${sigma > 0 ? "+1" : "−1"}`;
+  const prof = [];
+  for (let i = 0; i <= 10; i++) { const t = -1 + i / 5; prof.push(new THREE.Vector2(rr * (1 - 0.34 * t * t), (t * h) / 2)); }
+  const rollerGeo = new THREE.LatheGeometry(prof, 16), up = new THREE.Vector3(0, 1, 0);
+  for (let k = 0; k < N; k++) {
+    const phi = (2 * Math.PI * k) / N;
+    const rh = new THREE.Vector3(Math.cos(phi), Math.sin(phi), 0), th = new THREE.Vector3(-Math.sin(phi), Math.cos(phi), 0);
+    const axis = th.clone().multiplyScalar(s).add(new THREE.Vector3(0, 0, 1)).normalize();
+    const m = mesh(rollerGeo, R.roller); m.position.copy(rh.multiplyScalar(rc)); m.quaternion.setFromUnitVectors(up, axis); spin.add(m);
+  }
+  const delta = ze / rc, rL = Math.hypot(rc, ze) + 0.002, rB = r * 0.44;
+  for (const side of [1, -1]) {
+    const g = new THREE.ExtrudeGeometry(lobedShape(N, rL, rB, side * s * delta, 0.1), { depth: 0.006, bevelEnabled: false });
+    g.translate(0, 0, side > 0 ? ze + 0.001 : -ze - 0.007);
+    spin.add(mesh(g, R.orange));
+  }
+  const hubG = new THREE.CylinderGeometry(r * 0.26, r * 0.26, 2 * ze + 0.016, 24); hubG.rotateX(Math.PI / 2);
+  spin.add(mesh(hubG, R.orange));
+  const hm = new THREE.MeshStandardMaterial({ color: 0x2a2d30, roughness: 0.4, metalness: 0.5 }); hubMats.push(hm); disposables.push(hm);
+  const capG = new THREE.CylinderGeometry(r * 0.2, r * 0.2, 0.008, 24); capG.rotateX(Math.PI / 2);
+  const cap = mesh(capG, hm); cap.position.z = -sy * (ze + 0.012); spin.add(cap);
+  wheel.traverse((o) => { if (o.isMesh) o.userData.label = lbl; });
+  return { wheel, spin };
+}
+
+function buildRobot() {
+  if (robot) { scene.remove(robot); robot.traverse((o) => { if (o.geometry) o.geometry.dispose(); }); }
+  disposables.forEach((d) => d.dispose()); disposables = [];
+  hubMats = []; wheelSpin = [];
+  const { track, base, wheelD } = S.geom;
+  const a = base / 2, b = track / 2, r = wheelD / 2, ww = 0.085;
+  const W2 = b - 0.15;                     // semiancho de cada módulo
+  const XE = a + r + 0.02;                 // cara exterior del módulo
+  const XI = Math.max(0.1, a - 0.12);      // cara interior del módulo
+  const zB = 0.04, zT = 0.165, zR = 0.205; // fondo de tina, borde de tina, borde del bastidor
+  const zM = r + 0.004;                    // eje de los motores
+  const Ww = Math.min(0.15, W2 - 0.06);    // cintura de la cubierta central
+  const NAME = (sx, sy) => (sx > 0 ? (sy > 0 ? "FL" : "FR") : sy > 0 ? "RL" : "RR");
+  robot = new THREE.Group();
+
+  for (const sx of [1, -1]) {
+    const nm = sx > 0 ? "delantero" : "trasero";
+    const xm = (sx * (XE + XI)) / 2, lx = XE - XI, hz = zT - zB, zc = (zB + zT) / 2;
+    // Tina de lámina negra
+    const tubL = `Módulo de tracción ${nm}: tina de lámina`;
+    box(robot, lx, 2 * W2, 0.004, xm, 0, zB, R.black, tubL);
+    box(robot, 0.004, 2 * W2, hz, sx * XE, 0, zc, R.black, tubL);
+    box(robot, 0.004, 2 * W2, hz, sx * XI, 0, zc, R.black, tubL);
+    for (const sy of [1, -1]) box(robot, lx, 0.004, hz, xm, sy * W2, zc, R.black, tubL);
+    for (let i = -3; i <= 3; i++) for (const zz of [zB + 0.016, zT - 0.016]) cyl(robot, "x", 0.0045, 0.004, sx * (XE + 0.003), i * (W2 / 3.5), zz, R.chrome, tubL, 10);
+    if (sx < 0) {
+      const eL = "Paro de emergencia";
+      cyl(robot, "x", 0.02, 0.012, -(XE + 0.008), 0, zc, R.black, eL, 24);
+      cyl(robot, "x", 0.032, 0.014, -(XE + 0.021), 0, zc, R.red, eL, 32);
+      const dg = new THREE.SphereGeometry(0.032, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2); dg.scale(1, 0.32, 1); dg.rotateZ(Math.PI / 2);
+      const dome = mesh(dg, R.red); dome.position.copy(V(-(XE + 0.028), 0, zc)); robot.add(label(dome, eL));
+    }
+    // Bastidor naranja ranurado
+    const frL = `Bastidor del módulo ${nm} (solera naranja ranurada)`;
+    rail(robot, "y", 2 * W2 + 0.016, sx * XE, 0, zT, zR, frL);
+    rail(robot, "y", 2 * W2 + 0.016, sx * XI, 0, zT, zR, frL);
+    for (const sy of [1, -1]) rail(robot, "x", lx, xm, sy * W2, zT, zR, frL);
+    // Caja de cadenas
+    const xmot = sx * (a - 0.085);
+    const cb0 = a - 0.118, cb1 = a + 0.032, cbm = (sx * (cb0 + cb1)) / 2;
+    const cbL = `Caja de transmisión por cadena (módulo ${nm})`;
+    for (const sy of [1, -1]) box(robot, cb1 - cb0, 0.004, 0.115, cbm, sy * 0.047, 0.11, R.blackPlate, cbL);
+    box(robot, cb1 - cb0, 0.094, 0.004, cbm, 0, 0.054, R.blackPlate, cbL);
+
+    for (const sy of [1, -1]) {
+      const w = NAME(sx, sy), mL = `Motor DC · rueda ${w}`;
+      const y0 = 0.05, len = 0.2;
+      // Motor en línea, a lo ancho del robot
+      cyl(robot, "y", 0.032, len - 0.035, xmot, sy * (y0 + 0.017 + (len - 0.035) / 2), zM, R.motor, mL, 28);
+      cyl(robot, "y", 0.027, 0.017, xmot, sy * (y0 + 0.0085), zM, R.band, mL, 24);
+      cyl(robot, "y", 0.0326, 0.014, xmot, sy * (y0 + 0.055), zM, R.band, mL, 28);
+      cyl(robot, "y", 0.0326, 0.006, xmot, sy * (y0 + len - 0.05), zM, R.band, mL, 28);
+      cyl(robot, "y", 0.029, 0.018, xmot, sy * (y0 + len - 0.009), zM, R.motor, mL, 24);
+      sticker(robot, xmot, sy * (y0 + 0.11), zM, 0.05, mL);
+      // Catarinas y cadena
+      cyl(robot, "y", 0.006, 0.04, xmot, sy * 0.03, zM, R.chrome, cbL, 12);
+      sprocket(robot, xmot, sy * 0.024, zM, cbL);
+      sprocket(robot, sx * a, sy * 0.024, r, cbL);
+      chainLoop(robot, [xmot, zM], [sx * a, r], sy * 0.024, 0.0215, cbL);
+      // Flecha con juntas cardán
+      const sL = `Flecha con juntas cardán → rueda ${w}`;
+      const yA = 0.03, yK = b - ww / 2 - 0.016, u1 = 0.09, u2 = yK - 0.03;
+      cyl(robot, "y", 0.008, u1 - yA, sx * a, (sy * (yA + u1)) / 2, r, R.chrome, sL, 12);
+      cyl(robot, "y", 0.0135, 0.022, sx * a, sy * 0.062, r, R.brass, sL, 18);
+      ujoint(robot, sx * a, sy * u1, r, sL);
+      cyl(robot, "y", 0.0095, u2 - u1 - 0.02, sx * a, (sy * (u1 + u2)) / 2, r, R.chrome, sL, 14);
+      ujoint(robot, sx * a, sy * u2, r, sL);
+      cyl(robot, "y", 0.009, yK - u2, sx * a, (sy * (u2 + yK)) / 2, r, R.chrome, sL, 12);
+      // Tarjeta IBERO sobre placa de MDF
+      const bx = sx * (XE - 0.085), by = sy * (W2 - 0.075);
+      const plate = mesh(flat(roundedRect(0.165, 0.145, 0.025), 0.006), R.wood); plate.position.copy(V(bx, by, zR)); robot.add(label(plate, "Placa de MDF"));
+      board(robot, bx, by, zR + 0.006, `Tarjeta de potencia IBERO · esquina ${w}`);
+      const yEnd = sy * (y0 + len + 0.004);
+      tube(robot, [[bx - sx * 0.03, by - sy * 0.035, zR + 0.022], [bx - sx * 0.07, by + sy * 0.02, zR - 0.01], [xmot + sx * 0.012, yEnd, zM + 0.012]], 0.0028, R.wireG, "Cables de motor");
+      tube(robot, [[bx - sx * 0.03, by - sy * 0.025, zR + 0.022], [bx - sx * 0.065, by + sy * 0.028, zR - 0.012], [xmot - sx * 0.008, yEnd, zM + 0.006]], 0.0028, R.wireK, "Cables de motor");
+      // Suspensión de la esquina
+      const pL = `Suspensión ${w}: amortiguador coil-over`;
+      const yI = W2 + 0.006, yO = W2 + 0.05, ym = (yI + yO) / 2;
+      const xA = sx * (a - 0.19), xB = sx * (a + 0.1), pxm = (xA + xB) / 2, pl = Math.abs(xB - xA);
+      for (const yy of [yI, yO]) rail(robot, "x", pl, pxm, sy * yy, 0.06, 0.15, pL, 0.006);
+      box(robot, 0.02, yO - yI, 0.09, xB, sy * ym, 0.105, R.orange, pL);
+      box(robot, 0.02, yO - yI, 0.09, xA, sy * ym, 0.105, R.orange, pL);
+      box(robot, 0.02, yO - yI, 0.03, sx * (a - 0.175), sy * ym, 0.163, R.orange, pL);
+      for (const yy of [yI + 0.014, yO - 0.014]) cyl(robot, "x", 0.0062, 0.11, sx * (a + 0.035), sy * yy, 0.075, R.chrome, `Varilla guía de la suspensión ${w}`, 14);
+      coilover(robot, sx * (a - 0.175), sx * (a + 0.004), sy * ym, 0.178, pL);
+      bellcrank(robot, sx * (a + 0.014), sy * ym, 0.168, sx, `Balancín de la suspensión ${w}`);
+      // Mangueta y brazos hacia la rueda
+      const yKn = b - ww / 2 - 0.012, kL = `Mangueta de la rueda ${w}`;
+      const kn = mesh(vert(roundedRect(0.1, 0.11, 0.03), 0.008), R.orange); kn.position.copy(V(sx * a, sy * yKn, r)); robot.add(label(kn, kL));
+      for (const dzz of [0.042, -0.042]) box(robot, 0.024, yKn - yO, 0.014, sx * a, (sy * (yO + yKn)) / 2, r + dzz, R.orange, `Brazo de suspensión ${w}`);
+      cyl(robot, "y", 0.02, 0.024, sx * a, sy * (yKn - 0.012), r, R.steel, kL, 20);
+    }
+  }
+
+  // Sección central: cubierta de MDF, tirantes y fuentes
+  const dS = new THREE.Shape(), XD = XI - 0.004, WD = W2 - 0.02;
+  dS.moveTo(XD, -WD); dS.lineTo(XD, WD); dS.lineTo(0, Ww); dS.lineTo(-XD, WD); dS.lineTo(-XD, -WD); dS.lineTo(0, -Ww); dS.closePath();
+  const deck = mesh(flat(dS, 0.008), R.wood); deck.position.copy(V(0, 0, zT)); robot.add(label(deck, "Cubierta central de MDF"));
+  for (const sx of [1, -1]) for (const sy of [1, -1]) strut(robot, [sx * XI, sy * (W2 - 0.012), zT - 0.013], [0, sy * (Ww + 0.012), zT - 0.013], 0.022, R.orange, "Tirante diagonal entre módulos");
+  for (const px of [0.066, -0.066]) psu(robot, px, 0, zT + 0.008);
+  for (const sy of [1, -1]) box(robot, 2 * XI + 0.03, 0.05, 0.008, 0, sy * 0.22, zR + 0.004, R.wood, "Tira de MDF entre módulos");
+
+  // Placa del marcador ArUco
+  markerG = new THREE.Group(); markerG.visible = S.showMarker; robot.add(markerG);
+  const zS = zR + 0.008, zP = zS + 0.055, plL = "Placa del marcador, impresa en 3D";
+  for (const sy of [1, -1]) box(markerG, 0.05, 0.04, 0.055, 0, sy * 0.22, zS + 0.0275, R.redPLA, "Soporte del marcador, impreso en 3D");
+  box(markerG, 0.07, 0.5, 0.01, 0, 0, zP + 0.005, R.whitePLA, plL);
+  box(markerG, 0.22, 0.22, 0.012, 0, 0, zP + 0.006, R.whitePLA, plL);
+  for (const sgn of [1, -1]) { box(markerG, 0.22, 0.012, 0.006, 0, sgn * 0.104, zP + 0.015, R.whitePLA, plL); box(markerG, 0.012, 0.22, 0.006, sgn * 0.104, 0, zP + 0.015, R.whitePLA, plL); }
+  const mk = mesh(new THREE.PlaneGeometry(0.17, 0.17), ARUCO_MAT, false);
+  mk.rotation.set(-Math.PI / 2, 0, -Math.PI / 2); mk.position.copy(V(0, 0, zP + 0.0125));
+  markerG.add(label(mk, "Marcador ArUco ID 1 · DICT_6X6_50 (borde superior hacia el frente)"));
+
+  // Sensores planeados (posiciones ilustrativas)
+  sensors = new THREE.Group(); sensors.visible = S.showSens; robot.add(sensors);
+  for (const sx of [1, -1]) for (const sy of [1, -1]) {
+    const ld = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.045, 24), M.ghost);
+    ld.position.copy(V(sx * (XE - 0.03), sy * (W2 + 0.03), zR + 0.035)); sensors.add(label(ld, "Planeado: LiDAR (posición ilustrativa)"));
+  }
+  const cam = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.035, 0.1), M.ghost);
+  cam.position.copy(V(XE + 0.02, 0, zR + 0.03)); sensors.add(label(cam, "Planeado: cámara a bordo (posición ilustrativa)"));
+
+  // Ruedas
+  Kin.layout(S.cfg, a, b).forEach((w) => {
+    const { wheel, spin } = buildWheel(w.s, w.name, r, ww, Math.sign(w.py));
+    wheel.position.copy(V(w.px, w.py, r)); robot.add(wheel); wheelSpin.push(spin);
+  });
+
+  velArrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), V(0, 0, 0.37), 0.3, 0x1c59be, 0.07, 0.045);
+  velArrow.visible = false; robot.add(velArrow);
+  scene.add(robot);
+  applyTheme();
+  placeRobot();
+}
+
+/* ---------- Objetivo y trayectoria ---------- */
+const targetG = new THREE.Group(); scene.add(targetG);
+{
+  const ring = new THREE.Mesh(new THREE.RingGeometry(0.11, 0.135, 48), M.target); ring.rotation.x = -Math.PI / 2; ring.position.y = 0.005; targetG.add(ring);
+  const sh = new THREE.Shape(); sh.moveTo(0.26, 0); sh.lineTo(0.15, 0.05); sh.lineTo(0.15, -0.05); sh.closePath();
+  const arrow = new THREE.Mesh(new THREE.ShapeGeometry(sh), M.target); arrow.rotation.x = -Math.PI / 2; arrow.position.y = 0.005; targetG.add(arrow);
+  const dot = new THREE.Mesh(new THREE.CircleGeometry(0.02, 20), M.target); dot.rotation.x = -Math.PI / 2; dot.position.y = 0.005; targetG.add(dot);
+}
+const TRAIL_MAX = 3000;
+const trailPos = new Float32Array(TRAIL_MAX * 3); let trailN = 0;
+const trailGeo = new THREE.BufferGeometry(); trailGeo.setAttribute("position", new THREE.BufferAttribute(trailPos, 3)); trailGeo.setDrawRange(0, 0);
+const trail = new THREE.Line(trailGeo, M.trail); trail.frustumCulled = false; scene.add(trail);
+function pushTrail() {
+  const x = S.pose.x, z = -S.pose.y;
+  if (trailN > 0) { const i = (trailN - 1) * 3; if (Math.hypot(trailPos[i] - x, trailPos[i + 2] - z) < 0.01) return; }
+  if (trailN >= TRAIL_MAX) { trailPos.copyWithin(0, 3); trailN--; }
+  trailPos.set([x, 0.006, z], trailN * 3); trailN++;
+  trailGeo.setDrawRange(0, trailN); trailGeo.attributes.position.needsUpdate = true;
+}
+
+/* ---------- Tema ---------- */
+function applyTheme() {
+  const col = (n) => new THREE.Color(cssv(n));
+  scene.background = col("--scene-bg");
+  M.floor.color = col("--scene-floor"); M.grid.color = col("--scene-grid"); M.tape.color = col("--tape");
+  M.ghost.color = col("--cobalt"); M.target.color = col("--cobalt"); M.trail.color = col("--cobalt");
+  if (velArrow) velArrow.setColor(col("--cobalt"));
+  if (centerLabelMat.map) centerLabelMat.map.dispose();
+  centerLabelMat.map = texText("PUNTO CENTRAL"); centerLabelMat.needsUpdate = true;
+}
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => requestAnimationFrame(applyTheme));
+new MutationObserver(() => requestAnimationFrame(applyTheme)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "class", "style"] });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(applyTheme);
+
+/* ---------- Cámara ---------- */
+let follow = false;
+function setCam(kind) {
+  const rp = new THREE.Vector3(S.pose.x, 0.15, -S.pose.y);
+  if (kind === "top") { camera.position.set(rp.x, 4.4, rp.z + 0.01); controls.target.copy(rp); }
+  else { camera.position.set(rp.x - 1.65, 1.3, rp.z + 1.95); controls.target.copy(rp); }
+  $("camIso").setAttribute("aria-pressed", kind === "iso"); $("camTop").setAttribute("aria-pressed", kind === "top");
+}
+$("camIso").onclick = () => setCam("iso");
+$("camTop").onclick = () => setCam("top");
+$("camFollow").onclick = () => { follow = !follow; $("camFollow").setAttribute("aria-pressed", follow); };
+
+/* ---------- Simulación ---------- */
+const KP = 1.4, VMAX = 0.35, KTH = 2.0, WMAX = 1.2;
+function command() {
+  if (S.mode === "manual") {
+    const c = { ...S.manual }, k = S.keys;
+    if (k.has("w") || k.has("s")) c.vx = (k.has("w") ? 0.3 : 0) - (k.has("s") ? 0.3 : 0);
+    if (k.has("a") || k.has("d")) c.vy = (k.has("a") ? 0.3 : 0) - (k.has("d") ? 0.3 : 0);
+    if (k.has("q") || k.has("e")) c.w = (k.has("q") ? 0.9 : 0) - (k.has("e") ? 0.9 : 0);
+    return c;
+  }
+  const T = S.target, P = S.pose;
+  const ex = T.x - P.x, ey = T.y - P.y, dist = Math.hypot(ex, ey), eth = Kin.wrap(T.th - P.th);
+  if (T.reached) { if (dist > 0.05 || Math.abs(eth) > 0.09) T.reached = false; else return { vx: 0, vy: 0, w: 0 }; }
+  if (dist < 0.015 && Math.abs(eth) < 0.035) { T.reached = true; return { vx: 0, vy: 0, w: 0 }; }
+  const c = Math.cos(P.th), s = Math.sin(P.th);
+  let vx = KP * (c * ex + s * ey), vy = KP * (-s * ex + c * ey);
+  const vn = Math.hypot(vx, vy); if (vn > VMAX) { vx *= VMAX / vn; vy *= VMAX / vn; }
+  const w = Math.max(-WMAX, Math.min(WMAX, KTH * eth));
+  return { vx, vy, w };
+}
+let frozenFor = 0;
+function step(dt) {
+  const a = S.geom.base / 2, b = S.geom.track / 2, r = S.geom.wheelD / 2;
+  const L = Kin.layout(S.cfg, a, b);
+  const cmd = command();
+  const wmax = S.vRim / r;
+  const sh = Kin.shape(Kin.ik(cmd, L, r).map((v) => v / wmax), S.dzMode, S.dz);
+  const act = Kin.plant(sh.d, S.dz);
+  const tw = Kin.fk(act.map((v) => v * wmax), L, r);
+  const P = S.pose, c = Math.cos(P.th), s = Math.sin(P.th);
+  P.x += (tw.vx * c - tw.vy * s) * dt; P.y += (tw.vx * s + tw.vy * c) * dt; P.th = Kin.wrap(P.th + tw.w * dt);
+  for (let i = 0; i < 4; i++) S.wheelAng[i] += act[i] * wmax * dt;
+  S.duty = sh.d; S.act = act; S.twist = tw; S.scale = sh.scale;
+  const cmdMag = Math.abs(cmd.vx) + Math.abs(cmd.vy) + Math.abs(cmd.w);
+  const moving = act.some((v) => v !== 0);
+  frozenFor = cmdMag > 1e-4 && !moving ? frozenFor + dt : 0;
+  if (S.mode === "goto") {
+    const d = Math.hypot(S.target.x - P.x, S.target.y - P.y);
+    if (S.target.reached) S.status = { text: "Objetivo alcanzado", cls: "ok" };
+    else if (frozenFor > 0.4) S.status = { text: `Detenido por zona muerta a ${(d * 100).toFixed(1)} cm del objetivo`, cls: "warn" };
+    else S.status = { text: `Rumbo al objetivo · ${(d * 100).toFixed(0)} cm`, cls: "" };
+  }
+  if (Math.abs(P.x) > 6.5 || Math.abs(P.y) > 6.5) { P.x = Math.max(-6.5, Math.min(6.5, P.x)); P.y = Math.max(-6.5, Math.min(6.5, P.y)); }
+}
+const prevRobot = new THREE.Vector3();
+function placeRobot() {
+  if (!robot) return;
+  prevRobot.copy(robot.position);
+  robot.position.set(S.pose.x, 0, -S.pose.y); robot.rotation.y = S.pose.th;
+  wheelSpin.forEach((sp, i) => (sp.rotation.z = -S.wheelAng[i]));
+  const posC = new THREE.Color(cssv("--pos")), negC = new THREE.Color(cssv("--neg"));
+  hubMats.forEach((m, i) => { const v = S.act[i]; m.emissive.copy(v >= 0 ? posC : negC); m.emissiveIntensity = Math.min(1, Math.abs(v)) * 1.1; });
+  const sp = Math.hypot(S.twist.vx, S.twist.vy);
+  velArrow.visible = S.showVec && sp > 0.01;
+  if (velArrow.visible) { velArrow.setDirection(new THREE.Vector3(S.twist.vx, 0, -S.twist.vy).normalize()); velArrow.setLength(0.15 + sp * 1.4, 0.07, 0.045); }
+  targetG.visible = S.mode === "goto"; targetG.position.set(S.target.x, 0, -S.target.y); targetG.rotation.y = S.target.th;
+  trail.visible = S.showTrail;
+  sun.position.set(robot.position.x + 2.5, 5, robot.position.z + 1.5); sun.target.position.copy(robot.position);
+  if (follow) { const d = robot.position.clone().sub(prevRobot); camera.position.add(d); controls.target.add(d); }
+}
+
+/* ---------- Panel ---------- */
+const wheelsEl = $("wheels"), wRows = [];
+Kin.ORDER.forEach((n) => {
+  const row = document.createElement("div"); row.className = "wrow";
+  row.innerHTML = `<span class="nm">${n}</span><span class="bar"><span class="dz"></span><i></i></span><span class="v">+0.00</span><span class="p">+0.00</span>`;
+  wheelsEl.appendChild(row); wRows.push({ i: row.querySelector("i"), v: row.querySelector(".v"), p: row.querySelector(".p"), dz: row.querySelector(".dz") });
+});
+const fmt = (v, d = 2) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d);
+function updateUI() {
+  $("pX").textContent = S.pose.x.toFixed(3); $("pY").textContent = S.pose.y.toFixed(3);
+  $("pT").textContent = ((S.pose.th * 180) / Math.PI).toFixed(1);
+  wRows.forEach((r, i) => {
+    const d = S.duty[i], c = Math.max(-1, Math.min(1, d));
+    r.i.style.width = Math.abs(c) * 50 + "%"; r.i.style.left = c >= 0 ? "50%" : 50 - Math.abs(c) * 50 + "%";
+    r.i.className = c < 0 ? "neg" : ""; r.i.style.opacity = S.act[i] === 0 && d !== 0 ? 0.35 : 1;
+    r.v.textContent = fmt(d); r.p.textContent = fmt(-d);
+    r.dz.style.left = 50 - S.dz * 50 + "%"; r.dz.style.width = S.dz * 100 + "%";
+  });
+  $("oScale").textContent = S.scale.toFixed(2);
+  const a = S.geom.base / 2, b = S.geom.track / 2;
+  $("oArm").textContent = Math.round((Kin.arm(S.cfg, a, b) / Math.SQRT2) * 1000) + " mm";
+  $("oAuth").textContent = S.cfg === "O" ? Math.round(Kin.authority(a, b) * 100) + " %" : "100 %";
+  const gs = $("gStatus"); gs.textContent = S.status.text; gs.className = "status-line " + S.status.cls;
+}
+
+function pressGroup(ids, on) { ids.forEach((id) => $(id).setAttribute("aria-pressed", id === on)); }
+function setMode(m) {
+  S.mode = m; pressGroup(["mManual", "mGoto"], m === "manual" ? "mManual" : "mGoto");
+  $("paneManual").hidden = m !== "manual"; $("paneGoto").hidden = m !== "goto";
+  canvas.classList.toggle("aim", m === "goto");
+}
+$("mManual").onclick = () => setMode("manual");
+$("mGoto").onclick = () => { setMode("goto"); S.target.reached = false; };
+$("cfgO").onclick = () => { S.cfg = "O"; pressGroup(["cfgO", "cfgX"], "cfgO"); buildRobot(); };
+$("cfgX").onclick = () => { S.cfg = "X"; pressGroup(["cfgO", "cfgX"], "cfgX"); buildRobot(); };
+$("dzU").onclick = () => { S.dzMode = "uniform"; pressGroup(["dzU", "dzC"], "dzU"); S.target.reached = false; };
+$("dzC").onclick = () => { S.dzMode = "cut"; pressGroup(["dzU", "dzC"], "dzC"); S.target.reached = false; };
+$("chkTrail").onchange = (e) => { S.showTrail = e.target.checked; };
+$("chkVec").onchange = (e) => { S.showVec = e.target.checked; };
+$("chkSens").onchange = (e) => { S.showSens = e.target.checked; if (sensors) sensors.visible = S.showSens; };
+$("chkMarker").onchange = (e) => { S.showMarker = e.target.checked; if (markerG) markerG.visible = S.showMarker; };
+function bindSlider(id, out, fn, f) { const el = $(id); const upd = () => { const v = parseFloat(el.value); fn(v); $(out).textContent = f(v); }; el.addEventListener("input", upd); upd(); }
+bindSlider("sVx", "oVx", (v) => (S.manual.vx = v), (v) => v.toFixed(2) + " m/s");
+bindSlider("sVy", "oVy", (v) => (S.manual.vy = v), (v) => v.toFixed(2) + " m/s");
+bindSlider("sW", "oW", (v) => (S.manual.w = v), (v) => v.toFixed(2) + " rad/s");
+bindSlider("sTh", "oTh", (v) => { S.target.th = (v * Math.PI) / 180; S.target.reached = false; }, (v) => v + "°");
+let rebuildT = 0; const rebuild = () => { clearTimeout(rebuildT); rebuildT = setTimeout(buildRobot, 80); };
+bindSlider("gT", "ogT", (v) => { S.geom.track = v; rebuild(); }, (v) => Math.round(v * 1000) + " mm");
+bindSlider("gB", "ogB", (v) => { S.geom.base = v; rebuild(); }, (v) => Math.round(v * 1000) + " mm");
+bindSlider("gD", "ogD", (v) => { S.geom.wheelD = v; rebuild(); }, (v) => Math.round(v * 1000) + " mm");
+bindSlider("gV", "ogV", (v) => (S.vRim = v), (v) => v.toFixed(2) + " m/s");
+bindSlider("gZ", "ogZ", (v) => { S.dz = v; S.target.reached = false; }, (v) => v.toFixed(2));
+$("bStop").onclick = () => { ["sVx", "sVy", "sW"].forEach((id) => { $(id).value = 0; $(id).dispatchEvent(new Event("input")); }); };
+$("bReset").onclick = () => {
+  S.pose = { x: 0, y: 0, th: 0 }; S.wheelAng = [0, 0, 0, 0]; trailN = 0; trailGeo.setDrawRange(0, 0);
+  S.target = { x: 0, y: 0, th: (parseFloat($("sTh").value) * Math.PI) / 180, reached: false };
+  $("bStop").click(); setCam("iso");
+};
+
+/* ---------- Teclado ---------- */
+const KEYS = new Set(["w", "a", "s", "d", "q", "e"]);
+view.addEventListener("keydown", (e) => {
+  const k = e.key.toLowerCase(); if (!KEYS.has(k)) return;
+  e.preventDefault(); if (S.mode !== "manual") setMode("manual"); S.keys.add(k);
+});
+view.addEventListener("keyup", (e) => S.keys.delete(e.key.toLowerCase()));
+view.addEventListener("blur", () => S.keys.clear());
+
+/* ---------- Puntero: etiquetas y objetivo ---------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+let downAt = null, hoverPending = false, lastPtr = null;
+function toNdc(e) { const rc = canvas.getBoundingClientRect(); ndc.set(((e.clientX - rc.left) / rc.width) * 2 - 1, -((e.clientY - rc.top) / rc.height) * 2 + 1); return rc; }
+function shown(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
+function findLabel(o) { while (o) { if (o.userData && o.userData.label) return o.userData.label; o = o.parent; } return null; }
+canvas.addEventListener("pointermove", (e) => {
+  lastPtr = e; if (hoverPending) return; hoverPending = true;
+  requestAnimationFrame(() => {
+    hoverPending = false; const ev = lastPtr; if (!ev || !robot) return;
+    const rc = toNdc(ev); ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObject(robot, true).find((h) => shown(h.object) && findLabel(h.object));
+    if (hit) {
+      tip.textContent = findLabel(hit.object); tip.hidden = false;
+      const x = ev.clientX - rc.left, y = ev.clientY - rc.top;
+      tip.style.left = Math.min(x, rc.width - 250) + "px"; tip.style.top = Math.min(y, rc.height - 60) + "px";
+    } else tip.hidden = true;
+  });
+});
+canvas.addEventListener("pointerleave", () => { tip.hidden = true; });
+canvas.addEventListener("pointerdown", (e) => { downAt = { x: e.clientX, y: e.clientY }; view.focus({ preventScroll: true }); });
+canvas.addEventListener("pointerup", (e) => {
+  if (!downAt) return; const moved = Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y); downAt = null;
+  if (moved > 6) return;
+  toNdc(e); ray.setFromCamera(ndc, camera);
+  if (robot && ray.intersectObject(robot, true).some((h) => shown(h.object) && findLabel(h.object))) return;
+  const p = new THREE.Vector3(); if (!ray.ray.intersectPlane(groundPlane, p)) return;
+  S.target.x = Math.max(-6, Math.min(6, p.x)); S.target.y = Math.max(-6, Math.min(6, -p.z)); S.target.reached = false;
+  if (S.mode !== "goto") setMode("goto");
+});
+
+/* ---------- Bucle ---------- */
+function resize() {
+  const w = view.clientWidth, h = view.clientHeight; if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(view);
+let visible = true;
+new IntersectionObserver((en) => { visible = en[0].isIntersecting; }, { threshold: 0 }).observe(view);
+
+buildRobot(); setMode(S.mode); setCam("iso"); resize(); pushTrail(); updateUI();
+let last = performance.now(), uiAcc = 0;
+function tick(now) {
+  requestAnimationFrame(tick);
+  const dt = Math.min((now - last) / 1000, 1 / 20); last = now;
+  if (!visible || document.hidden) return;
+  const sub = 2; for (let i = 0; i < sub; i++) step(dt / sub);
+  placeRobot(); pushTrail(); controls.update(); renderer.render(scene, camera);
+  uiAcc += dt; if (uiAcc >= 1 / 15) { uiAcc = 0; updateUI(); }
+}
+requestAnimationFrame(tick);
+</script>
+
+<script>
+// Índice: resalta la sección visible. Aviso si el 3D no cargó.
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll("#tocList a"));
+  var map = {}; links.forEach(function (a) { map[a.getAttribute("href").slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { links.forEach(function (a) { a.classList.remove("on"); }); var a = map[en.target.id]; if (a) a.classList.add("on"); }
+    });
+  }, { rootMargin: "-20% 0px -70% 0px" });
+  document.querySelectorAll("section.sec").forEach(function (s) { io.observe(s); });
+  setTimeout(function () { if (!window.__atlas3d) document.getElementById("fallback").hidden = false; }, 9000);
+})();
+</script>
+
+</body></html>

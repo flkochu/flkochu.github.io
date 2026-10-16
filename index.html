@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Adán López Lozano</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Portafolio de Adán López Lozano, estudiante de Ingeniería Mecatrónica en la Ibero: robots, ROS 2, visión, diseño mecánico y papers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<style>
+/* Layout: the whole page is one engineering drawing sheet. Zone marks along the frame,
+   projects as views in a ruled grid, filters as CAD layers with their linetypes,
+   and a title block in the bottom-right corner. One typeface, Archivo, used across its width axis. */
+:root{
+  --film:#E3E9E5;      /* drafting film around the sheet */
+  --sheet:#F4F7F4;     /* the sheet */
+  --ink:#172024;       /* graphite ink */
+  --ink-2:#4C585E;     /* secondary ink */
+  --rule:#A7B3AE;      /* hairlines */
+  --rule-2:#D3DBD7;    /* faint grid */
+  --blue:#2240C2;      /* dimension and center lines */
+  --wash:rgba(34,64,194,.07);
+  --ok:#2B7A4B; --wip:#A56300;
+  --f:"Archivo","Arial Narrow","Helvetica Neue",Arial,sans-serif;
+  --s-1:.8125rem; --s0:1rem; --s1:1.25rem; --s2:1.6rem; --s3:clamp(2.1rem,5.2vw,4.25rem);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --film:#0E1215; --sheet:#151B1F; --ink:#DCE4E0; --ink-2:#98A5AB; --rule:#3B474D; --rule-2:#232C31;
+  --blue:#8EA5FF; --wash:rgba(142,165,255,.09); --ok:#6CC18F; --wip:#E3A94B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --film:#0E1215; --sheet:#151B1F; --ink:#DCE4E0; --ink-2:#98A5AB; --rule:#3B474D; --rule-2:#232C31;
+  --blue:#8EA5FF; --wash:rgba(142,165,255,.09); --ok:#6CC18F; --wip:#E3A94B; color-scheme:dark}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--film);color:var(--ink);font-family:var(--f);font-size:var(--s0);line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+a{color:inherit;text-decoration-color:var(--blue);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--blue)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+h1,h2,h3{margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit}
+
+/* ---------- sheet and frame ---------- */
+.sheet{max-width:1240px;margin:0 auto;background:var(--sheet);border:1px solid var(--rule);padding:18px;position:relative}
+.zones{position:absolute;left:18px;right:18px;top:0;height:18px;display:flex;font-size:.7rem;color:var(--ink-2);font-stretch:80%}
+.zones span{flex:1;text-align:center;line-height:18px;border-left:1px solid var(--rule)}
+.zones span:first-child{border-left:0}
+.zones-side{position:absolute;top:18px;bottom:18px;left:0;width:18px;display:flex;flex-direction:column;font-size:.7rem;color:var(--ink-2)}
+.zones-side span{flex:1;display:grid;place-items:center;border-top:1px solid var(--rule)}
+.zones-side span:first-child{border-top:0}
+.frame{border:2px solid var(--ink);min-width:0}
+.pad{padding-inline:clamp(16px,3.4vw,44px)}
+
+/* ---------- header ---------- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-block:14px;border-bottom:1px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-stretch:88%;font-weight:650;letter-spacing:.005em}
+.brand svg{width:34px;height:34px;flex:none}
+.nav{display:flex;align-items:center;gap:clamp(12px,2.4vw,28px);flex-wrap:wrap}
+.nav a{text-decoration:none;font-stretch:90%}
+.nav a:hover{text-decoration:underline}
+.lang{display:inline-flex;border:1px solid var(--ink)}
+.lang button{border:0;background:transparent;padding:3px 10px;font-stretch:85%;font-weight:600;cursor:pointer;font-size:var(--s-1)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--sheet)}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;padding-block:clamp(28px,5vw,64px) clamp(24px,4vw,48px);border-bottom:1px solid var(--ink)}
+.hero h1{font-size:var(--s3);font-stretch:116%;font-weight:780;line-height:1.02;letter-spacing:-.012em;max-width:13ch}
+.hero .lead{margin-top:20px;max-width:52ch;color:var(--ink-2);font-size:1.0625rem}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border:1.5px solid var(--ink);text-decoration:none;font-weight:600;font-stretch:92%}
+.btn.primary{background:var(--ink);color:var(--sheet)}
+.btn.primary:hover{background:var(--blue);border-color:var(--blue);color:var(--sheet)}
+.btn:hover{color:var(--blue);border-color:var(--blue)}
+.hero-fig{min-width:0}
+.hero-fig svg{width:100%;height:auto;display:block}
+
+/* ---------- section heads ---------- */
+.sec{padding-block:clamp(28px,4.5vw,56px)}
+.sec + .sec{border-top:1px solid var(--ink)}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.sec-head h2{font-size:var(--s2);font-stretch:110%;font-weight:740;letter-spacing:-.005em}
+.sec-head p{color:var(--ink-2);max-width:58ch;margin-top:6px}
+
+/* ---------- layers (filters) ---------- */
+.layers{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.layer{display:inline-flex;align-items:center;gap:8px;padding:6px 11px 6px 9px;border:1px solid var(--rule);background:transparent;cursor:pointer;font-size:var(--s-1);font-stretch:88%;font-weight:550}
+.layer svg{width:26px;height:8px;flex:none;overflow:visible}
+.layer .n{color:var(--ink-2);font-variant-numeric:tabular-nums;font-weight:450}
+.layer[aria-pressed="true"]{border-color:var(--ink);background:var(--ink);color:var(--sheet)}
+.layer[aria-pressed="true"] .n{color:var(--rule-2)}
+.layer:hover{border-color:var(--ink)}
+.lt{stroke:currentColor;fill:none;stroke-width:1.6}
+
+/* ---------- PROTÓN featured ---------- */
+.stamp{display:inline-flex;flex-direction:column;align-items:center;gap:1px;padding:7px 14px 8px;border:2px solid var(--blue);outline:1px solid var(--blue);outline-offset:3px;color:var(--blue);transform:rotate(-2.5deg);text-align:center;line-height:1.15;margin:6px 6px 0 0}
+.stamp b{font-size:1.05rem;font-stretch:118%;font-weight:780;letter-spacing:.04em}
+.stamp span{font-size:.75rem;font-stretch:90%;font-weight:600}
+.sim-mount{min-height:380px}
+.sim-poster{position:relative;border:1px solid var(--ink);height:clamp(380px,52vw,620px);overflow:hidden;background:var(--sheet)}
+.sim-poster img{width:100%;height:100%;object-fit:cover;display:block}
+.sim-poster p{position:absolute;left:12px;bottom:10px;margin:0;font-size:var(--s-1);color:var(--ink-2)}
+.proton-row{display:grid;grid-template-columns:minmax(0,220px) minmax(0,220px) minmax(0,1fr);gap:clamp(14px,2.4vw,28px);margin-top:clamp(18px,3vw,28px);align-items:start}
+.proton-row figure{margin:0;border:1px solid var(--ink);padding:6px;background:var(--sheet)}
+.proton-row video,.proton-row img{display:block;width:100%;height:auto;aspect-ratio:432/668;object-fit:cover;background:var(--rule-2)}
+.proton-row figcaption{font-size:.75rem;font-stretch:88%;color:var(--ink-2);padding-top:6px}
+.proton-txt{display:grid;gap:12px;max-width:62ch;min-width:0}
+.proton-txt h3{font-size:var(--s1);font-stretch:104%;font-weight:700}
+.proton-txt ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.proton-txt li::marker{color:var(--blue)}
+
+/* ---------- project grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:dense;gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.cell{background:var(--sheet);min-width:0;display:flex}
+.cell.feat{grid-column:span 2}
+.grid.filtered .cell.feat{grid-column:auto}
+.card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:10px;width:100%;padding:16px 18px 18px;cursor:pointer}
+.card:focus-visible{outline:2px solid var(--blue);outline-offset:-4px}
+.card:hover{background:var(--wash)}
+.card .fig{border-bottom:1px solid var(--rule-2);padding-bottom:8px;margin-bottom:2px}
+.card .fig svg{width:100%;height:auto;display:block;aspect-ratio:400/260;max-height:230px}
+.cell.feat .card .fig svg{max-height:300px}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:var(--s-1);font-stretch:85%;color:var(--ink-2)}
+.pid{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.status{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.status svg{width:11px;height:11px;flex:none}
+.card h3{font-size:var(--s1);font-stretch:104%;font-weight:700;line-height:1.2}
+.cell.feat .card h3{font-size:1.45rem}
+.card .sum{color:var(--ink-2);max-width:62ch}
+.card .mine{font-size:var(--s-1);font-stretch:90%}
+.card .mine b{font-weight:650}
+.tags{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.75rem;font-stretch:82%;color:var(--ink-2);margin-top:auto;padding-top:4px}
+
+/* ---------- about ---------- */
+.about{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr) minmax(0,300px);gap:clamp(20px,3.5vw,44px);align-items:start}
+.portrait{border:1px solid var(--ink);padding:8px;background:var(--sheet)}
+.portrait .ph{aspect-ratio:3/4;max-width:100%;background:var(--wash);display:grid;place-items:center;overflow:hidden}
+.portrait img{width:100%;height:100%;object-fit:cover;display:block}
+.portrait svg{width:70%;height:auto}
+.portrait figcaption{font-size:.75rem;font-stretch:85%;color:var(--ink-2);padding-top:6px}
+.prose{display:grid;gap:14px;max-width:60ch}
+.prose p:first-child{font-size:1.125rem;font-stretch:96%}
+.tools{border-top:1.5px solid var(--ink);font-size:var(--s-1)}
+.tools h3{font-size:var(--s0);font-stretch:100%;font-weight:700;padding-block:10px 4px}
+.tools dl{margin:0;display:grid;grid-template-columns:auto minmax(0,1fr);border-top:1px solid var(--rule)}
+.tools dt,.tools dd{margin:0;padding:7px 0;border-bottom:1px solid var(--rule)}
+.tools dt{font-weight:620;font-stretch:85%;padding-right:14px}
+.tools dd{color:var(--ink-2)}
+
+/* ---------- contact ---------- */
+.contact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(20px,4vw,48px);align-items:start}
+.contact .big{font-size:clamp(1.35rem,2.6vw,1.9rem);font-stretch:108%;font-weight:700;line-height:1.2;max-width:24ch}
+.rows{border-top:1.5px solid var(--ink)}
+.row{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--rule)}
+.row .k{font-size:var(--s-1);font-stretch:85%;color:var(--ink-2)}
+.row .v{min-width:0;overflow-wrap:anywhere;font-weight:560}
+.row .v a{text-decoration:none}
+.row .v a:hover{text-decoration:underline}
+.copy{border:1px solid var(--rule);background:transparent;padding:3px 10px;font-size:var(--s-1);cursor:pointer;font-stretch:88%}
+.copy:hover{border-color:var(--ink)}
+
+/* ---------- title block ---------- */
+.foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);border-top:2px solid var(--ink)}
+.revs{padding:12px clamp(16px,3.4vw,44px) 12px;font-size:.75rem;font-stretch:85%;color:var(--ink-2);align-self:end}
+.revs table{border-collapse:collapse;min-width:0}
+.revs th,.revs td{text-align:left;padding:3px 14px 3px 0;border-bottom:1px solid var(--rule);font-weight:450}
+.revs th{color:var(--ink);font-weight:620}
+.tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--ink);border-left:2px solid var(--ink)}
+.tb div{padding:6px 10px 7px;background:var(--sheet);min-width:0}
+.tb .wide{grid-column:span 4}
+.tb .half{grid-column:span 2}
+.tb small{display:block;font-size:.6875rem;font-stretch:82%;color:var(--ink-2);line-height:1.3}
+.tb b{display:block;font-weight:620;font-stretch:92%;font-size:.875rem;line-height:1.3;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.tb .name b{font-size:1.15rem;font-stretch:112%;font-weight:760}
+
+/* ---------- drawings ---------- */
+.dw .k{fill:none;stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke;stroke-linecap:round;stroke-linejoin:round}
+.dw .t{fill:none;stroke:var(--ink-2);stroke-width:1;vector-effect:non-scaling-stroke}
+.dw .c{fill:none;stroke:var(--blue);stroke-width:1;stroke-dasharray:12 3 2 3;vector-effect:non-scaling-stroke}
+.dw .d{fill:none;stroke:var(--blue);stroke-width:1;vector-effect:non-scaling-stroke}
+.dw .dash{stroke-dasharray:5 4}
+.dw .f{fill:var(--ink);stroke:none}
+.dw .fb{fill:var(--blue);stroke:none}
+.dw .pw{fill:var(--sheet);stroke:none}
+.dw .w{fill:var(--wash);stroke:var(--ink);stroke-width:1;vector-effect:non-scaling-stroke}
+.dw .hf{fill:url(#hatch);stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dw .hs{fill:url(#hatch);stroke:none}
+.dw .bar{fill:var(--rule-2);stroke:none}
+.dw .lo{stroke:var(--ink);stroke-linecap:round;vector-effect:non-scaling-stroke;fill:none}
+.dw .li{stroke:var(--sheet);stroke-linecap:round;vector-effect:non-scaling-stroke;fill:none}
+.dw .jt{fill:var(--sheet);stroke:var(--ink);stroke-width:1.5;vector-effect:non-scaling-stroke}
+.dw text{font-family:var(--f);font-size:11px;fill:var(--ink-2);font-stretch:85%}
+.dw .lbl{fill:var(--blue);font-size:12px;font-weight:600}
+.dw .cap{fill:var(--ink);font-size:13px;font-weight:680;font-stretch:100%}
+.dw .tiny{font-size:9px}
+.dw .stamp{fill:var(--blue);font-size:13px;font-weight:760;font-stretch:118%;letter-spacing:.06em}
+.dw .bal{font-size:10.5px;font-weight:650;fill:var(--ink)}
+.hp{stroke:var(--ink-2);stroke-width:1}
+
+/* hero: one orchestrated build-up of the drawing */
+@media (prefers-reduced-motion:no-preference){
+  .build > g{animation:appear .5s ease-out backwards}
+  .build > g:nth-child(2){animation-delay:.15s}
+  .build > g:nth-child(3){animation-delay:.35s}
+  .build > g:nth-child(4){animation-delay:.6s}
+  .build > g:nth-child(5){animation-delay:.85s}
+  @keyframes appear{from{opacity:0;transform:translateY(4px)}}
+}
+
+/* ---------- detail dialog ---------- */
+dialog{border:2px solid var(--ink);background:var(--sheet);color:var(--ink);padding:0;width:min(1040px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+dialog::backdrop{background:rgba(10,14,16,.55)}
+.dlg{display:flex;flex-direction:column;max-height:calc(100dvh - 28px)}
+.dlg-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 18px;border-bottom:1px solid var(--ink)}
+.dlg-head .pid{font-size:var(--s-1);font-stretch:85%}
+.dlg-head h2{font-size:clamp(1.3rem,2.6vw,1.75rem);font-stretch:110%;font-weight:760;line-height:1.15;margin-top:2px}
+.x{border:1px solid var(--ink);background:transparent;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:1.1rem;line-height:1}
+.x:hover{background:var(--ink);color:var(--sheet)}
+.dlg-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);overflow:auto;min-height:0}
+.dlg-fig{border-right:1px solid var(--rule);padding:18px;display:flex;flex-direction:column;gap:14px}
+#dlg-draw svg{width:100%;height:auto;display:block}
+.dlg-media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.dlg-media video,.dlg-media img{display:block;width:100%;height:auto;aspect-ratio:432/668;object-fit:cover;border:1px solid var(--rule);background:var(--rule-2)}
+.dlg-fig .facts{display:grid;grid-template-columns:auto minmax(0,1fr);font-size:var(--s-1);border-top:1px solid var(--ink)}
+.dlg-fig .facts dt,.dlg-fig .facts dd{margin:0;padding:6px 0;border-bottom:1px solid var(--rule)}
+.dlg-fig .facts dt{color:var(--ink-2);font-stretch:85%;padding-right:14px}
+.dlg-txt{padding:18px 22px 24px;display:grid;gap:18px;align-content:start;min-width:0}
+.dlg-txt h3{font-size:var(--s0);font-weight:700;font-stretch:100%;margin-bottom:6px}
+.dlg-txt p,.dlg-txt li{max-width:62ch}
+.dlg-txt ul{margin:0;padding-left:1.1em;display:grid;gap:6px}
+.dlg-txt li::marker{color:var(--blue)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{border:1px solid var(--rule);padding:2px 8px;font-size:.75rem;font-stretch:88%}
+.dlg-links{display:flex;flex-wrap:wrap;gap:10px}
+.dlg-foot{display:flex;justify-content:space-between;gap:10px;padding:10px 18px;border-top:1px solid var(--ink)}
+.nb{border:1px solid var(--rule);background:transparent;padding:6px 12px;cursor:pointer;font-size:var(--s-1);font-stretch:90%;max-width:48%;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nb:last-child{text-align:right}
+.nb:hover{border-color:var(--ink)}
+
+/* ---------- responsive ---------- */
+@media (max-width:980px){
+  .about{grid-template-columns:minmax(0,200px) minmax(0,1fr)}
+  .about .tools{grid-column:1 / -1}
+  .foot{grid-template-columns:minmax(0,1fr)}
+  .tb{border-left:0;border-top:1px solid var(--ink)}
+  .revs{order:2}
+}
+@media (max-width:900px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .proton-row{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .proton-txt{grid-column:1 / -1}
+  .hero{grid-template-columns:minmax(0,1fr)}
+  .hero-fig{max-width:560px}
+  .contact{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:720px){
+  .dlg-body{grid-template-columns:minmax(0,1fr)}
+  .dlg-fig{border-right:0;border-bottom:1px solid var(--rule)}
+}
+@media (max-width:600px){
+  body{padding-block:12px 24px}
+  .sheet{padding:0;border:0}
+  .zones,.zones-side{display:none}
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .cell.feat{grid-column:auto}
+  .about{grid-template-columns:minmax(0,1fr)}
+  .portrait{max-width:220px}
+  .row{grid-template-columns:minmax(0,1fr) auto}
+  .row .k{grid-column:1 / -1}
+  .tb{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tb .wide{grid-column:span 2}
+  .tb .half{grid-column:span 2}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line class="hp" x1="0" y1="0" x2="0" y2="6"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div class="sheet">
+  <div class="zones" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>D</span><span>E</span><span>F</span></div>
+  <div class="zones-side" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+  <div class="frame">
+
+    <header class="top pad">
+      <a class="brand" href="#inicio" aria-label="Adán López Lozano">
+        <svg viewBox="0 0 34 34" aria-hidden="true"><circle cx="17" cy="17" r="15.5" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="17" x2="30" y2="17" stroke="currentColor" stroke-width="1"/><text x="17" y="14" text-anchor="middle" font-size="9" font-weight="700" fill="currentColor" font-family="Archivo, Arial, sans-serif">ALL</text><text x="17" y="27" text-anchor="middle" font-size="7.5" fill="currentColor" font-family="Archivo, Arial, sans-serif">00</text></svg>
+        <span>Adán López Lozano</span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="#proyectos" data-i="navProjects">Proyectos</a>
+        <a href="#acerca" data-i="navAbout">Acerca</a>
+        <a href="#contacto" data-i="navContact">Contacto</a>
+        <span class="lang" role="group" aria-label="Idioma / Language">
+          <button type="button" id="lang-es" data-lang="es" aria-pressed="true">ES</button>
+          <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+        </span>
+      </nav>
+    </header>
+
+    <section class="hero pad" id="inicio">
+      <div>
+        <h1 data-i="heroH">Diseño y construyo robots, del chasis al nodo de ROS 2.</h1>
+        <p class="lead" data-i="heroP"></p>
+        <div class="actions">
+          <a class="btn primary" href="#proyectos" data-i="ctaProjects">Ver proyectos</a>
+          <a class="btn" id="cta-docs" target="_blank" rel="noopener" data-i="ctaDocs">Documentación en GitHub</a>
+        </div>
+      </div>
+      <figure class="hero-fig" style="margin:0" id="hero-fig"></figure>
+    </section>
+
+    <section class="sec pad" id="proton">
+      <div class="sec-head">
+        <div>
+          <h2 data-i="protonH">PROTÓN en 3D</h2>
+          <p data-i="protonP"></p>
+        </div>
+        <div class="stamp" aria-label="First Prize, Huawei ICT Competition 2025–2026"><b>FIRST PRIZE</b><span>Huawei ICT Competition 2025–2026</span></div>
+      </div>
+      <div class="sim-mount" id="sim-mount"></div>
+      <div class="proton-row">
+        <figure>
+          <video id="proton-video" src="media/proton-invernadero.mp4" poster="media/proton-invernadero.jpg" muted loop playsinline autoplay preload="metadata" aria-label="PROTÓN avanzando entre plantas de jitomate"></video>
+          <figcaption data-i="vidCap">Prueba en un invernadero de jitomate</figcaption>
+        </figure>
+        <figure>
+          <img src="media/proton-foto.jpg" alt="PROTÓN armado: chasis de aluminio y acrílico con cuatro ruedas y el brazo rojo de 6 GDL con la cámara RealSense" loading="lazy" width="480" height="738">
+          <figcaption data-i="photoCap">PROTÓN armado</figcaption>
+        </figure>
+        <div class="proton-txt">
+          <h3 data-i="roleH">Mi parte</h3>
+          <ul id="proton-role"></ul>
+          <div class="actions" style="margin-top:4px">
+            <a class="btn primary" href="#ALL-01" id="proton-open" data-i="protonOpen">Ver la ficha completa</a>
+            <a class="btn" href="proton/index.html" target="_blank" rel="noopener" data-i="protonFull">Simulación en pantalla completa</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec pad" id="proyectos">
+      <div class="sec-head">
+        <div>
+          <h2 data-i="projectsH">Proyectos</h2>
+          <p data-i="projectsP"></p>
+        </div>
+      </div>
+      <div class="layers" id="layers" role="group"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="sec pad" id="acerca">
+      <div class="sec-head"><h2 data-i="aboutH">Acerca de mí</h2></div>
+      <div class="about">
+        <figure class="portrait" style="margin:0">
+          <div class="ph" id="ph"></div>
+          <figcaption data-i="figCap"></figcaption>
+        </figure>
+        <div class="prose" id="about-prose"></div>
+        <div class="tools">
+          <h3 data-i="toolsH">Herramientas</h3>
+          <dl id="tools"></dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="sec pad" id="contacto">
+      <div class="sec-head"><h2 data-i="contactH">Contacto</h2></div>
+      <div class="contact">
+        <p class="big" data-i="contactP"></p>
+        <div class="rows" id="rows"></div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="revs">
+        <table>
+          <thead><tr><th>Rev.</th><th data-i="revDate">Fecha</th><th data-i="revDesc">Descripción</th></tr></thead>
+          <tbody><tr><td>A</td><td>2026-10-14</td><td data-i="rev1">Primera publicación</td></tr><tr><td>B</td><td>2026-10-15</td><td data-i="rev2">Huawei ICT, PROTÓN en 3D y tres proyectos</td></tr><tr><td>C</td><td>2026-10-15</td><td data-i="rev3">Atlas con gemelo 3D; fuera cuatro proyectos</td></tr></tbody>
+        </table>
+      </div>
+      <div class="tb" id="tb"></div>
+    </footer>
+  </div>
+</div>
+
+<dialog id="dlg" aria-labelledby="dlg-title">
+  <div class="dlg">
+    <div class="dlg-head">
+      <div><div class="pid" id="dlg-id"></div><h2 id="dlg-title"></h2></div>
+      <button class="x" type="button" id="dlg-close">×</button>
+    </div>
+    <div class="dlg-body">
+      <div class="dlg-fig"><div id="dlg-draw"></div><dl class="facts" id="dlg-facts"></dl></div>
+      <div class="dlg-txt" id="dlg-txt"></div>
+    </div>
+    <div class="dlg-foot">
+      <button class="nb" type="button" id="dlg-prev"></button>
+      <button class="nb" type="button" id="dlg-next"></button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function(){
+"use strict";
+
+/* ===== Datos que se editan a mano ===== */
+const EMAIL = "lopezlozanoadan1@gmail.com";
+const GITHUB = "https://github.com/flkochu";
+const LINKEDIN = "";                       // pega aquí la URL de tu perfil, p. ej. https://www.linkedin.com/in/tu-usuario/
+const DOCS = "https://github.com/flkochu/flkochu.github.io/blob/main/docs/";
+const UPDATED = "2026-10-15";
+
+const UI = {
+ es:{
+  navProjects:"Proyectos", navAbout:"Acerca", navContact:"Contacto",
+  heroH:"Diseño y construyo robots, del chasis al nodo de ROS 2.",
+  heroP:"Soy Adán López Lozano, estudiante de Ingeniería Mecatrónica y Sistemas Ciberfísicos en la Universidad Iberoamericana, becario de investigación y miembro del club de robótica. Con mi equipo ganamos el First Prize de la Huawei ICT Competition 2025–2026 con PROTÓN.",
+  protonH:"PROTÓN en 3D", protonP:"El robot con el que ganamos en la Huawei ICT Competition. El brazo usa las piezas CAD reales y el chasis está aproximado a partir de fotos: mueve las articulaciones, prueba las poses o maneja el robot.",
+  vidCap:"Prueba en un invernadero de jitomate", photoCap:"PROTÓN armado", roleH:"Mi parte en el equipo", protonOpen:"Ver la ficha completa", protonFull:"Simulación en pantalla completa",
+  protonRole:["Toda la electrónica: tres ESP32, drivers BTS7960 con encoders, IMU y PCA9685 para los servos.","El chasis y su control de movimiento, con PID por rueda, anti-windup y corte si un motor se bloquea.","El control del brazo de 6 GDL por MQTT y su integración con ROS 2 Jazzy y MoveIt2.","El paper aceptado en COMRob."],
+  simLoading:"Cargando el modelo 3D…", sim:"Ver en 3D", full:"Pantalla completa", rev2:"Huawei ICT, PROTÓN en 3D y tres proyectos", rev3:"Atlas con gemelo 3D; fuera cuatro proyectos",
+  ctaProjects:"Ver proyectos", ctaDocs:"Documentación en GitHub",
+  projectsH:"Proyectos",
+  projectsP:"Cada plano dice qué hice yo dentro del proyecto. Filtra por capa o abre uno para ver el detalle.",
+  layersLabel:"Filtrar por capa", all:"Todo",
+  mine:"Mi parte", ctx:"Contexto", did:"Qué hice", next:"Siguiente", stack:"Herramientas", links:"Enlaces",
+  layersF:"Capas", statusF:"Estado", yearF:"Año",
+  doc:"Documentación completa", site:"Abrir la guía", repo:"Repositorio", ref:"Diseño base",
+  refProf:"Repo de referencia del profesor", repoArm:"Brazo: URDF y simulación", atlasDoc:"Documentación con gemelo 3D",
+  close:"Cerrar", prev:"Anterior", nextP:"Siguiente",
+  aboutH:"Acerca de mí", toolsH:"Herramientas", figCap:"Adán López Lozano, Ciudad de México",
+  about:[
+   "Estudio Ingeniería Mecatrónica y Sistemas Ciberfísicos en la Ibero, en la Ciudad de México. Soy becario de investigación con el Prof. Huber Girón, miembro del club de robótica y compito en torneos de robótica.",
+   "Me gusta llevar un robot completo: del cálculo y el CAD a la electrónica, el firmware y ROS 2. Cuando aprendo algo para una materia, lo convierto en una guía para mis compañeros.",
+   "Con PROTÓN ganamos el First Prize de la Huawei ICT Competition 2025–2026; ahí me tocó la electrónica, el chasis y el control del robot. Ahora preparo la presentación del paper en COMRob, sigo con el control de Atlas y llevo un perro cuadrúpedo a ROS 2 Jazzy."
+  ],
+  tools:[["Robótica","ROS 2 Jazzy, MoveIt2, micro-ROS, slam_toolbox, RViz, Gazebo"],["Embebidos","ESP32, ESP-IDF, FreeRTOS, Teensy 4.1, Arduino, MicroPython, MQTT"],["Visión e IA","OpenCV, ArUco, YOLO, MediaPipe, scikit-learn"],["Diseño mecánico","Fusion 360, impresión 3D, MATLAB"],["Programación","Python, C/C++, JavaScript, SQL, LaTeX"]],
+  contactH:"Contacto",
+  contactP:"Busco lugares como becario y becario de investigación en robótica, sistemas embebidos y automatización.",
+  email:"Correo", copy:"Copiar", copied:"Copiado", copyFail:"Texto seleccionado",
+  revDate:"Fecha", revDesc:"Descripción", rev1:"Primera publicación",
+  tb:{drawn:"Dibujó",inst:"Institución",instV:"Universidad Iberoamericana Ciudad de México, Ingeniería Mecatrónica y Sistemas Ciberfísicos",dwg:"Plano",scale:"Escala",sheet:"Hoja",rev:"Rev.",date:"Actualizado",count:"Proyectos",status:"Estado",statusV:"Publicado"},
+  d:{accepted:"ACEPTADO",fracture:"fractura",side:"Vista lateral, sin escala",proton:"PROTÓN, brazo de 6 GDL",range:"±90° por articulación",front:"frente",ramp:"rampa",setp:"consigna",map:"mapa 2D",votes:"votos de 200 árboles",feat:"8 características"}
+ },
+ en:{
+  navProjects:"Projects", navAbout:"About", navContact:"Contact",
+  heroH:"I design and build robots, from the chassis to the ROS 2 node.",
+  heroP:"I’m Adán López Lozano, a Mechatronics and Cyber-Physical Systems Engineering student at Universidad Iberoamericana, a research assistant and a member of the robotics club. My team and I won First Prize at the Huawei ICT Competition 2025–2026 with PROTÓN.",
+  protonH:"PROTÓN in 3D", protonP:"The robot that won at the Huawei ICT Competition. The arm uses the real CAD parts and the chassis is approximated from photos: move the joints, try the poses or drive the robot.",
+  vidCap:"Test run in a tomato greenhouse", photoCap:"PROTÓN assembled", roleH:"My part on the team", protonOpen:"See the full sheet", protonFull:"Full-screen simulation",
+  protonRole:["All the electronics: three ESP32 boards, BTS7960 drivers with encoders, an IMU and a PCA9685 for the servos.","The chassis and its motion control, with per-wheel PID, anti-windup and a cutoff if a motor stalls.","Control of the 6-DOF arm over MQTT and its integration with ROS 2 Jazzy and MoveIt2.","The paper accepted at COMRob."],
+  simLoading:"Loading the 3D model…", sim:"See in 3D", full:"Full screen", rev2:"Huawei ICT, PROTÓN in 3D and three projects", rev3:"Atlas with 3D twin; four projects removed",
+  ctaProjects:"See projects", ctaDocs:"Documentation on GitHub",
+  projectsH:"Projects",
+  projectsP:"Each drawing says what I did within the project. Filter by layer or open one for the details.",
+  layersLabel:"Filter by layer", all:"All",
+  mine:"My part", ctx:"Context", did:"What I did", next:"Next", stack:"Tools", links:"Links",
+  layersF:"Layers", statusF:"Status", yearF:"Year",
+  doc:"Full documentation", site:"Open the guide", repo:"Repository", ref:"Base design",
+  refProf:"Professor’s reference repo", repoArm:"Arm: URDF and simulation", atlasDoc:"Documentation with 3D twin",
+  close:"Close", prev:"Previous", nextP:"Next",
+  aboutH:"About me", toolsH:"Tools", figCap:"Adán López Lozano, Mexico City",
+  about:[
+   "I study Mechatronics and Cyber-Physical Systems Engineering at Ibero in Mexico City. I’m a research assistant with Prof. Huber Girón, a member of the robotics club, and I compete in robotics tournaments.",
+   "I like taking a robot all the way: from the math and the CAD to the electronics, the firmware and ROS 2. When I learn something for a course, I turn it into a guide for my classmates.",
+   "With PROTÓN my team won First Prize at the Huawei ICT Competition 2025–2026; my part was the electronics, the chassis and the robot’s control. Now I’m preparing the paper presentation at COMRob, continuing Atlas’s control, and bringing a quadruped to ROS 2 Jazzy."
+  ],
+  tools:[["Robotics","ROS 2 Jazzy, MoveIt2, micro-ROS, slam_toolbox, RViz, Gazebo"],["Embedded","ESP32, ESP-IDF, FreeRTOS, Teensy 4.1, Arduino, MicroPython, MQTT"],["Vision and AI","OpenCV, ArUco, YOLO, MediaPipe, scikit-learn"],["Mechanical design","Fusion 360, 3D printing, MATLAB"],["Programming","Python, C/C++, JavaScript, SQL, LaTeX"]],
+  contactH:"Contact",
+  contactP:"I’m looking for internships and research assistant roles in robotics, embedded systems and automation.",
+  email:"Email", copy:"Copy", copied:"Copied", copyFail:"Text selected",
+  revDate:"Date", revDesc:"Description", rev1:"First release",
+  tb:{drawn:"Drawn by",inst:"Institution",instV:"Universidad Iberoamericana Mexico City, Mechatronics and Cyber-Physical Systems Engineering",dwg:"Drawing",scale:"Scale",sheet:"Sheet",rev:"Rev.",date:"Updated",count:"Projects",status:"Status",statusV:"Released"},
+  d:{accepted:"ACCEPTED",fracture:"fracture",side:"Side view, not to scale",proton:"PROTÓN, 6-DOF arm",range:"±90° per joint",front:"front",ramp:"ramp",setp:"setpoint",map:"2D map",votes:"votes from 200 trees",feat:"8 features"}
+ }
+};
+
+/* Capas: cada una con su tipo de línea, como en CAD */
+const LAYERS = [
+ {id:"hw",   es:"Hardware",     en:"Hardware",          dash:""},
+ {id:"sw",   es:"Software",     en:"Software",          dash:"6 3"},
+ {id:"ros",  es:"ROS 2",        en:"ROS 2",             dash:"9 2 2 2"},
+ {id:"paper",es:"Papers",       en:"Papers",            dash:"1.5 3"},
+ {id:"comp", es:"Competencias", en:"Competitions",      dash:"double"},
+ {id:"lab",  es:"Becario",      en:"Research assistant",dash:"13 3"},
+ {id:"com",  es:"Comunidad",    en:"Community",         dash:"8 2 2 2 2 2"}
+];
+
+const P = [
+{id:"proton",feat:true,layers:["hw","sw","ros","comp"],st:"ok",year:"2026",draw:"proton",doc:"proton-brazo-ros2.md",
+ links:[{k:"sim",u:"#proton"},{k:"full",u:"proton/index.html"},{k:"repoArm",u:"https://github.com/flkochu/proton-brazo-6gdl"}],
+ media:[{type:"video",src:"media/proton-invernadero.mp4",poster:"media/proton-invernadero.jpg"},{type:"img",src:"media/proton-foto.jpg"}],
+ es:{t:"PROTÓN · Plague Bot VR",s:"Robot para monitorear invernaderos con visión por IA y un brazo de 6 GDL. Con mi equipo ganamos el First Prize de la Huawei ICT Competition 2025–2026.",mine:"Electrónica, chasis y control del robot",status:"First Prize, Huawei ICT",
+  ctx:"PROTÓN recorre los pasillos del invernadero, detecta plagas y madurez con YOLOv8 y deja revisar las hojas con un brazo de 6 GDL desde realidad mixta. Es un proyecto de equipo; aquí va mi parte. Con él ganamos el First Prize de la Huawei ICT Competition 2025–2026.",
+  did:["Toda la electrónica: tres ESP32 (Maestro, Esclava y Brazo), drivers BTS7960 con encoders, IMU MPU6050 y PCA9685 para los servos.","Chasis de perfil de aluminio con cuatro motorreductores y su control: PID por rueda con anti-windup y corte de PWM si un motor se bloquea.","Control del brazo: seis servos de 180° con límites de ±90°, comandos por WiFi y MQTT y estado a 10 Hz.","Puente de ROS 2 Jazzy a serial; la cadena /cmd_vel → nodo → ESP32 funciona.","MoveIt2 y RViz para el brazo, y una interfaz web con ángulo objetivo contra real."],
+  next:["Presentar el paper en COMRob.","Probar con MoveIt2 el URDF nuevo del brazo, que ya trae colisiones."]},
+ en:{t:"PROTÓN · Plague Bot VR",s:"A greenhouse-monitoring robot with AI vision and a 6-DOF arm. My team and I won First Prize at the Huawei ICT Competition 2025–2026.",mine:"Electronics, chassis and robot control",status:"First Prize, Huawei ICT",
+  ctx:"PROTÓN drives down greenhouse aisles, detects pests and ripeness with YOLOv8, and lets an operator inspect leaves with a 6-DOF arm from mixed reality. It’s a team project; this covers my part. It won First Prize at the Huawei ICT Competition 2025–2026.",
+  did:["All the electronics: three ESP32 boards (Maestro, Esclava and Brazo), BTS7960 drivers with encoders, an MPU6050 IMU and a PCA9685 for the servos.","Aluminum-extrusion chassis with four gearmotors and its control: per-wheel PID with anti-windup and a PWM cutoff if a motor stalls.","Arm control: six 180° servos limited to ±90°, commands over WiFi and MQTT, and state at 10 Hz.","ROS 2 Jazzy to serial bridge; the /cmd_vel → node → ESP32 chain works.","MoveIt2 and RViz for the arm, plus a web interface showing target vs. actual angle."],
+  next:["Present the paper at COMRob.","Test the new arm URDF, which now includes collision meshes, in MoveIt2."]},
+ stack:["ESP32","BTS7960","PCA9685","MPU6050","MQTT","ROS 2 Jazzy","MoveIt2","Python"]},
+
+{id:"paper",layers:["paper"],st:"ok",year:"2026",draw:"paper",doc:"paper-comrob.md",links:[],
+ es:{t:"Paper de Plague Bot VR en COMRob",s:"Artículo sobre la plataforma, aceptado en el Congreso Mexicano de Robótica.",mine:"Redacción y preparación del paper",status:"Aceptado",
+  ctx:"El paper presenta Plague Bot VR: detección de plagas y madurez con YOLOv8, un manipulador de 6 GDL y teleoperación en realidad mixta.",
+  did:["Redacción del artículo en LaTeX con formato IEEE.","Corrección de citas y del orden de la bibliografía.","Anonimización del bloque de autores para la revisión ciega.","Cambios que pidieron los revisores: cinemática y espacio de trabajo del brazo, cuantificar la mejor visibilidad del envés de las hojas y dejar clara la novedad científica."],
+  next:["Presentación en COMRob."]},
+ en:{t:"Plague Bot VR paper at COMRob",s:"A paper on the platform, accepted at the Mexican Robotics Congress.",mine:"Writing and preparing the paper",status:"Accepted",
+  ctx:"The paper presents Plague Bot VR: pest and ripeness detection with YOLOv8, a 6-DOF manipulator and mixed-reality teleoperation.",
+  did:["Wrote the paper in LaTeX, IEEE format.","Fixed citations and bibliography order.","Anonymized the author block for blind review.","Reviewer revisions: arm kinematics and workspace, quantifying the better view of leaf undersides, and stating the scientific novelty."],
+  next:["Presentation at COMRob."]},
+ stack:["LaTeX","IEEE"]},
+
+{id:"saludo",layers:["lab","sw"],st:"wip",year:"2026",draw:"saludo",doc:"brazo-saludo.md",links:[],
+ es:{t:"Brazo de 3 GDL que saluda",s:"La cámara detecta a una persona y su mano, y el brazo del laboratorio la saluda.",mine:"Detección de persona y mano, y comunicación con el brazo",status:"Prototipo",
+  ctx:"Me pidieron revivir el brazo de 3 GDL del laboratorio (base, codo y muñeca): motores NEMA 17 con drivers CL57T y una ESP32-C3 con firmware en MicroPython que recibe comandos de texto por serial e I²C.",
+  did:["Detección de personas con YOLO de Ultralytics (clase person).","Detección de la mano con MediaPipe Hands.","Envío del comando de saludo por USB serial a la ESP32 cuando aparece una persona."]},
+ en:{t:"A 3-DOF arm that waves",s:"The camera finds a person and their hand, and the lab arm waves at them.",mine:"Person and hand detection, and arm communication",status:"Prototype",
+  ctx:"I was asked to bring the lab’s 3-DOF arm (base, elbow, wrist) back to life: NEMA 17 steppers with CL57T drivers and an ESP32-C3 running MicroPython that accepts text commands over serial and I²C.",
+  did:["Person detection with Ultralytics YOLO (person class).","Hand detection with MediaPipe Hands.","Sends the wave command over USB serial to the ESP32 when a person appears."]},
+ stack:["Python","YOLO","MediaPipe","OpenCV","ESP32-C3","MicroPython"]},
+
+{id:"atlas",feat:true,layers:["lab","sw"],st:"ok",year:"2026",draw:"atlas",doc:"atlas-agv.md",links:[{k:"atlasDoc",u:"atlas/index.html"},{k:"refProf",u:"https://github.com/HuberGiron/Robot-uniciclo-Ibero-2"}],
+ es:{t:"Atlas: guiado autónomo multi-robot",s:"Plataforma omnidireccional de cuatro ruedas mecanum que ya se maneja desde realidad mixta. Documentación con gemelo 3D.",mine:"Visión ArUco, cinemática de Atlas y control de navegación",status:"Funcionando",
+  ctx:"Proyecto de becario con el Prof. Huber Girón: visión, control en lazo cerrado y realidad mixta para guiar a Apolo, Odiseo y Atlas en el laboratorio. Atlas es el único holonómico: dos módulos de tracción con transmisión por cadena y cardanes, suspensión independiente y cuatro tarjetas de potencia IBERO. El código es del equipo y es privado; aquí documento mi parte.",
+  did:["Detección del marcador ArUco con suavizado de pose y corrección del salto de ángulo, compatible con las dos APIs de OpenCV.","Cinemática inversa y directa de Atlas, junto con Sebas, con el orden de ruedas y la polaridad medidos en el robot.","Análisis de la configuración O de las ruedas: conserva cerca del 24 % del par de giro de una X, por eso la orientación se cierra con una medición externa.","Escalado uniforme del vector de las cuatro ruedas para que el robot no se congele cerca del destino.","Bloque de control de navegación: ley proporcional holonómica y lazo cerrado cámara → visión → control → MQTT con modo de prueba en seco.","Publicación de la pose a 15 Hz para la realidad mixta, y homografía con DLT normalizada para pasarla a metros (falta integrarla).","Documentación del robot con un gemelo cinemático en 3D."],
+  next:["Pose en metros para la realidad mixta y un solo esquema de tópicos con el equipo.","Encoders, IMU, cuatro LiDAR y cámara a bordo.","Mando por voz: “Atlas, ve al punto central”, “Atlas, detente”."]},
+ en:{t:"Atlas: multi-robot autonomous guidance",s:"A four-wheel mecanum omnidirectional platform that is now driven from mixed reality. Documented with a 3D twin.",mine:"ArUco vision, Atlas kinematics and navigation control",status:"Working",
+  ctx:"Research assistant project with Prof. Huber Girón: vision, closed-loop control and mixed reality to guide Apolo, Odiseo and Atlas in the lab. Atlas is the only holonomic one: two drive modules with chain and U-joint transmission, independent suspension and four IBERO power boards. The team code is private; this documents my part.",
+  did:["ArUco marker detection with pose smoothing and angle wrap-around correction, working with both OpenCV APIs.","Atlas inverse and forward kinematics, together with Sebas, using the wheel order and polarity measured on the robot.","Analysis of the O wheel configuration: it keeps about 24 % of an X layout’s turning torque, so orientation is closed with an external measurement.","Uniform scaling of the four-wheel vector so the robot doesn’t freeze near the goal.","Navigation control block: holonomic proportional law and a camera → vision → control → MQTT closed loop with a dry-run mode.","Pose published at 15 Hz for mixed reality, plus a normalized-DLT homography to convert it to meters (not yet integrated).","Robot documentation with a 3D kinematic twin."],
+  next:["Pose in meters for mixed reality and a single topic scheme with the team.","Encoders, IMU, four LiDARs and an onboard camera.","Voice commands: “Atlas, go to the center point”, “Atlas, stop”."]},
+ stack:["Python","OpenCV","ArUco","MQTT","three.js","Raspberry Pi"]},
+{id:"perro",layers:["hw","sw","ros"],st:"wip",year:"2026",draw:"perro",doc:"perro-robot.md",links:[{k:"ref",u:"https://github.com/omerKurkutlu/OK1-QuadrupedRobot"}],
+ es:{t:"Perro robot cuadrúpedo",s:"Retomo el cuadrúpedo de un compañero y lo llevo a hardware real y a ROS 2 Jazzy.",mine:"Electrónica, control y simulación",status:"En desarrollo",
+  ctx:"El proyecto solo tenía el modelo, basado en el diseño abierto OK1-QuadrupedRobot. Lo estoy convirtiendo en un robot real con control en ROS 2.",
+  did:["Electrónica: servos DS1501MG, ESP32, PCA9685, IMU y un regulador DC-DC de 240 W y 10 A.","Cinemática inversa en la PC que manda el ángulo de cada articulación al ESP32 por USB.","Control en ROS 2 Jazzy mientras armo el circuito."],
+  next:["Simulación en Gazebo y después en Isaac Sim.","Un paper sobre el robot."]},
+ en:{t:"Quadruped robot dog",s:"Picking up a classmate’s quadruped and taking it to real hardware and ROS 2 Jazzy.",mine:"Electronics, control and simulation",status:"In progress",
+  ctx:"The project only had the model, based on the open OK1-QuadrupedRobot design. I’m turning it into a working robot with ROS 2 control.",
+  did:["Electronics: DS1501MG servos, ESP32, PCA9685, IMU and a 240 W, 10 A DC-DC regulator.","Inverse kinematics on the PC sending each joint angle to the ESP32 over USB.","ROS 2 Jazzy control while I build the circuit."],
+  next:["Simulation in Gazebo, then Isaac Sim.","A paper about the robot."]},
+ stack:["ESP32","PCA9685","IMU","ROS 2 Jazzy","Gazebo","Python"]},
+
+{id:"sumo",layers:["comp","hw"],st:"ok",year:"2026",draw:"sumo",doc:"mini-sumo.md",links:[],
+ es:{t:"Mini Sumo Autónomo Pro",s:"Diseño mecánico de nuestro mini sumo para RobotChallenge CGC World Cup México 2026.",mine:"Diseño mecánico y CAD, en un equipo de cuatro",status:"Compitió en 2026",
+  ctx:"Competencia en la Ciudad de México el 13 y 14 de septiembre de 2026, categoría Mini Sumo Autónomo Pro.",
+  did:["Base de placa de acero A36/1018 que funciona como estructura y como lastre.","Selección de Teensy 4.1, sensores ToF VL53L5CX y driver TB6612FNG.","Llantas de silicón coladas sobre rines impresos con insertos metálicos.","Solución de errores de referencias en cascada de Fusion 360 exportando a STEP."]},
+ en:{t:"Mini Sumo Autonomous Pro",s:"Mechanical design of our mini sumo for RobotChallenge CGC World Cup México 2026.",mine:"Mechanical design and CAD, on a team of four",status:"Competed in 2026",
+  ctx:"Competition in Mexico City on September 13–14, 2026, Mini Sumo Autonomous Pro category.",
+  did:["A36/1018 steel base plate that is both the structure and the ballast.","Picked the Teensy 4.1, VL53L5CX ToF sensors and TB6612FNG driver.","Silicone tires cast onto printed rims with metal inserts.","Fixed cascading reference errors in Fusion 360 by exporting to STEP."]},
+ stack:["Fusion 360","3D printing","Teensy 4.1","VL53L5CX"]},
+
+{id:"mec",layers:["com"],st:"ok",year:"2026",draw:"mec",doc:"guias-de-estudio.md",links:[{k:"site",u:"https://flkochu.github.io/Guia-Mecanismos-y-Actuadores/"},{k:"repo",u:"https://github.com/flkochu/Guia-Mecanismos-y-Actuadores"}],
+ es:{t:"Guía de Mecanismos y Actuadores",s:"Síntesis de mecanismos de cuatro barras resuelta paso a paso en MATLAB, con calculadora interactiva.",mine:"Autor",status:"Publicada",
+  ctx:"Mi maestro me pidió enseñar a resolver en MATLAB los ejercicios de síntesis de mecanismos, así que hice una guía web para el grupo.",
+  did:["Deducción de la ecuación de Freudenstein y su solución con fsolve.","Caso del bote de basura con pedal, con animación y evaluación con Grashof y ángulo de transmisión.","Scripts de MATLAB descargables y una calculadora en el navegador."]},
+ en:{t:"Mechanisms and Actuators guide",s:"Four-bar linkage synthesis solved step by step in MATLAB, with an interactive calculator.",mine:"Author",status:"Published",
+  ctx:"My professor asked me to teach how to solve the mechanism synthesis exercises in MATLAB, so I built a web guide for the class.",
+  did:["Derivation of the Freudenstein equation and its solution with fsolve.","Pedal trash-can case with animation, checked with Grashof and transmission angle.","Downloadable MATLAB scripts and an in-browser calculator."]},
+ stack:["MATLAB","HTML","JavaScript"]},
+
+{id:"sen",layers:["com"],st:"ok",year:"2026",draw:"sen",doc:"guias-de-estudio.md",links:[{k:"site",u:"https://flkochu.github.io/Guia-Procesamiento-de-Se-ales/"},{k:"repo",u:"https://github.com/flkochu/Guia-Procesamiento-de-Se-ales"}],
+ es:{t:"Guía de Procesamiento de Señales",s:"Los cuatro exámenes del curso: filtros analógicos, DFT y transformada Z, con exámenes resueltos.",mine:"Autor",status:"Publicada",
+  ctx:"Guía de estudio para mis compañeros de Procesamiento de Señales.",
+  did:["Filtros a mano y en MATLAB: orden mínimo, transformaciones de frecuencia y escalamiento.","Señales discretas, DTFT, DFT y transformada Z.","Circuitos verificados simulando la red escalera con matrices ABCD."]},
+ en:{t:"Signal Processing guide",s:"All four course exams: analog filters, DFT and Z-transform, with worked exams.",mine:"Author",status:"Published",
+  ctx:"A study guide for my classmates in Signal Processing.",
+  did:["Filters by hand and in MATLAB: minimum order, frequency transformations and scaling.","Discrete signals, DTFT, DFT and Z-transform.","Circuits checked by simulating the ladder network with ABCD matrices."]},
+ stack:["MATLAB","HTML"]},
+
+{id:"mat",layers:["com"],st:"ok",year:"2026",draw:"mat",doc:"guias-de-estudio.md",links:[{k:"site",u:"https://flkochu.github.io/Guia-Materiales-/"},{k:"repo",u:"https://github.com/flkochu/Guia-Materiales-"}],
+ es:{t:"Guía de Selección de Materiales",s:"Ensayos mecánicos de los materiales con 21 problemas resueltos y 49 preguntas de repaso.",mine:"Autor",status:"Publicada",
+  ctx:"Guía para el segundo examen de Selección de Materiales: tensión, dureza, impacto, fatiga y mecánica de la fractura.",
+  did:["21 problemas resueltos paso a paso con soluciones plegables.","Seis gráficas en SVG, entre ellas la curva esfuerzo-deformación y la transición dúctil-frágil.","Resultados verificados contra las hojas de respuestas del curso."]},
+ en:{t:"Materials Selection guide",s:"Mechanical testing of materials with 21 worked problems and 49 review questions.",mine:"Author",status:"Published",
+  ctx:"A guide for the second Materials Selection exam: tension, hardness, impact, fatigue and fracture mechanics.",
+  did:["21 problems worked step by step with collapsible solutions.","Six SVG charts, including the stress-strain curve and the ductile-brittle transition.","Results checked against the course answer sheets."]},
+ stack:["HTML","SVG"]},
+
+{id:"motores",layers:["hw","sw"],st:"ok",year:"2026",draw:"motor",doc:"controlador-motores.md",links:[{k:"repo",u:"https://github.com/flkochu/controlador-motores-esp32"}],
+ es:{t:"Controlador de motores ESP32",s:"Firmware para dos motores DC: esclavo SPI con DMA, PWM a 20 kHz, encoders y rampas repartidas en los dos núcleos.",mine:"Firmware y etapa de potencia",status:"27 pruebas en PC",
+  ctx:"Un maestro (Raspberry Pi o PC) manda la consigna de cada motor por SPI y recibe los encoders en la misma transacción. El ESP32 se encarga del PWM y de las rampas para que el maestro no tenga que hacerlo en tiempo real.",
+  did:["Esclavo SPI con DMA: la trama de 16 bytes llega directo a RAM sin ocupar la CPU.","PWM a 20 kHz y 10 bits hacia puentes H BTS7960 aislados con optoacopladores 4N25.","Encoders en cuadratura por interrupción en IRAM.","Rampa trapezoidal a 200 Hz en un núcleo y comunicación en el otro, con FreeRTOS.","Checksum en cada paquete y paro si se pierde la comunicación."],
+  next:["Cerrar el lazo de velocidad en el maestro con los encoders."]},
+ en:{t:"ESP32 motor controller",s:"Firmware for two DC motors: SPI slave with DMA, 20 kHz PWM, encoders, and ramps split across both cores.",mine:"Firmware and power stage",status:"27 tests on PC",
+  ctx:"A master (Raspberry Pi or PC) sends each motor’s setpoint over SPI and gets the encoder counts back in the same transaction. The ESP32 handles PWM and ramps so the master doesn’t have to work in real time.",
+  did:["SPI slave with DMA: the 16-byte frame lands in RAM without using the CPU.","20 kHz, 10-bit PWM to BTS7960 H-bridges isolated with 4N25 optocouplers.","Quadrature encoders read by interrupts in IRAM.","200 Hz trapezoidal ramp on one core and communication on the other, with FreeRTOS.","A checksum on every packet and a stop if communication is lost."],
+  next:["Close the speed loop on the master with the encoders."]},
+ stack:["ESP32","ESP-IDF","FreeRTOS","C++","BTS7960","SPI + DMA"]},
+
+{id:"slam",layers:["ros","sw"],st:"wip",year:"2026",draw:"slam",doc:"slam-ros2.md",links:[{k:"repo",u:"https://github.com/flkochu/ros2-slam-microros"}],
+ es:{t:"SLAM 2D con ROS 2 y micro-ROS",s:"Mapeo con un RPLIDAR C1 y slam_toolbox, con la odometría de una base mecanum calculada en un microcontrolador con micro-ROS.",mine:"Arquitectura, nodo micro-ROS y configuración de ROS 2",status:"Probado en PC",
+  ctx:"El microcontrolador recibe /cmd_vel, calcula la velocidad de cada rueda mecanum y publica la odometría y la transformada odom → base_link. En la PC, slam_toolbox arma el mapa con los barridos del LiDAR.",
+  did:["Cinemática inversa y directa mecanum, y odometría con integración RK2.","Nodo micro-ROS que publica /odom y /tf con tiempo sincronizado con el agente.","Launch de ROS 2 Jazzy con el RPLIDAR C1, la transformada del láser y slam_toolbox.","Pruebas de la cinemática y revisión del launch contra los paquetes oficiales."],
+  next:["Odometría con encoders y mapeo en el robot."]},
+ en:{t:"2D SLAM with ROS 2 and micro-ROS",s:"Mapping with an RPLIDAR C1 and slam_toolbox, with mecanum-base odometry computed on a microcontroller running micro-ROS.",mine:"Architecture, micro-ROS node and ROS 2 setup",status:"Tested on PC",
+  ctx:"The microcontroller receives /cmd_vel, computes each mecanum wheel’s speed, and publishes odometry and the odom → base_link transform. On the PC, slam_toolbox builds the map from the LiDAR scans.",
+  did:["Mecanum inverse and forward kinematics, and odometry with RK2 integration.","micro-ROS node publishing /odom and /tf, time-synced with the agent.","ROS 2 Jazzy launch with the RPLIDAR C1, the laser transform and slam_toolbox.","Kinematics tests and a check of the launch against the official packages."],
+  next:["Encoder-based odometry and mapping on the robot."]},
+ stack:["ROS 2 Jazzy","micro-ROS","slam_toolbox","RPLIDAR C1","C++","Python"]},
+
+{id:"rf",layers:["sw"],st:"wip",year:"2025",draw:"rf",doc:"inspeccion-frutas.md",links:[{k:"repo",u:"https://github.com/flkochu/inspeccion-frutas-random-forest"}],
+ es:{t:"Inspección de frutas con Random Forest",s:"Clasifica la calidad de un jitomate en tres grados a partir de su color, sus manchas y su forma.",mine:"Extracción de características y modelo",status:"Prototipo con datos sintéticos",
+  ctx:"Una foto de la fruta pasa por OpenCV para medir 8 características y un Random Forest de 200 árboles decide entre exportación, madurez media o rechazo. Lo entrené con un dataset sintético para probar el flujo; falta entrenarlo con fotos reales.",
+  did:["Segmentación de la fruta y 8 características: color, tono, saturación, variación de brillo, proporción de manchas y circularidad.","Random Forest con criterio de Gini y clases balanceadas, guardado junto con su escalador.","Dictamen en JSON y publicación por MQTT.","Pruebas con imágenes de prueba, incluida la corrección del tono del rojo."],
+  next:["Entrenarlo con fotos reales etiquetadas."]},
+ en:{t:"Fruit inspection with Random Forest",s:"Grades a tomato into three quality classes from its color, spots and shape.",mine:"Feature extraction and model",status:"Prototype, synthetic data",
+  ctx:"A photo of the fruit goes through OpenCV to measure 8 features, and a 200-tree Random Forest picks export grade, medium ripeness or reject. I trained it on a synthetic dataset to test the pipeline; it still needs real photos.",
+  did:["Fruit segmentation and 8 features: color, hue, saturation, brightness variation, spot ratio and circularity.","Random Forest with Gini criterion and balanced classes, saved with its scaler.","JSON verdict published over MQTT.","Tests with generated images, including a fix for the hue of red."],
+  next:["Train it on real labeled photos."]},
+ stack:["Python","OpenCV","scikit-learn","MQTT"]}
+];
+P.forEach((p,i)=>{p.no="ALL-"+String(i+1).padStart(2,"0")});
+const ORDER=["proton","paper","atlas","motores","slam","saludo","perro","sumo","rf","mec","sen","mat"];
+P.sort((a,b)=>ORDER.indexOf(a.id)-ORDER.indexOf(b.id));
+
+/* ===== Dibujos (SVG generado) ===== */
+const r1=n=>Math.round(n*10)/10;
+const L=(x1,y1,x2,y2,c="k")=>`<line class="${c}" x1="${r1(x1)}" y1="${r1(y1)}" x2="${r1(x2)}" y2="${r1(y2)}"/>`;
+const C=(x,y,r,c="k")=>`<circle class="${c}" cx="${r1(x)}" cy="${r1(y)}" r="${r1(r)}"/>`;
+const R=(x,y,w,h,c="k",rx=0)=>`<rect class="${c}" x="${r1(x)}" y="${r1(y)}" width="${r1(w)}" height="${r1(h)}" rx="${rx}"/>`;
+const PA=(d,c="k")=>`<path class="${c}" d="${d}"/>`;
+const T=(x,y,s,c="",a="start")=>`<text${c?` class="${c}"`:""} x="${r1(x)}" y="${r1(y)}" text-anchor="${a}">${s}</text>`;
+const rad=a=>a*Math.PI/180;
+function arc(cx,cy,r,a0,a1,c="d"){const x0=cx+r*Math.cos(rad(a0)),y0=cy+r*Math.sin(rad(a0)),x1=cx+r*Math.cos(rad(a1)),y1=cy+r*Math.sin(rad(a1));const lg=Math.abs(a1-a0)>180?1:0;const sw=a1>a0?1:0;return PA(`M${r1(x0)} ${r1(y0)} A${r} ${r} 0 ${lg} ${sw} ${r1(x1)} ${r1(y1)}`,c)}
+function link(x1,y1,x2,y2,w){return `<line class="lo" style="stroke-width:${w}px" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/><line class="li" style="stroke-width:${w-3}px" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`}
+const joint=(x,y,r=6)=>C(x,y,r,"jt")+C(x,y,1.6,"f");
+function ground(x1,x2,y){return R(x1,y,x2-x1,8,"hs")+L(x1,y,x2,y)}
+function wheel(x,y,r){return C(x,y,r)+C(x,y,r*.38,"t")+L(x-r-5,y,x+r+5,y,"c")+L(x,y-r-5,x,y+r+5,"c")}
+function dim(x1,y1,x2,y2,label,off=14){const a=Math.atan2(y2-y1,x2-x1),nx=-Math.sin(a)*off,ny=Math.cos(a)*off;const ax=x1+nx,ay=y1+ny,bx=x2+nx,by=y2+ny;
+ let s=L(x1,y1,ax+nx*.3,ay+ny*.3,"t")+L(x2,y2,bx+nx*.3,by+ny*.3,"t")+L(ax,ay,bx,by,"d");
+ const tk=(x,y)=>L(x-4,y+4,x+4,y-4,"d");s+=tk(ax,ay)+tk(bx,by);
+ const mx=(ax+bx)/2+nx*.55,my=(ay+by)/2+ny*.55;let deg=a*180/Math.PI;if(deg>90||deg<-90)deg+=180;
+ return s+`<text class="lbl" x="${r1(mx)}" y="${r1(my)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${r1(deg)} ${r1(mx)} ${r1(my)})">${label}</text>`}
+const svg=(vb,inner,label)=>`<svg class="dw" viewBox="${vb}" role="img" aria-label="${label}">${inner}</svg>`;
+
+const DRAW={
+ proton(d){return ground(30,370,228)+R(70,170,210,40,"k",5)+wheel(115,211,17)+wheel(235,211,17)+R(152,152,42,18,"k",2)+L(173,128,173,240,"c")+
+  link(173,146,232,76,11)+link(232,76,302,98,9)+link(302,98,322,116,7)+joint(173,146,6)+joint(232,76,6)+joint(302,98,5)+joint(322,116,4)+
+  PA("M326 119 l14 4 M324 121 l8 14")+arc(232,76,32,-74,106,"d dash")+T(272,42,"±90°","lbl")+T(70,250,d.proton,"tiny")},
+ paper(d){let s=R(118,14,164,232,"k",2)+L(150,32,250,32)+L(162,40,238,40,"t");
+  for(let y=56;y<=232;y+=7){if(!(y>112&&y<174))s+=L(130,y,194,y,"t");s+=L(206,y,270,y,"t")}
+  s+=R(130,116,64,54,"t")+L(140,160,152,140,"k")+L(152,140,172,134,"k")+C(152,140,2.5,"f")+C(172,134,2,"f")+L(136,162,186,162,"t");
+  s+=`<g transform="rotate(-11 300 70)">${R(254,52,104,32,"d",3)}${R(258,56,96,24,"d",2)}${T(306,73,d.accepted,"stamp","middle")}</g>`;return s},
+ saludo(d){let s=ground(30,210,226)+R(64,200,52,26,"k",2)+L(90,190,90,232,"c")+link(90,198,118,132,11)+link(118,132,168,106,9)+joint(90,198,6)+joint(118,132,6)+joint(168,106,5)+
+  PA("M170 104 l10 -16 M172 106 l15 -10 M172 109 l17 -3")+arc(168,104,30,-95,-30,"d dash")+arc(168,104,40,-95,-30,"d dash");
+  s+=R(242,40,118,190,"d dash")+R(242,27,48,14,"fb")+`<text x="247" y="37.5" style="fill:var(--sheet);font-size:10px;font-weight:600">person</text>`;
+  s+=C(300,80,13)+L(300,93,300,160)+L(300,160,284,222)+L(300,160,316,222)+L(300,110,276,142)+L(300,110,328,86)+L(328,86,336,62);
+  const kp=[[330,44],[337,40],[344,41],[350,46],[352,55]];kp.forEach(p=>{s+=L(336,62,p[0],p[1],"d")+C(p[0],p[1],2.4,"fb")});s+=C(336,62,2.6,"fb");return s},
+ atlas(d){let s=R(140,50,120,160,"k",4);const wh=[[108,60],[266,60],[108,148],[266,148]];
+  wh.forEach((w,i)=>{s+=R(w[0],w[1],26,52,"k",3);for(let k=0;k<5;k++){const y=w[1]+6+k*9;s+=(i===0||i===3)?L(w[0]+4,y+8,w[0]+22,y,"t"):L(w[0]+4,y,w[0]+22,y+8,"t")}});
+  s+=T(121,52,"FL","tiny","middle")+T(279,52,"FR","tiny","middle")+T(121,214,"RL","tiny","middle")+T(279,214,"RR","tiny","middle");
+  const x0=170,y0=100,c=7.5;s+=R(x0,y0,60,60,"f");const bits=["101101","011010","110011","001101","101010","010111"];
+  for(let r=0;r<6;r++)for(let k=0;k<6;k++)if(bits[r][k]==="1")s+=R(x0+c+k*c,y0+c+r*c,c,c,"pw");
+  s+=L(200,28,200,240,"c")+L(90,130,310,130,"c");
+  s+=R(184,2,32,14,"k",2)+PA("M194 16 l-4 6 h20 l-4 -6")+L(190,22,140,50,"d dash")+L(210,22,260,50,"d dash");
+  s+=PA("M330 228 h40 M330 228 v-40","d")+PA("M366 224 l4 4 -4 4 M326 192 l4 -4 4 4","d")+T(374,232,"x","lbl")+T(334,182,"y","lbl");return s},
+ perro(d){let s=ground(40,360,222)+R(108,92,184,44,"k",8)+PA("M290 98 l36 -18 l16 10 l-6 16 l-44 10 Z")+T(200,129,"ESP32 + PCA9685","tiny","middle");
+  [[132,-14],[168,-14],[232,14],[268,14]].forEach(([h,k])=>{s+=link(h,136,h+k,178,9)+link(h+k,178,h,218,7)+joint(h,136,5)+joint(h+k,178,4.5)});
+  s+=L(100,114,350,114,"c");return s},
+ sumo(d){let s=R(130,56,140,140,"k",3)+R(130,56,140,18,"hf")+R(140,104,14,58,"k",3)+R(246,104,14,58,"k",3)+R(180,140,40,24,"t",2)+T(200,156,"T4.1","tiny","middle");
+  [150,195,240].forEach(x=>{s+=R(x,76,10,8,"k",1)+L(x+5,76,x-10,20,"d dash")+L(x+5,76,x+20,20,"d dash")});
+  s+=L(200,40,200,214,"c")+L(116,126,284,126,"c")+dim(130,196,270,196,"100 mm",22)+dim(270,196,270,56,"100 mm",22)+T(200,14,d.front,"tiny","middle");return s},
+ mec(d){const O2=[90,200],A=[126,118],B=[262,92],O4=[300,200];const piv=([x,y])=>PA(`M${x} ${y} l-12 18 h24 Z`)+R(x-16,y+18,32,6,"hs")+L(x-16,y+18,x+16,y+18);
+  let s=L(90,200,300,200,"c")+piv(O2)+piv(O4)+link(...O2,...A,9)+link(...A,...B,9)+link(...B,...O4,9)+joint(...O2,6)+joint(...A,5.5)+joint(...B,5.5)+joint(...O4,6);
+  s+=arc(90,200,32,-66,0,"d")+T(128,190,"θ","lbl")+arc(300,200,28,-109,0,"d")+T(330,186,"ψ","lbl");
+  s+=T(96,154,"r₂","tiny")+T(194,96,"r₃","tiny")+T(290,140,"r₄","tiny")+T(195,214,"r₁","tiny","middle");return s},
+ sen(d){const ox=60,oy=214;let s=L(ox,oy,372,oy)+L(ox,oy,ox,22)+PA("M368 210 l6 4 -6 4 M56 26 l4 -6 4 6");
+  for(let g=1;g<=3;g++)s+=L(ox+g*100,oy,ox+g*100,oy+4,"t")+T(ox+g*100,oy+16,String(g),"tiny","middle");
+  s+=L(ox,oy-170*.7071,360,oy-170*.7071,"d dash")+L(160,oy,160,30,"d dash");
+  [2,4,8].forEach(n=>{let p=[];for(let i=0;i<=100;i++){const w=i*.03;p.push(`${r1(ox+w*100)} ${r1(oy-170/Math.sqrt(1+Math.pow(w,2*n)))}`)}s+=PA("M"+p.join(" L"))});
+  s+=T(366,234,"ω/ωc","","end")+T(52,30,"|H|","","end")+T(360,84,"−3 dB","lbl","end")+T(238,150,"n = 2","tiny")+T(194,190,"n = 8","tiny");return s},
+ mat(d){const ox=60,oy=214;let s=L(ox,oy,372,oy)+L(ox,oy,ox,22)+PA("M368 210 l6 4 -6 4 M56 26 l4 -6 4 6");
+  s+=PA("M60 214 L118 104 Q128 94 142 98 C190 62 236 52 262 56 C292 62 312 80 326 102")+L(70,214,128,104,"d dash")+PA("M321 97 l10 10 M331 97 l-10 10");
+  s+=T(102,96,"σy","lbl")+T(262,46,"σu","lbl","middle")+T(336,118,d.fracture,"tiny")+T(366,232,"ε","","end")+T(52,30,"σ","","end");return s},
+ motor(d){let s=L(40,120,372,120,"t")+PA("M40 120 L110 48 L270 48 L340 120")+L(110,44,110,124,"d dash")+L(270,44,270,124,"d dash");
+  s+=T(75,140,d.ramp,"lbl","middle")+T(305,140,d.ramp,"lbl","middle")+T(190,40,d.setp,"tiny","middle");
+  const y0=232,y1=192,per=15;let path="M40 "+y0;
+  for(let x=40;x<340;x+=per){const xm=x+per/2;const f=xm<110?(xm-40)/70:xm<270?1:Math.max(0,(340-xm)/70);const w=Math.max(0.8,f*per*0.88);path+=` L${x} ${y1} L${r1(x+w)} ${y1} L${r1(x+w)} ${y0} L${x+per} ${y0}`}
+  s+=PA(path)+L(40,y0+6,372,y0+6,"t")+T(352,206,"20 kHz","lbl")+T(36,y1+4,"PWM","tiny","end");return s},
+ slam(d){let s=PA("M40 30 H250 V90 H360 V230 H40 Z")+R(120,60,50,40,"hf")+R(270,160,50,40,"hf");
+  const rx=200,ry=175,hits=[[40,175],[40,215],[100,230],[200,230],[260,230],[270,195],[270,165],[360,120],[330,90],[250,60],[215,30],[170,90],[150,100],[125,100],[40,110]];
+  hits.forEach(([x,y])=>{s+=L(rx,ry,x,y,"d dash")+C(x,y,2.4,"fb")});
+  s+=PA("M70 205 C 95 150, 140 215, 175 190 S 195 178, 200 175","d")+C(70,205,3,"fb");
+  s+=R(rx-9,ry-7,18,14,"jt",2)+L(rx,ry-7,rx,ry-17,"k")+PA(`M${rx-3} ${ry-14} L${rx} ${ry-18} L${rx+3} ${ry-14}`);
+  s+=T(372,246,d.map,"tiny","end");return s},
+ rf(d){let s=C(72,132,40)+PA("M72 92 l-9 -10 M72 92 l9 -10 M72 92 v-14")+C(58,144,5,"f")+C(86,120,3.5,"f")+L(30,184,114,184,"d")+T(72,198,d.feat,"tiny","middle");
+  s+=L(124,132,146,132,"d")+PA("M142 128 l4 4 -4 4","d");
+  const tree=(x,y,hl)=>{let t="";const n=[[x,y],[x-20,y+32],[x+20,y+32],[x-30,y+64],[x-10,y+64],[x+10,y+64],[x+30,y+64]];
+   [[0,1],[0,2],[1,3],[1,4],[2,5],[2,6]].forEach(([a,b])=>t+=L(n[a][0],n[a][1],n[b][0],n[b][1]));
+   n.forEach((q,i)=>t+=C(q[0],q[1],i<3?5.5:4.5,i===hl?"fb":"jt"));return t};
+  s+=tree(190,34,3)+tree(258,34,5)+tree(326,34,3)+T(258,122,"…","","middle");
+  const rows=[["A",128,"fb"],["B",44,"bar"],["R",20,"bar"]];
+  rows.forEach(([k,w,c],i)=>{const y=160+i*26;s+=T(178,y+11,k,"bal","middle")+R(190,y,w,14,c)});
+  s+=T(190,152,d.votes,"lbl");return s}
+};
+function drawing(p,lang){const d=UI[lang].d;return svg("0 0 400 260",DRAW[p.draw](d),p[lang].t)}
+
+function heroDrawing(lang){const d=UI[lang].d;
+ const g1=ground(40,520,404)+R(96,300,288,62,"k",6)+R(118,320,84,28,"t",2)+R(222,320,64,28,"t",2)+T(254,338,"ESP32","tiny","middle")+wheel(160,378,26)+wheel(320,378,26);
+ const g2=R(206,272,68,28,"k",3)+L(240,226,240,424,"c")+link(240,268,240,236,14)+link(240,236,336,122,14)+link(336,122,448,150,12)+link(448,150,476,170,10)+link(476,170,494,186,8);
+ const g3=joint(240,268,8)+joint(240,236,8)+joint(336,122,8)+joint(448,150,7)+joint(476,170,6)+joint(494,186,5)+PA("M498 190 l20 4 M496 194 l10 18 M516 194 l6 -4 M506 212 l-2 7");
+ const bal=[[240,268,168,286],[240,236,170,212],[336,122,312,62],[448,150,446,92],[476,170,532,132],[494,186,536,246]];
+ let g4="";bal.forEach((b,i)=>{g4+=L(b[0],b[1],b[2],b[3],"t")+C(b[2],b[3],13,"jt")+T(b[2],b[3]+3.8,"J"+(i+1),"bal","middle")});
+ const g5=arc(336,122,46,-76,104,"d dash")+T(384,104,"±90°","lbl")+T(40,34,d.proton,"cap")+T(40,52,d.side,"")+T(40,68,d.range,"");
+ return `<svg class="dw build" viewBox="0 0 560 430" role="img" aria-label="${d.proton}. ${d.side}"><g>${g1}</g><g>${g2}</g><g>${g3}</g><g>${g4}</g><g>${g5}</g></svg>`}
+
+/* ===== Glifos ===== */
+function stGlyph(st){if(st==="ok")return `<svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.6" fill="var(--ok)"/></svg>`;
+ if(st==="wip")return `<svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.6" fill="none" stroke="var(--wip)" stroke-width="1.4"/><path d="M6 1.4 A4.6 4.6 0 0 1 6 10.6 Z" fill="var(--wip)"/></svg>`;
+ return `<svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="6" cy="6" r="4.6" fill="none" stroke="var(--ink-2)" stroke-width="1.4" stroke-dasharray="2 1.6"/></svg>`}
+function ltGlyph(dash){if(dash==="double")return `<svg viewBox="0 0 26 8" aria-hidden="true"><line class="lt" x1="0" y1="2.2" x2="26" y2="2.2"/><line class="lt" x1="0" y1="5.8" x2="26" y2="5.8" style="stroke-width:1"/></svg>`;
+ return `<svg viewBox="0 0 26 8" aria-hidden="true"><line class="lt" x1="0" y1="4" x2="26" y2="4"${dash?` stroke-dasharray="${dash}"`:""}/></svg>`}
+
+/* ===== Estado ===== */
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let lang=store.get("all-lang")||((navigator.language||"es").toLowerCase().startsWith("es")?"es":"en");
+let layer="all";
+let visible=P.slice();
+let current=-1;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const layerName=id=>{const l=LAYERS.find(x=>x.id===id);return l?l[lang]:id};
+
+function renderStatic(){const u=UI[lang];
+ document.documentElement.lang=lang;
+ document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(typeof u[k]==="string")el.textContent=u[k]});
+ $("#lang-es").setAttribute("aria-pressed",lang==="es");$("#lang-en").setAttribute("aria-pressed",lang==="en");
+ $("#cta-docs").href=DOCS.replace(/blob\/main\/docs\/$/,"tree/main/docs");
+ $("#hero-fig").innerHTML=heroDrawing(lang);
+ $("#layers").setAttribute("aria-label",u.layersLabel);
+ $("#about-prose").innerHTML=u.about.map(t=>`<p>${esc(t)}</p>`).join("");
+ $("#tools").innerHTML=u.tools.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+ $("#dlg-close").setAttribute("aria-label",u.close);
+ let rows=`<div class="row"><span class="k">${u.email}</span><span class="v" id="mail">${EMAIL}</span><button class="copy" type="button" id="copy-mail">${u.copy}</button></div>`;
+ rows+=`<div class="row"><span class="k">GitHub</span><span class="v"><a href="${GITHUB}" target="_blank" rel="noopener">github.com/flkochu</a></span><span></span></div>`;
+ if(LINKEDIN)rows+=`<div class="row"><span class="k">LinkedIn</span><span class="v"><a href="${esc(LINKEDIN)}" target="_blank" rel="noopener">${esc(LINKEDIN.replace(/^https?:\/\/(www\.)?/,"").replace(/\/$/,""))}</a></span><span></span></div>`;
+ $("#rows").innerHTML=rows;
+ $("#copy-mail").addEventListener("click",copyMail);
+ $("#proton-role").innerHTML=u.protonRole.map(t=>`<li>${esc(t)}</li>`).join("");
+ if(simHandle)simHandle.setLang(lang); else { const pt=$("#sim-poster-txt"); if(pt) pt.textContent=u.simLoading; }
+ const t=u.tb;
+ $("#tb").innerHTML=`<div class="wide name"><small>${t.drawn}</small><b>Adán López Lozano</b></div>
+  <div class="wide"><small>${t.inst}</small><b>${t.instV}</b></div>
+  <div><small>${t.dwg}</small><b>ALL-00</b></div><div><small>${t.scale}</small><b>1:1</b></div><div><small>${t.sheet}</small><b>1/1</b></div><div><small>${t.rev}</small><b>C</b></div>
+  <div class="half"><small>${t.date}</small><b>${UPDATED}</b></div><div><small>${t.count}</small><b>${P.length}</b></div><div><small>${t.status}</small><b>${t.statusV}</b></div>`;
+}
+function renderLayers(){const u=UI[lang];
+ const count=id=>id==="all"?P.length:P.filter(p=>p.layers.includes(id)).length;
+ let h=`<button type="button" class="layer" id="layer-all" data-layer="all" aria-pressed="${layer==="all"}"><svg viewBox="0 0 26 8" aria-hidden="true"><rect x="0.5" y="0.5" width="25" height="7" fill="none" stroke="currentColor"/></svg>${u.all} <span class="n">${count("all")}</span></button>`;
+ LAYERS.forEach(l=>{h+=`<button type="button" class="layer" id="layer-${l.id}" data-layer="${l.id}" aria-pressed="${layer===l.id}">${ltGlyph(l.dash)}${l[lang]} <span class="n">${count(l.id)}</span></button>`});
+ $("#layers").innerHTML=h;
+ $("#layers").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{layer=b.dataset.layer;renderLayers();renderGrid()}));
+}
+function renderGrid(){const u=UI[lang];
+ visible=layer==="all"?P.slice():P.filter(p=>p.layers.includes(layer));
+ const g=$("#grid");g.classList.toggle("filtered",layer!=="all");
+ g.innerHTML=visible.map((p,i)=>{const c=p[lang];return `<div class="cell${p.feat?" feat":""}"><button type="button" class="card" data-idx="${i}" aria-haspopup="dialog">
+  <div class="fig">${drawing(p,lang)}</div>
+  <div class="meta"><span class="pid">${p.no}</span><span class="status">${stGlyph(p.st)}${esc(c.status)}</span></div>
+  <h3>${esc(c.t)}</h3><p class="sum">${esc(c.s)}</p><p class="mine"><b>${u.mine}:</b> ${esc(c.mine)}</p>
+  <div class="tags">${p.layers.map(layerName).map(esc).join("<span aria-hidden=\"true\">/</span>")}</div></button></div>`}).join("");
+ g.querySelectorAll(".card").forEach(b=>b.addEventListener("click",()=>openDlg(+b.dataset.idx)));
+ fillGrid();
+}
+/* Que la última fila no deje huecos: la última tarjeta ocupa las columnas que sobran */
+function fillGrid(){const g=$("#grid");if(!g)return;const cells=[...g.children];cells.forEach(c=>c.style.gridColumn="");
+ const n=getComputedStyle(g).gridTemplateColumns.split(" ").filter(Boolean).length||1;if(n<2)return;
+ let used=0;cells.forEach(c=>{used+=(c.classList.contains("feat")&&!g.classList.contains("filtered"))?Math.min(2,n):1});
+ const rem=used%n;if(rem){const last=cells[cells.length-1];if(last&&!last.classList.contains("feat"))last.style.gridColumn=`span ${n-rem+1}`}}
+if("ResizeObserver" in window){let fw=0;new ResizeObserver(es=>{const w=Math.round(es[0].contentRect.width);if(w!==fw){fw=w;fillGrid()}}).observe(document.getElementById("grid"))}
+function linkLabel(k){const u=UI[lang];return u[k]||k}
+function fillDlg(){const p=visible[current],c=p[lang],u=UI[lang];
+ $("#dlg-id").textContent=p.no;$("#dlg-title").textContent=c.t;
+ $("#dlg-draw").innerHTML=p.media?`<div class="dlg-media">${p.media.map(m=>m.type==="video"?`<video src="${m.src}" poster="${m.poster||""}" muted loop playsinline autoplay preload="metadata" aria-label="${esc(c.t)}"></video>`:`<img src="${m.src}" alt="${esc(c.t)}" loading="lazy">`).join("")}</div>`:drawing(p,lang);
+ $("#dlg-facts").innerHTML=`<dt>${u.mine}</dt><dd>${esc(c.mine)}</dd><dt>${u.statusF}</dt><dd><span class="status">${stGlyph(p.st)}${esc(c.status)}</span></dd><dt>${u.layersF}</dt><dd>${p.layers.map(layerName).map(esc).join(", ")}</dd><dt>${u.yearF}</dt><dd>${p.year}</dd>`;
+ let h=`<div><h3>${u.ctx}</h3><p>${esc(c.ctx)}</p></div><div><h3>${u.did}</h3><ul>${c.did.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+ if(c.next)h+=`<div><h3>${u.next}</h3><ul>${c.next.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`;
+ h+=`<div><h3>${u.stack}</h3><div class="chips">${p.stack.map(s=>`<span>${esc(s)}</span>`).join("")}</div></div>`;
+ h+=`<div><h3>${u.links}</h3><div class="dlg-links"><a class="btn primary" href="${DOCS+p.doc}" target="_blank" rel="noopener">${u.doc}</a>${p.links.map(l=>l.u.startsWith("#")?`<a class="btn" href="${l.u}" data-close="1">${linkLabel(l.k)}</a>`:`<a class="btn" href="${l.u}" target="_blank" rel="noopener">${linkLabel(l.k)}</a>`).join("")}</div></div>`;
+ $("#dlg-txt").innerHTML=h;$("#dlg-txt").scrollTop=0;$(".dlg-body").scrollTop=0;
+ $("#dlg-txt").querySelectorAll("[data-close]").forEach(a=>a.addEventListener("click",()=>closeDlg()));
+ const pv=visible[(current-1+visible.length)%visible.length],nx=visible[(current+1)%visible.length];
+ $("#dlg-prev").textContent="‹ "+pv[lang].t;$("#dlg-prev").setAttribute("aria-label",u.prev+": "+pv[lang].t);
+ $("#dlg-next").textContent=nx[lang].t+" ›";$("#dlg-next").setAttribute("aria-label",u.nextP+": "+nx[lang].t);
+}
+function openDlg(i){current=i;fillDlg();const d=$("#dlg");if(!d.open){if(d.showModal)d.showModal();else d.setAttribute("open","")}}
+function closeDlg(){const d=$("#dlg");d.querySelectorAll("video").forEach(v=>v.pause());if(d.close)d.close();else d.removeAttribute("open")}
+function copyMail(){const btn=$("#copy-mail"),u=UI[lang];
+ const sel=()=>{const r=document.createRange();r.selectNodeContents($("#mail"));const s=getSelection();s.removeAllRanges();s.addRange(r);btn.textContent=u.copyFail};
+ try{navigator.clipboard.writeText(EMAIL).then(()=>{btn.textContent=u.copied;setTimeout(()=>{btn.textContent=UI[lang].copy},1800)}).catch(sel)}catch(e){sel()}}
+
+function renderAll(){renderStatic();renderLayers();renderGrid();if($("#dlg").open)fillDlg()}
+
+/* Foto: se muestra si existe assets/img/perfil.jpg; si no, un monograma */
+function photo(){const ph=$("#ph");const mono=`<svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="56" fill="none" stroke="var(--ink)" stroke-width="2"/><line x1="10" y1="60" x2="110" y2="60" stroke="var(--blue)" stroke-width="1" stroke-dasharray="12 3 2 3"/><text x="60" y="50" text-anchor="middle" font-size="28" font-weight="760" fill="var(--ink)" font-family="Archivo, Arial, sans-serif" style="font-stretch:115%">ALL</text><text x="60" y="88" text-anchor="middle" font-size="16" fill="var(--ink-2)" font-family="Archivo, Arial, sans-serif">00</text></svg>`;
+ ph.innerHTML=mono;const img=new Image();img.alt="Adán López Lozano";img.onload=()=>{ph.innerHTML="";ph.appendChild(img)};img.src="assets/img/perfil.jpg"}
+
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;store.set("all-lang",lang);renderAll()}));
+$("#dlg-close").addEventListener("click",closeDlg);
+$("#dlg-prev").addEventListener("click",()=>{current=(current-1+visible.length)%visible.length;fillDlg()});
+$("#dlg-next").addEventListener("click",()=>{current=(current+1)%visible.length;fillDlg()});
+$("#dlg").addEventListener("click",e=>{if(e.target===e.currentTarget)closeDlg()});
+$("#dlg").addEventListener("keydown",e=>{if(e.key==="ArrowLeft")$("#dlg-prev").click();if(e.key==="ArrowRight")$("#dlg-next").click()});
+
+/* PROTÓN en 3D: se carga cuando la sección se acerca a la vista */
+let simHandle=null;
+function isDark(){const t=document.documentElement.getAttribute("data-theme");return t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches}
+function simPoster(){const el=$("#sim-mount");if(!el||simHandle)return;el.innerHTML=`<div class="sim-poster"><img src="proton/poster-${isDark()?"dark":"light"}.jpg" alt="PROTÓN en 3D"><p id="sim-poster-txt">${UI[lang].simLoading}</p></div>`}
+function loadSim(){const el=$("#sim-mount");if(!el||simHandle||el.dataset.loading)return;el.dataset.loading="1";
+ import("./proton/sim.js").then(m=>m.mountProton(el,{glb:"proton/proton_arm.glb",poster:`proton/poster-${isDark()?"dark":"light"}.jpg`,lang})).then(h=>{simHandle=h;window.__sim=h}).catch(e=>{console.error(e);const pt=$("#sim-poster-txt");if(pt)pt.textContent=lang==="es"?"No se pudo cargar el modelo 3D.":"The 3D model could not load."})}
+$("#proton-open").addEventListener("click",e=>{e.preventDefault();if(layer!=="all"){layer="all";renderLayers();renderGrid()}const i=visible.findIndex(p=>p.id==="proton");if(i>=0)openDlg(i)});
+
+renderAll();photo();simPoster();
+if("IntersectionObserver" in window){const io=new IntersectionObserver(es=>{if(es.some(x=>x.isIntersecting)){io.disconnect();loadSim()}},{rootMargin:"300px"});io.observe($("#sim-mount"))}else loadSim();
+const h=(location.hash||"").slice(1).toUpperCase();
+if(/^ALL-\d\d$/.test(h)){const i=visible.findIndex(p=>p.no===h);if(i>=0)openDlg(i)}
+})();
+</script>
+</body>
+</html>
