@@ -47,7 +47,7 @@
 }
 
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:76px}
 body{margin:0;background-color:var(--film);background-image:radial-gradient(900px 520px at 0% 0%,rgba(255,59,141,.10),transparent 70%),radial-gradient(900px 620px at 100% 100%,rgba(45,226,240,.08),transparent 70%);
   color:var(--ink);font-family:var(--f);font-size:var(--s0);line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
@@ -171,8 +171,8 @@ button{font:inherit;color:inherit}
 .card .fig{border-bottom:1px solid var(--rule-2);padding-bottom:8px;margin-bottom:2px;background:radial-gradient(closest-side,color-mix(in srgb,var(--lc) 9%,transparent),transparent)}
 .card .fig svg{width:100%;height:auto;display:block;aspect-ratio:400/260;max-height:230px;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--lc) 45%,transparent));transition:transform .5s cubic-bezier(.2,.7,.2,1),filter .3s}
 .card:hover .fig svg{transform:scale(1.035);filter:drop-shadow(0 0 6px color-mix(in srgb,var(--lc) 70%,transparent))}
-.card .go{margin-left:auto;color:var(--lc);opacity:.55;white-space:nowrap;transition:opacity .2s,transform .2s}
-.card:hover .go,.card:focus-visible .go{opacity:1;transform:translateX(3px)}
+.card .go{margin-left:auto;color:var(--ink-2);white-space:nowrap;transition:color .2s,transform .2s}
+.card:hover .go,.card:focus-visible .go{color:var(--lc);transform:translateX(3px)}
 .cell.feat .card .fig svg{max-height:300px}
 .meta{display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--f-d);font-size:.75rem;color:var(--ink-2)}
 .pid{font-variant-numeric:tabular-nums;font-weight:600;color:var(--lc);letter-spacing:.04em}
@@ -270,7 +270,7 @@ button{font:inherit;color:inherit}
 .hero-fig .dw .lbl,.hero-fig .dw .bal{fill:var(--yellow)}
 
 /* hero: one orchestrated build-up of the drawing */
-@media (prefers-reduced-motion:no-preference){
+@media screen and (prefers-reduced-motion:no-preference){
   .build > g{animation:appear .5s ease-out backwards}
   .build > g:nth-child(2){animation-delay:.15s}
   .build > g:nth-child(3){animation-delay:.35s}
@@ -348,13 +348,16 @@ dialog::backdrop{background:rgba(4,2,10,.72)}
   .stats div:nth-child(3){border-left:0;padding-left:0}
   .stats div:nth-child(n+3){border-top:1px solid var(--rule);margin-top:14px}
 }
+@media (max-width:660px){
+  html{scroll-padding-top:0}
+  .top{position:relative}
+}
 @media (max-width:600px){
   body{padding-block:12px 24px}
   .sheet{padding:0;border:0}
   .zones,.zones-side{display:none}
-  .top{position:relative}
   .brand small{display:none}
-  .layers{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:-16px;padding-inline:16px}
+  .layers{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:-6px -16px 14px;padding:6px 16px}
   .layers::-webkit-scrollbar{display:none}
   .hero h1{font-size:clamp(2rem,9vw,2.6rem)}
   .grid{grid-template-columns:minmax(0,1fr)}
